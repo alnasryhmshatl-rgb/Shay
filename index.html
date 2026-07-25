@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> مشتل الناصرية| الرئيسية</title>
+    <title>مشتل الناصرية | الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -114,7 +114,6 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .close-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
 
-        /* تصميم الفاتورة المحسن */
         .invoice-card {
             background: #ffffff;
             border: 2px dashed var(--primary);
@@ -173,7 +172,6 @@
         .btn-checkout { background: #25D366; color: white; border: none; width: 100%; padding: 0.9rem; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; }
         .btn-checkout:hover { background: #1eb854; }
 
-        /* نمط الطباعة للفاتورة */
         @media print {
             body * { visibility: hidden; }
             #printable-invoice, #printable-invoice * { visibility: visible; }
@@ -186,7 +184,7 @@
     <header>
         <div class="brand">
             <i class="fa-solid fa-leaf" style="color:var(--primary);"></i>
-         مشتل الناصرية
+            مشتل الناصرية
         </div>
         <button class="cart-icon-btn" onclick="openCart()">
             <i class="fa-solid fa-cart-shopping"></i>
@@ -197,10 +195,10 @@
 
     <div class="container" id="banner-top-container"></div>
     <div class="container" id="main-store-content">
-        <p style="text-align: center; color: var(--text-muted); margin: 2rem 0;"> </p>
+        <p style="text-align: center; color: var(--text-muted); margin: 2rem 0;">جاري تحميل المنتجات...</p>
     </div>
 
-    <!-- سله -->
+    <!-- السلة والمودال -->
     <div class="modal" id="cart-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -208,17 +206,15 @@
                 <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <!-- بطاقة الفاتورة المصممة بشكل أنيق -->
             <div class="invoice-card" id="printable-invoice">
                 <div class="invoice-header">
                     <div>
-                        <strong style="font-size: 1.1rem; color: var(--text-dark);">فاتورة شراء - مشاتل الناصرية </strong>
+                        <strong style="font-size: 1.1rem; color: var(--text-dark);">فاتورة شراء - مشاتل الناصرية</strong>
                         <div style="font-size: 0.75rem; color: var(--text-muted);" id="invoice-date"></div>
                     </div>
                     <div class="invoice-number" id="invoice-id-display">#INV-0000</div>
                 </div>
 
-                <!-- عناصر السلة -->
                 <div id="cart-items-list"></div>
 
                 <div style="margin-top: 1rem;">
@@ -238,33 +234,15 @@
             </div>
 
             <div class="bank-card">
-             <div style="font-family: Arial, sans-serif; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; max-width: 400px; background-color: #ffffff; text-align: right; direction: rtl;">
-  
-  <!-- شعار بنك الجزيرة -->
-  <div style="text-align: center; margin-bottom: 15px;">
-    <img src="https://www.baj.com.sa/assets/images/logo.svg" alt="شعار بنك الجزيرة" style="max-width: 160px; height: auto;">
-  </div>
-
-  <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 15px;">
-
-  <!-- اسم الحساب -->
-  <p style="margin: 8px 0; color: #333333; font-size: 15px;">
-    <strong>اسم الحساب:</strong> اسس الناصرية
-  </p>
-
-  <!-- رقم الحساب -->
-  <p style="margin: 8px 0; color: #333333; font-size: 15px;">
-    <strong>رقم الحساب:</strong> 
-    <code style="user-select: all; background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-family: monospace; color: #0f172a;">015482330145001</code>
-  </p>
-
-  <!-- الآيبان -->
-  <p style="margin: 8px 0; color: #333333; font-size: 15px;">
-    <strong>الآيبان:</strong> 
-    <code style="user-select: all; background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-family: monospace; color: #0f172a; word-break: break-all;">SA5460100015482330145001</code>
-  </p>
-
-</div>
+                <div style="font-family: Arial, sans-serif; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; background-color: #ffffff; text-align: right; direction: rtl;">
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <img src="https://www.baj.com.sa/assets/images/logo.svg" alt="شعار بنك الجزيرة" style="max-width: 140px; height: auto;">
+                    </div>
+                    <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 10px;">
+                    <p style="margin: 5px 0; color: #333333; font-size: 14px;"><strong>اسم الحساب:</strong> اسس الناصرية</p>
+                    <p style="margin: 5px 0; color: #333333; font-size: 14px;"><strong>رقم الحساب:</strong> <code style="user-select: all; background: #f1f5f9; padding: 2px 5px; border-radius: 4px; color: #0f172a;">015482330145001</code></p>
+                    <p style="margin: 5px 0; color: #333333; font-size: 14px;"><strong>الآيبان:</strong> <code style="user-select: all; background: #f1f5f9; padding: 2px 5px; border-radius: 4px; color: #0f172a; word-break: break-all;">SA5460100015482330145001</code></p>
+                </div>
             </div>
 
             <form onsubmit="handlePlaceOrder(event)">
@@ -302,10 +280,8 @@
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 📱 ضعي رقم الواتساب الذي تريد استقبال الطلبات عليه
         const ADMIN_WHATSAPP_NUMBER = "966546618705"; 
 
-        // 📍 إحداثيات الموقع لتبوك
         const STORE_LAT = 28.445194;
         const STORE_LNG = 36.686194;
 
@@ -314,7 +290,6 @@
         let userLocationLink = "";
         let currentInvoiceNumber = "";
 
-        // توليد رقم فاتورة فريد وتاريخ
         function generateInvoiceNumber() {
             const randomNum = Math.floor(100000 + Math.random() * 900000);
             currentInvoiceNumber = `INV-${randomNum}`;
@@ -325,16 +300,18 @@
         async function loadStoreData() {
             const container = document.getElementById('main-store-content');
             try {
-                const { data: categories } = await _supabase.from('categories').select('*').order('id', { ascending: true });
-                const { data: products } = await _supabase.from('products').select('*').order('id', { ascending: false });
-                const { data: banners } = await _supabase.from('banners').select('*');
+                const { data: categories, error: catErr } = await _supabase.from('categories').select('*').order('id', { ascending: true });
+                const { data: products, error: prodErr } = await _supabase.from('products').select('*').order('id', { ascending: false });
+                const { data: banners, error: banErr } = await _supabase.from('banners').select('*');
+
+                if (catErr || prodErr) throw (catErr || prodErr);
 
                 const cats = categories || [];
                 const prods = products || [];
                 const bans = banners || [];
 
                 const topBanner = bans.find(b => b.position === 'top');
-                if (topBanner) {
+                if (topBanner && topBanner.video_url) {
                     document.getElementById('banner-top-container').innerHTML = `
                         <div class="banner-container">
                             <video class="banner-video" src="${topBanner.video_url}" autoplay loop muted playsinline></video>
@@ -372,21 +349,31 @@
                     }
                     container.innerHTML += catHTML;
                 });
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                console.error("Error loading store data:", err);
+                container.innerHTML = `<p style="text-align:center; padding:2rem; color:red;">حدث خطأ أثناء تحميل المنتجات.</p>`;
+            }
         }
 
         function addToCart(id, name, price, imgUrl) {
             const existing = cart.find(item => item.id === id);
-            if (existing) { existing.qty += 1; } else { cart.push({ id, name, price, imgUrl, qty: 1 }); }
+            if (existing) { existing.qty += 1; } else { cart.push({ id, name, price: Number(price), imgUrl, qty: 1 }); }
             updateCartUI();
         }
 
         function toggleWorkerService() {
             const workerId = 'service_worker';
             const existingIndex = cart.findIndex(item => item.id === workerId);
-            if (existingIndex > -1) { cart.splice(existingIndex, 1); } 
-            else {
-                cart.push({ id: workerId, name: 'خدمة عامل زراعي (8 أيام/شهر)', price: 500, imgUrl: 'https://cdn-icons-png.flaticon.com/512/1995/1995515.png', qty: 1 });
+            if (existingIndex > -1) { 
+                cart.splice(existingIndex, 1); 
+            } else {
+                cart.push({ 
+                    id: workerId, 
+                    name: 'عامل زراعي (2أيام/شهر)', 
+                    price: 299, 
+                    imgUrl: 'https://cdn-icons-png.flaticon.com/512/1995/1995515.png', 
+                    qty: 1 
+                });
             }
             updateCartUI();
         }
@@ -456,7 +443,7 @@
                         </div>
                         <div style="display:flex; align-items:center; gap:8px;">
                             <strong style="color:var(--primary-dark);">${item.price * item.qty} ر.س</strong>
-                            <button onclick="removeFromCart('${item.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+                            <button type="button" onclick="removeFromCart('${item.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 `).join('');
@@ -477,7 +464,6 @@
 
         function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
 
-        // 📤 حفظ الطلب والتوجيه للواتساب مباشرة مع الربط بالتخزين البحت Receipts
         async function handlePlaceOrder(e) {
             e.preventDefault();
             if (cart.length === 0) return alert("السلة فارغة!");
@@ -496,7 +482,6 @@
                     const fileExt = file.name.split('.').pop();
                     const safeFileName = `receipt_${Date.now()}_${Math.floor(Math.random() * 1000)}.${fileExt}`;
                     
-                    // استخدام RECEIPTS بالـ Capital لمطابقة الإعدادات لديك
                     const { data: uploadData, error: uploadErr } = await _supabase.storage
                         .from('RECEIPTS')
                         .upload(safeFileName, file, { cacheControl: '3600', upsert: true });
@@ -514,24 +499,24 @@
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const total = subtotal + deliveryCost;
 
-                try {
-                    await _supabase.from('orders').insert([{
-                        invoice_number: currentInvoiceNumber,
-                        customer_name: name,
-                        customer_phone: phone,
-                        customer_address: userLocationLink,
-                        cart_items: cart,
-                        total_amount: total,
-                        payment_proof_url: proofImageUrl,
-                        status: 'pending'
-                    }]);
-                } catch (dbErr) {
+                const { error: dbErr } = await _supabase.from('orders').insert([{
+                    invoice_number: currentInvoiceNumber,
+                    customer_name: name,
+                    customer_phone: phone,
+                    customer_address: userLocationLink,
+                    cart_items: cart,
+                    total_amount: total,
+                    payment_proof_url: proofImageUrl,
+                    status: 'pending'
+                }]);
+
+                if (dbErr) {
                     console.warn("Database Insert Warning:", dbErr);
                 }
 
                 let itemsListText = cart.map(item => `• ${item.name} (${item.qty}×) - ${item.price * item.qty} ر.س`).join('\n');
                 
-                let whatsappMessage = `*طلب جديد من متجر شتلة 🌱*\n`;
+                let whatsappMessage = `*طلب جديد من مشتل الناصرية 🌱*\n`;
                 whatsappMessage += `--------------------------------\n`;
                 whatsappMessage += `📄 *رقم الفاتورة:* #${currentInvoiceNumber}\n`;
                 whatsappMessage += `👤 *اسم العميل:* ${name}\n`;
@@ -555,6 +540,7 @@
 
                 cart = [];
                 deliveryCost = 0;
+                userLocationLink = "";
                 updateCartUI();
                 closeCart();
                 e.target.reset();
