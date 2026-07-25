@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر شتلة | الرئيسية</title>
+    <title> مشتل الناصرية| الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -186,7 +186,7 @@
     <header>
         <div class="brand">
             <i class="fa-solid fa-leaf" style="color:var(--primary);"></i>
-            متجر شتلة
+         مشتل الناصرية
         </div>
         <button class="cart-icon-btn" onclick="openCart()">
             <i class="fa-solid fa-cart-shopping"></i>
@@ -197,14 +197,14 @@
 
     <div class="container" id="banner-top-container"></div>
     <div class="container" id="main-store-content">
-        <p style="text-align: center; color: var(--text-muted); margin: 2rem 0;">جاري تحميل المنتجات...</p>
+        <p style="text-align: center; color: var(--text-muted); margin: 2rem 0;"> </p>
     </div>
 
-    <!-- نافذة السلة والدفع -->
+    <!-- سله -->
     <div class="modal" id="cart-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 style="font-weight: 800;"><i class="fa-solid fa-receipt"></i> تفاصيل الطلب والفاتورة</h3>
+                <h3 style="font-weight: 800;"><i class="fa-solid fa-receipt"></i> تفاصيل الفاتورة</h3>
                 <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
@@ -212,7 +212,7 @@
             <div class="invoice-card" id="printable-invoice">
                 <div class="invoice-header">
                     <div>
-                        <strong style="font-size: 1.1rem; color: var(--text-dark);">فاتورة شراء - متجر شتلة</strong>
+                        <strong style="font-size: 1.1rem; color: var(--text-dark);">فاتورة شراء - مشاتل الناصرية </strong>
                         <div style="font-size: 0.75rem; color: var(--text-muted);" id="invoice-date"></div>
                     </div>
                     <div class="invoice-number" id="invoice-id-display">#INV-0000</div>
@@ -223,7 +223,7 @@
 
                 <div style="margin-top: 1rem;">
                     <div class="summary-row"><span>المجموع الفرعي:</span><span id="subtotal-val">0 ر.س</span></div>
-                    <div class="summary-row"><span>التوصيل (تبوك - 1 ريال/كم):</span><span id="shipping-val">0 ر.س</span></div>
+                    <div class="summary-row"><span>التوصيل :</span><span id="shipping-val">0 ر.س</span></div>
                     <div class="summary-row summary-total"><span>الإجمالي النهائي:</span><span id="grandtotal-val" style="color:var(--primary-dark)">0 ر.س</span></div>
                 </div>
             </div>
@@ -231,16 +231,40 @@
             <!-- إضافة عامل زراعي -->
             <div class="worker-upsell-card">
                 <div class="worker-upsell-info">
-                    <h4><i class="fa-solid fa-user-gear"></i> عامل زراعي (8 أيام/شهر)</h4>
-                    <p>العناية بالحديقة وتقليم الأشجار (+500 ر.س)</p>
+                    <h4><i class="fa-solid fa-user-gear"></i> عامل زراعي (2أيام/شهر)</h4>
+                    <p>العناية بالحديقة وتقليم الأشجار (+299 ر.س)</p>
                 </div>
                 <button class="btn-toggle-worker" id="btn-worker-action" onclick="toggleWorkerService()">+ إضافة</button>
             </div>
 
             <div class="bank-card">
-                <p style="color: var(--primary-dark); font-weight:800; margin-bottom:0.3rem;"><i class="fa-solid fa-building-columns"></i> التحويل البنكي:</p>
-                <p>الحساب: <strong>مؤسسة شتلة للزراعة</strong></p>
-                <p>الآيبان: <code style="user-select: all; background:#e2e8f0; padding:2px 4px; border-radius:4px;">SA0380000000123456789012</code></p>
+             <div style="font-family: Arial, sans-serif; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; max-width: 400px; background-color: #ffffff; text-align: right; direction: rtl;">
+  
+  <!-- شعار بنك الجزيرة -->
+  <div style="text-align: center; margin-bottom: 15px;">
+    <img src="https://www.baj.com.sa/assets/images/logo.svg" alt="شعار بنك الجزيرة" style="max-width: 160px; height: auto;">
+  </div>
+
+  <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 15px;">
+
+  <!-- اسم الحساب -->
+  <p style="margin: 8px 0; color: #333333; font-size: 15px;">
+    <strong>اسم الحساب:</strong> اسس الناصرية
+  </p>
+
+  <!-- رقم الحساب -->
+  <p style="margin: 8px 0; color: #333333; font-size: 15px;">
+    <strong>رقم الحساب:</strong> 
+    <code style="user-select: all; background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-family: monospace; color: #0f172a;">015482330145001</code>
+  </p>
+
+  <!-- الآيبان -->
+  <p style="margin: 8px 0; color: #333333; font-size: 15px;">
+    <strong>الآيبان:</strong> 
+    <code style="user-select: all; background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-family: monospace; color: #0f172a; word-break: break-all;">SA5460100015482330145001</code>
+  </p>
+
+</div>
             </div>
 
             <form onsubmit="handlePlaceOrder(event)">
@@ -279,7 +303,7 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // 📱 ضعي رقم الواتساب الذي تريد استقبال الطلبات عليه
-        const ADMIN_WHATSAPP_NUMBER = "966500000000"; 
+        const ADMIN_WHATSAPP_NUMBER = "966546618705"; 
 
         // 📍 إحداثيات الموقع لتبوك
         const STORE_LAT = 28.445194;
