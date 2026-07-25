@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | إدارة المتجر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --dark-sidebar: #0f172a;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+            --text-dark: #1e293b;
+            --radius: 12px;
+        }
+
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
+        body { background: var(--bg-light); color: var(--text-dark); display: flex; min-height: 100vh; }
+
+        aside {
+            width: 250px; background: var(--dark-sidebar); color: white;
+            padding: 1.5rem 1rem; position: fixed; height: 100vh; right: 0; top: 0;
+        }
+
+        .brand { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 2rem; }
+
+        main { margin-right: 250px; padding: 2rem; width: calc(100% - 250px); }
+
+        .dashboard-box {
+            background: white; border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 2rem;
+        }
+
+        .box-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px; }
+
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.7rem; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+
+        .btn { padding: 0.6rem 1.2rem; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-danger { background: #ef4444; color: white; }
+
+        table { width: 100%; border-collapse: collapse; text-align: right; margin-top: 1rem; }
+        th, td { padding: 0.8rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        th { background: #f8fafc; color: #64748b; }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div class="brand"><i class="fa-solid fa-leaf"></i> إدارة المتجر</div>
+    </aside>
+
+    <main>
+        <!-- 1️⃣ إدارة الأقسام -->
+        <div class="dashboard-box">
+            <div class="box-title"><i class="fa-solid fa-layer-group" style="color:var(--primary);"></i> 1. إضافة وتنسيق الأقسام</div>
+            <form onsubmit="addCategory(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>اسم القسم الجديد</label>
+                        <input type="text" id="cat-name" placeholder="مثال: الشتلات الخارجية" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">+ إضافة القسم</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr><th>اسم القسم</th><th>إجراء</th></tr>
+                </thead>
+                <tbody id="categories-table"></tbody>
+            </table>
+        </div>
+
+        <!-- 2️⃣ إدارة اللوحات الإعلانية بالفيديو -->
+        <div class="dashboard-box">
+            <div class="box-title"><i class="fa-solid fa-video" style="color: #3b82f6;"></i> 2. إضافة وتحكم اللوحة الإعلانية (فيديو)</div>
+            <form onsubmit="addBanner(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>مكان العرض</label>
+                        <select id="banner-pos" required>
+                            <option value="top">أعلى الشاشة (الهيدر)</option>
+                            <!-- سيتم إضافة الخيارات بناءً على الأقسام الموجودة -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>رابط الفيديو (MP4) أو اختر ملف فيديو</label>
+                        <input type="file" id="banner-file" accept="video/mp4" onchange="convertVideoToBase64(event)">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">+ حفظ اللوحة الإعلانية</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr><th>الموقع</th><th>معاينة الفيديو</th><th>إجراء</th></tr>
+                </thead>
+                <tbody id="banners-table"></tbody>
+            </table>
+        </div>
+
+        <!-- 3️⃣ إدارة الشتلات -->
+        <div class="dashboard-box">
+            <div class="box-title"><i class="fa-solid fa-seedling" style="color: var(--primary);"></i> 3. إضافة وحذف الشتلات</div>
+            <form onsubmit="addProduct(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>اسم الشتلة</label>
+                        <input type="text" id="prod-name" required placeholder="اسم الشتلة">
+                    </div>
+                    <div class="form-group">
+                        <label>القسم</label>
+                        <select id="prod-cat" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>السعر (ر.س)</label>
+                        <input type="number" id="prod-price" required placeholder="السعر">
+                    </div>
+                    <div class="form-group">
+                        <label>صورة الشتلة</label>
+                        <input type="file" id="prod-img" accept="image/*" onchange="convertImageToBase64(event)">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">+ إضافة الشتلة</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr><th>الصورة</th><th>الاسم</th><th>القسم</th><th>السعر</th><th>إجراء</th></tr>
+                </thead>
+                <tbody id="products-table"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        const STORAGE_KEY_CATS = "flora_categories";
+        const STORAGE_KEY_PRODS = "flora_products";
+        const STORAGE_KEY_BANNERS = "flora_banners";
+
+        let categories = JSON.parse(localStorage.getItem(STORAGE_KEY_CATS)) || [
+            { id: 1, name: "شتلات الزينة الداخلية" },
+            { id: 2, name: "الأشجار الداخلية" }
+        ];
+        let products = JSON.parse(localStorage.getItem(STORAGE_KEY_PRODS)) || [];
+        let banners = JSON.parse(localStorage.getItem(STORAGE_KEY_BANNERS)) || [];
+
+        let tempVideoBase64 = "";
+        let tempImageBase64 = "";
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY_CATS, JSON.stringify(categories));
+            localStorage.setItem(STORAGE_KEY_PRODS, JSON.stringify(products));
+            localStorage.setItem(STORAGE_KEY_BANNERS, JSON.stringify(banners));
+            refreshUI();
+        }
+
+        function refreshUI() {
+            renderCategories();
+            renderBanners();
+            renderProducts();
+        }
+
+        // --- الأقسام ---
+        function addCategory(e) {
+            e.preventDefault();
+            const name = document.getElementById('cat-name').value;
+            categories.push({ id: Date.now(), name: name });
+            document.getElementById('cat-name').value = '';
+            saveData();
+        }
+
+        function deleteCategory(id) {
+            categories = categories.filter(c => c.id != id);
+            products = products.filter(p => p.category_id != id);
+            saveData();
+        }
+
+        function renderCategories() {
+            const table = document.getElementById('categories-table');
+            const posSelect = document.getElementById('banner-pos');
+            const prodCatSelect = document.getElementById('prod-cat');
+
+            table.innerHTML = categories.map(c => `
+                <tr>
+                    <td><strong>${c.name}</strong></td>
+                    <td><button class="btn btn-danger" onclick="deleteCategory(${c.id})">حذف</button></td>
+                </tr>
+            `).join('');
+
+            // تحديث خيارات الأقسام في نموذج الفيديو والشتلات
+            posSelect.innerHTML = `<option value="top">أعلى الشاشة (الهيدر)</option>`;
+            prodCatSelect.innerHTML = '';
+            categories.forEach(c => {
+                posSelect.innerHTML += `<option value="after_${c.id}">بعد قسم: ${c.name}</option>`;
+                prodCatSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+            });
+        }
+
+        // --- الفيديوهات واللوحات الإعلانية ---
+        function convertVideoToBase64(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) { tempVideoBase64 = evt.target.result; };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function addBanner(e) {
+            e.preventDefault();
+            const pos = document.getElementById('banner-pos').value;
+            if(!tempVideoBase64) {
+                alert("يرجى اختيار فيديو أعلاني أولاً!");
+                return;
+            }
+            banners = banners.filter(b => b.position !== pos); // استبدال الإعلان القديم إن وجد في نفس المكان
+            banners.push({ id: Date.now(), position: pos, video_url: tempVideoBase64 });
+            tempVideoBase64 = "";
+            saveData();
+        }
+
+        function deleteBanner(id) {
+            banners = banners.filter(b => b.id != id);
+            saveData();
+        }
+
+        function renderBanners() {
+            const table = document.getElementById('banners-table');
+            table.innerHTML = banners.map(b => {
+                let posText = b.position === 'top' ? 'أعلى الشاشة' : 'بعد قسم ' + (categories.find(c => `after_${c.id}` === b.position)?.name || '');
+                return `
+                    <tr>
+                        <td>${posText}</td>
+                        <td><video src="${b.video_url}" style="height:60px; border-radius:6px;" controls></video></td>
+                        <td><button class="btn btn-danger" onclick="deleteBanner(${b.id})">حذف</button></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // --- الشتلات ---
+        function convertImageToBase64(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) { tempImageBase64 = evt.target.result; };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function addProduct(e) {
+            e.preventDefault();
+            const name = document.getElementById('prod-name').value;
+            const catId = document.getElementById('prod-cat').value;
+            const price = document.getElementById('prod-price').value;
+
+            products.push({
+                id: Date.now(),
+                name: name,
+                category_id: catId,
+                price: price,
+                image: tempImageBase64
+            });
+
+            tempImageBase64 = "";
+            e.target.reset();
+            saveData();
+        }
+
+        function deleteProduct(id) {
+            products = products.filter(p => p.id != id);
+            saveData();
+        }
+
+        function renderProducts() {
+            const table = document.getElementById('products-table');
+            table.innerHTML = products.map(p => {
+                const catName = categories.find(c => c.id == p.category_id)?.name || 'غير محدد';
+                return `
+                    <tr>
+                        <td><img src="${p.image || 'https://via.placeholder.com/50'}" style="width:40px; height:40px; object-fit:cover; border-radius:6px;"></td>
+                        <td>${p.name}</td>
+                        <td>${catName}</td>
+                        <td>${p.price} ر.س</td>
+                        <td><button class="btn btn-danger" onclick="deleteProduct(${p.id})">حذف</button></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        refreshUI();
+    </script>
+</body>
+</html>
