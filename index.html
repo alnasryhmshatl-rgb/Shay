@@ -55,32 +55,6 @@
         .banner-container { width: 100%; margin: 1rem 0; border-radius: var(--radius); overflow: hidden; background: #000; }
         .banner-video { width: 100%; height: 220px; object-fit: cover; display: block; }
 
-        .service-card {
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-            color: white;
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin: 1.5rem auto;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.3);
-        }
-        .service-info h3 { font-size: 1.2rem; margin-bottom: 0.3rem; }
-        .service-info p { font-size: 0.85rem; opacity: 0.9; }
-        .service-price { font-size: 1.4rem; font-weight: 800; }
-        .btn-service {
-            background: white;
-            color: var(--primary-dark);
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-
         .container { padding: 1rem 1.5rem; max-width: 1200px; margin: 0 auto; }
         .section-title { font-size: 1.3rem; font-weight: 800; margin: 1.5rem 0 1rem; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
 
@@ -129,7 +103,7 @@
         .modal-content {
             background: white;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             border-radius: 24px 24px 0 0;
             padding: 1.5rem;
             max-height: 90vh;
@@ -140,21 +114,71 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .close-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
 
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
-        .delivery-notice { background: #fef3c7; color: #92400e; padding: 0.8rem; border-radius: 12px; font-size: 0.85rem; font-weight: 700; margin: 1rem 0; text-align: center; }
+        /* تصميم الفاتورة المحسن */
+        .invoice-card {
+            background: #ffffff;
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
 
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem; }
-        .summary-total { font-weight: 800; font-size: 1.1rem; border-top: 2px dashed var(--border); padding-top: 0.8rem; margin-top: 0.8rem; }
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
 
-        .bank-card { background: #f8fafc; border: 1px solid var(--border); padding: 1rem; border-radius: 12px; margin: 1rem 0; }
-        .bank-card p { font-size: 0.85rem; margin-bottom: 0.3rem; }
-        .bank-card strong { color: var(--text-dark); font-size: 0.95rem; }
+        .invoice-number {
+            background: #ecfdf5;
+            color: var(--primary-dark);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        .cart-item { display: flex; align-items: center; gap: 12px; padding: 0.6rem 0; border-bottom: 1px dashed var(--border); }
+        .cart-item-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; background: #f1f5f9; flex-shrink: 0; }
+        .cart-item-info { flex-grow: 1; }
+        .cart-item-title { font-weight: 700; font-size: 0.9rem; color: var(--text-dark); }
+        .cart-item-price { font-size: 0.8rem; color: var(--text-muted); }
+
+        .worker-upsell-card {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white; padding: 0.8rem 1rem; border-radius: 12px; margin: 1rem 0;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .worker-upsell-info h4 { font-size: 0.9rem; font-weight: 800; }
+        .worker-upsell-info p { font-size: 0.75rem; opacity: 0.9; }
+        .btn-toggle-worker { background: white; color: var(--primary-dark); border: none; padding: 0.4rem 0.8rem; border-radius: 8px; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+        .btn-toggle-worker.added { background: #ef4444; color: white; }
+
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.9rem; }
+        .summary-total { font-weight: 800; font-size: 1.1rem; border-top: 2px solid var(--border); padding-top: 0.6rem; margin-top: 0.6rem; }
+
+        .bank-card { background: #f8fafc; border: 1px solid var(--border); padding: 0.8rem; border-radius: 12px; margin: 1rem 0; font-size: 0.85rem; }
 
         .form-group { margin-bottom: 0.8rem; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem; }
         .form-group input { width: 100%; padding: 0.7rem; border: 1px solid var(--border); border-radius: 8px; outline: none; }
 
-        .btn-checkout { background: var(--primary); color: white; border: none; width: 100%; padding: 0.9rem; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 1rem; }
+        .btn-location {
+            background: #3b82f6; color: white; border: none; padding: 0.7rem; border-radius: 8px; width: 100%; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 0.5rem;
+        }
+
+        .btn-checkout { background: #25D366; color: white; border: none; width: 100%; padding: 0.9rem; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; }
+        .btn-checkout:hover { background: #1eb854; }
+
+        /* نمط الطباعة للفاتورة */
+        @media print {
+            body * { visibility: hidden; }
+            #printable-invoice, #printable-invoice * { visibility: visible; }
+            #printable-invoice { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -171,49 +195,52 @@
         </button>
     </header>
 
-    <!-- مكان إعلان الأعلى -->
     <div class="container" id="banner-top-container"></div>
-
-    <!-- خدمة العامل الزراعي -->
-    <div class="service-card">
-        <div class="service-info">
-            <h3><i class="fa-solid fa-user-gear"></i> خدمة عامل زراعي</h3>
-            <p>زيارة 8 أيام بالشهر للعناية بحديقتك</p>
-            <div class="service-price">500 ر.س <span style="font-size:0.7rem; font-weight:normal;">/ شهرياً</span></div>
-            <button class="btn-service" onclick="addWorkerService()">+ طلب الخدمة</button>
-        </div>
-    </div>
-
-    <!-- متجر المنتجات والأقسام -->
     <div class="container" id="main-store-content">
-        <p style="text-align: center; color: var(--text-muted); margin: 2rem 0;">جاري تحميل المنتجات والبنرات...</p>
+        <p style="text-align: center; color: var(--text-muted); margin: 2rem 0;">جاري تحميل المنتجات...</p>
     </div>
 
     <!-- نافذة السلة والدفع -->
     <div class="modal" id="cart-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 style="font-weight: 800;"><i class="fa-solid fa-basket-shopping"></i> سلة المشتريات</h3>
+                <h3 style="font-weight: 800;"><i class="fa-solid fa-receipt"></i> تفاصيل الطلب والفاتورة</h3>
                 <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <div id="cart-items-list"></div>
+            <!-- بطاقة الفاتورة المصممة بشكل أنيق -->
+            <div class="invoice-card" id="printable-invoice">
+                <div class="invoice-header">
+                    <div>
+                        <strong style="font-size: 1.1rem; color: var(--text-dark);">فاتورة شراء - متجر شتلة</strong>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);" id="invoice-date"></div>
+                    </div>
+                    <div class="invoice-number" id="invoice-id-display">#INV-0000</div>
+                </div>
 
-            <div class="delivery-notice">
-                التوصيل 50 ر.س للطلبات أقل من 100 ر.س (مجاني للطلبات بقيمة 100 ر.س وأكثر)
+                <!-- عناصر السلة -->
+                <div id="cart-items-list"></div>
+
+                <div style="margin-top: 1rem;">
+                    <div class="summary-row"><span>المجموع الفرعي:</span><span id="subtotal-val">0 ر.س</span></div>
+                    <div class="summary-row"><span>التوصيل (تبوك - 1 ريال/كم):</span><span id="shipping-val">0 ر.س</span></div>
+                    <div class="summary-row summary-total"><span>الإجمالي النهائي:</span><span id="grandtotal-val" style="color:var(--primary-dark)">0 ر.س</span></div>
+                </div>
             </div>
 
-            <div>
-                <div class="summary-row"><span>مجموع المنتجات:</span><span id="subtotal-val">0 ر.س</span></div>
-                <div class="summary-row"><span>رسوم التوصيل:</span><span id="shipping-val">0 ر.س</span></div>
-                <div class="summary-row summary-total"><span>الإجمالي الكلي:</span><span id="grandtotal-val" style="color:var(--primary-dark)">0 ر.س</span></div>
+            <!-- إضافة عامل زراعي -->
+            <div class="worker-upsell-card">
+                <div class="worker-upsell-info">
+                    <h4><i class="fa-solid fa-user-gear"></i> عامل زراعي (8 أيام/شهر)</h4>
+                    <p>العناية بالحديقة وتقليم الأشجار (+500 ر.س)</p>
+                </div>
+                <button class="btn-toggle-worker" id="btn-worker-action" onclick="toggleWorkerService()">+ إضافة</button>
             </div>
 
             <div class="bank-card">
-                <p style="color: var(--primary-dark); font-weight:800; margin-bottom:0.5rem;"><i class="fa-solid fa-building-columns"></i> تفاصيل الحساب البنكي للتحويل:</p>
-                <p>اسم البنك: <strong>البنك الأهلي / الراجحي</strong></p>
-                <p>اسم الحساب: <strong>مؤسسة شتلة للزراعة</strong></p>
-                <p>رقم الآيبان (IBAN): <code style="user-select: all; background:#e2e8f0; padding:2px 4px; border-radius:4px;">SA0380000000123456789012</code></p>
+                <p style="color: var(--primary-dark); font-weight:800; margin-bottom:0.3rem;"><i class="fa-solid fa-building-columns"></i> التحويل البنكي:</p>
+                <p>الحساب: <strong>مؤسسة شتلة للزراعة</strong></p>
+                <p>الآيبان: <code style="user-select: all; background:#e2e8f0; padding:2px 4px; border-radius:4px;">SA0380000000123456789012</code></p>
             </div>
 
             <form onsubmit="handlePlaceOrder(event)">
@@ -225,16 +252,23 @@
                     <label>رقم الجوال</label>
                     <input type="tel" id="cust-phone" required placeholder="05xxxxxxxx">
                 </div>
+
                 <div class="form-group">
-                    <label>العنوان (المدينة / الحي)</label>
-                    <input type="text" id="cust-address" required placeholder="مثال: الرياض - حي الملقا">
-                </div>
-                <div class="form-group">
-                    <label>رابط أو صورة إثبات التحويل (الإيصال)</label>
-                    <input type="url" id="cust-proof" required placeholder="ضع رابط صورة الإيصال هنا">
+                    <label>تحديد الموقع لحساب التوصيل</label>
+                    <button type="button" class="btn-location" onclick="getExactLocation()">
+                        <i class="fa-solid fa-location-dot"></i> <span id="loc-btn-text">تحديد الموقع تلقائياً (Google Maps)</span>
+                    </button>
+                    <input type="text" id="cust-address" required placeholder="رابط الموقع سينزل هنا تلقائياً" readonly style="background: #f1f5f9;">
                 </div>
 
-                <button type="submit" class="btn-checkout" id="btn-submit-order">إرسال الطلب وتأكيد الدفع</button>
+                <div class="form-group">
+                    <label>إرفاق صورة إيصال التحويل</label>
+                    <input type="file" id="cust-proof-file" accept="image/*" required style="padding:0.4rem;">
+                </div>
+
+                <button type="submit" class="btn-checkout" id="btn-submit-order">
+                    <i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i> إرسال الطلب عبر الواتساب
+                </button>
             </form>
         </div>
     </div>
@@ -244,25 +278,37 @@
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // 📱 ضع رقم الواتساب الذي تريد إرسال الطلبات إليه هنا (مع رمز الدولة بدون +)
+        const ADMIN_WHATSAPP_NUMBER = "966546618705"; // 🔴 استبدله برقمك
+
+        // 📍 إحداثيات موقعك في تبوك
+        const STORE_LAT = 28.445194;
+        const STORE_LNG = 36.686194;
+
         let cart = [];
+        let deliveryCost = 0;
+        let userLocationLink = "";
+        let currentInvoiceNumber = "";
+
+        // توليد رقم فاتورة فريد والتاريخ
+        function generateInvoiceNumber() {
+            const randomNum = Math.floor(100000 + Math.random() * 900000);
+            currentInvoiceNumber = `INV-${randomNum}`;
+            document.getElementById('invoice-id-display').textContent = `#${currentInvoiceNumber}`;
+            document.getElementById('invoice-date').textContent = new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
 
         async function loadStoreData() {
             const container = document.getElementById('main-store-content');
             try {
-                // جلب البيانات بشكل فردي لتفادي أي إشكال في الاستعلامات
-                const { data: categories, error: catErr } = await _supabase.from('categories').select('*').order('id', { ascending: true });
-                const { data: products, error: prodErr } = await _supabase.from('products').select('*').order('id', { ascending: false });
-                const { data: banners, error: banErr } = await _supabase.from('banners').select('*');
-
-                if (catErr) console.error('خطأ الأقسام:', catErr);
-                if (prodErr) console.error('خطأ المنتجات:', prodErr);
-                if (banErr) console.error('خطأ البنرات:', banErr);
+                const { data: categories } = await _supabase.from('categories').select('*').order('id', { ascending: true });
+                const { data: products } = await _supabase.from('products').select('*').order('id', { ascending: false });
+                const { data: banners } = await _supabase.from('banners').select('*');
 
                 const cats = categories || [];
                 const prods = products || [];
                 const bans = banners || [];
 
-                // 1. عرض إعلان الأعلى
                 const topBanner = bans.find(b => b.position === 'top');
                 if (topBanner) {
                     document.getElementById('banner-top-container').innerHTML = `
@@ -272,26 +318,18 @@
                     `;
                 }
 
-                // 2. عرض الأقسام والمنتجات
                 if (cats.length === 0 && prods.length === 0) {
-                    container.innerHTML = `<p style="text-align:center; padding:2rem;">لا توجد منتجات أو أقسام مضافة حالياً. قم بإضافتها من لوحة التحكم.</p>`;
+                    container.innerHTML = `<p style="text-align:center; padding:2rem;">لا توجد منتجات مضافة حالياً.</p>`;
                     return;
                 }
 
                 container.innerHTML = '';
-
-                // إذا كانت هناك منتجات بدون أقسام أو تم استخدام أقسام
                 cats.forEach(cat => {
                     const catProducts = prods.filter(p => p.category_id == cat.id);
-
-                    let catHTML = `
-                        <div class="section-title">
-                            <i class="fa-solid fa-leaf" style="color:var(--primary)"></i> ${cat.name}
-                        </div>
-                    `;
+                    let catHTML = `<div class="section-title"><i class="fa-solid fa-leaf" style="color:var(--primary)"></i> ${cat.name}</div>`;
 
                     if (catProducts.length === 0) {
-                        catHTML += `<p style="color:var(--text-muted); font-size:0.9rem;">لا توجد شتلات في هذا القسم حالياً.</p>`;
+                        catHTML += `<p style="color:var(--text-muted); font-size:0.9rem;">لا توجد شتلات في هذا القسم.</p>`;
                     } else {
                         catHTML += `<div class="grid-products">`;
                         catProducts.forEach(prod => {
@@ -301,46 +339,32 @@
                                     <div class="product-details">
                                         <div class="product-name">${prod.name}</div>
                                         <div class="product-price">${prod.price} ر.س</div>
-                                        <button class="btn-add" onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price})">+ إضافة للسلة</button>
+                                        <button class="btn-add" onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price}, '${prod.image_url}')">+ إضافة للسلة</button>
                                     </div>
                                 </div>
                             `;
                         });
                         catHTML += `</div>`;
                     }
-
-                    // إعلان ما بعد القسم
-                    const afterBanner = bans.find(b => b.position === `after_${cat.id}`);
-                    if (afterBanner) {
-                        catHTML += `
-                            <div class="banner-container" style="margin-top:1.5rem;">
-                                <video class="banner-video" src="${afterBanner.video_url}" autoplay loop muted playsinline></video>
-                            </div>
-                        `;
-                    }
-
                     container.innerHTML += catHTML;
                 });
-
-            } catch (err) {
-                console.error("خطأ جلب البيانات:", err);
-                container.innerHTML = `<p style="text-align:center; color:red;">حدث خطأ أثناء تحميل المنتجات.</p>`;
-            }
+            } catch (err) { console.error(err); }
         }
 
-        function addToCart(id, name, price) {
+        function addToCart(id, name, price, imgUrl) {
             const existing = cart.find(item => item.id === id);
-            if (existing) {
-                existing.qty += 1;
-            } else {
-                cart.push({ id, name, price, qty: 1 });
-            }
+            if (existing) { existing.qty += 1; } else { cart.push({ id, name, price, imgUrl, qty: 1 }); }
             updateCartUI();
         }
 
-        function addWorkerService() {
-            addToCart('service_worker', 'خدمة عامل زراعي (8 أيام بالشهر)', 500);
-            openCart();
+        function toggleWorkerService() {
+            const workerId = 'service_worker';
+            const existingIndex = cart.findIndex(item => item.id === workerId);
+            if (existingIndex > -1) { cart.splice(existingIndex, 1); } 
+            else {
+                cart.push({ id: workerId, name: 'خدمة عامل زراعي (8 أيام/شهر)', price: 500, imgUrl: 'https://cdn-icons-png.flaticon.com/512/1995/1995515.png', qty: 1 });
+            }
+            updateCartUI();
         }
 
         function removeFromCart(id) {
@@ -348,9 +372,52 @@
             updateCartUI();
         }
 
+        function getExactLocation() {
+            const btnText = document.getElementById('loc-btn-text');
+            btnText.textContent = "جاري حساب المسافة والتوصيل...";
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    userLocationLink = `https://www.google.com/maps?q=${lat},${lng}`;
+
+                    document.getElementById('cust-address').value = userLocationLink;
+
+                    const distanceKm = calculateDistance(STORE_LAT, STORE_LNG, lat, lng);
+                    deliveryCost = Math.max(1, Math.ceil(distanceKm));
+
+                    btnText.textContent = `تم التحديد (المسافة: ${deliveryCost} كم = ${deliveryCost} ر.س)`;
+                    updateCartUI();
+                }, () => {
+                    alert("يرجى السماح بالوصول للموقع (GPS) لتحديد الموقع وحساب التوصيل.");
+                    btnText.textContent = "تحديد الموقع تلقائياً (Google Maps)";
+                });
+            } else {
+                alert("متصفحك لا يدعم تحديد الموقع.");
+            }
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; 
+        }
+
         function updateCartUI() {
-            const totalCount = cart.reduce((sum, item) => sum += item.qty, 0);
-            document.getElementById('cart-count').textContent = totalCount;
+            document.getElementById('cart-count').textContent = cart.reduce((sum, item) => sum += item.qty, 0);
+
+            const isWorkerAdded = cart.some(item => item.id === 'service_worker');
+            const workerBtn = document.getElementById('btn-worker-action');
+            if (workerBtn) {
+                workerBtn.textContent = isWorkerAdded ? '✓ مضاف (إلغاء)' : '+ إضافة';
+                workerBtn.classList.toggle('added', isWorkerAdded);
+            }
 
             const listEl = document.getElementById('cart-items-list');
             if (cart.length === 0) {
@@ -358,11 +425,12 @@
             } else {
                 listEl.innerHTML = cart.map(item => `
                     <div class="cart-item">
-                        <div>
-                            <div style="font-weight:700;">${item.name}</div>
-                            <div style="font-size:0.85rem; color:var(--text-muted);">${item.price} ر.س × ${item.qty}</div>
+                        <img src="${item.imgUrl}" class="cart-item-img" alt="${item.name}">
+                        <div class="cart-item-info">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-price">${item.price} ر.س × ${item.qty}</div>
                         </div>
-                        <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="display:flex; align-items:center; gap:8px;">
                             <strong style="color:var(--primary-dark);">${item.price * item.qty} ر.س</strong>
                             <button onclick="removeFromCart('${item.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
                         </div>
@@ -371,62 +439,100 @@
             }
 
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            let shipping = (subtotal > 0 && subtotal < 100) ? 50 : 0;
-            const grandTotal = subtotal + shipping;
+            const grandTotal = subtotal + deliveryCost;
 
             document.getElementById('subtotal-val').textContent = `${subtotal} ر.س`;
-            document.getElementById('shipping-val').textContent = shipping === 0 ? (subtotal >= 100 ? 'مجاني 🎉' : '0 ر.س') : `${shipping} ر.س`;
+            document.getElementById('shipping-val').textContent = deliveryCost > 0 ? `${deliveryCost} ر.س (${deliveryCost} كم)` : `حدد الموقع`;
             document.getElementById('grandtotal-val').textContent = `${grandTotal} ر.س`;
         }
 
-        function openCart() { document.getElementById('cart-modal').style.display = 'flex'; }
+        function openCart() {
+            generateInvoiceNumber();
+            document.getElementById('cart-modal').style.display = 'flex';
+        }
+
         function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
 
+        // 📤 حفظ الطلب، طباعة الفاتورة، وتحويل الطلب إلى الواتساب
         async function handlePlaceOrder(e) {
             e.preventDefault();
-            if (cart.length === 0) {
-                alert("السلة فارغة!");
-                return;
-            }
+            if (cart.length === 0) return alert("السلة فارغة!");
+            if (!userLocationLink) return alert("يرجى تحديد الموقع لحساب التوصيل أولاً!");
+
+            const fileInput = document.getElementById('cust-proof-file');
+            if (fileInput.files.length === 0) return alert("يرجى إرفاق صورة إيصال التحويل!");
 
             const btn = document.getElementById('btn-submit-order');
             btn.disabled = true;
-            btn.textContent = "جاري إرسال الطلب...";
-
-            const name = document.getElementById('cust-name').value;
-            const phone = document.getElementById('cust-phone').value;
-            const address = document.getElementById('cust-address').value;
-            const proof = document.getElementById('cust-proof').value;
-
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            const shipping = (subtotal > 0 && subtotal < 100) ? 50 : 0;
-            const total = subtotal + shipping;
+            btn.textContent = "جاري معالجة الطلب والفتح في الواتساب...";
 
             try {
-                const { error } = await _supabase.from('orders').insert([{
+                // 1️⃣ رفع الإيصال إلى Supabase Storage
+                const file = fileInput.files[0];
+                const fileName = `receipt_${Date.now()}_${file.name}`;
+                const { data: uploadData, error: uploadErr } = await _supabase.storage.from('receipts').upload(fileName, file);
+
+                if (uploadErr) throw uploadErr;
+
+                const { data: publicUrlData } = _supabase.storage.from('receipts').getPublicUrl(fileName);
+                const proofImageUrl = publicUrlData.publicUrl;
+
+                const name = document.getElementById('cust-name').value;
+                const phone = document.getElementById('cust-phone').value;
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                const total = subtotal + deliveryCost;
+
+                // 2️⃣ حفظ الطلب بالفي قاعدة البيانات مع رقم الفاتورة
+                const { error: orderErr } = await _supabase.from('orders').insert([{
+                    invoice_number: currentInvoiceNumber,
                     customer_name: name,
                     customer_phone: phone,
-                    customer_address: address,
+                    customer_address: userLocationLink,
                     cart_items: cart,
                     total_amount: total,
-                    payment_proof_url: proof,
+                    payment_proof_url: proofImageUrl,
                     status: 'pending'
                 }]);
 
-                if (error) throw error;
+                // 3️⃣ تجهيز نص الرسالة وتنسيقه للواتساب
+                let itemsListText = cart.map(item => `• ${item.name} (${item.qty}×) - ${item.price * item.qty} ر.س`).join('\n');
+                
+                let whatsappMessage = `*طلب جديد من متجر شتلة 🌱*\n`;
+                whatsappMessage += `--------------------------------\n`;
+                whatsappMessage += `📄 *رقم الفاتورة:* #${currentInvoiceNumber}\n`;
+                whatsappMessage += `👤 *اسم العميل:* ${name}\n`;
+                whatsappMessage += `📞 *رقم الجوال:* ${phone}\n`;
+                whatsappMessage += `📍 *موقع التسليم:* ${userLocationLink}\n`;
+                whatsappMessage += `--------------------------------\n`;
+                whatsappMessage += `🛒 *المنتجات المطلوبة:*\n${itemsListText}\n`;
+                whatsappMessage += `--------------------------------\n`;
+                whatsappMessage += `💰 *المجموع:* ${subtotal} ر.س\n`;
+                whatsappMessage += `🚚 *التوصيل (${deliveryCost} كم):* ${deliveryCost} ر.س\n`;
+                whatsappMessage += `💳 *الإجمالي الكلي:* ${total} ر.س\n`;
+                whatsappMessage += `--------------------------------\n`;
+                whatsappMessage += `🖼️ *صورة الإيصال المرفقة:*\n${proofImageUrl}\n`;
 
-                alert("تم إرسال طلبك بنجاح!");
+                // 4️⃣ فتح نافذة طباعة الفاتورة للعميل ليحتفظ بها كصورة/PDF
+                window.print();
+
+                // 5️⃣ التوجيه المباشر لتطبيق الواتساب
+                const encodedMsg = encodeURIComponent(whatsappMessage);
+                const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodedMsg}`;
+                
+                window.open(whatsappUrl, '_blank');
+
                 cart = [];
+                deliveryCost = 0;
                 updateCartUI();
                 closeCart();
                 e.target.reset();
 
             } catch (err) {
-                console.error("خطأ إرسال الطلب:", err);
-                alert("حدث خطأ أثناء إرسال الطلب.");
+                console.error(err);
+                alert("حدث خطأ أثناء حفظ الطلب. تأكد من إعدادات Supabase Storage.");
             } finally {
                 btn.disabled = false;
-                btn.textContent = "إرسال الطلب وتأكيد الدفع";
+                btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i> إرسال الطلب عبر الواتساب`;
             }
         }
 
