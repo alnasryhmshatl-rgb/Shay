@@ -2,307 +2,479 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>متجر شتلة | Flora Store</title>
-    
-    <!-- Google Fonts & Icons -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر شتلة | الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Supabase JS Client -->
+    <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+
     <style>
         :root {
             --primary: #10b981;
             --primary-dark: #059669;
-            --accent: #d1fae5;
-            --dark: #0f172a;
-            --gray-bg: #f8fafc;
-            --gray-border: #e2e8f0;
-            --text: #334155;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
             --radius: 16px;
         }
 
-        * {
-            box-sizing: border-box;
-            font-family: 'Tajawal', sans-serif;
-            margin: 0; padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text-dark); padding-bottom: 80px; }
 
-        body {
-            background-color: #f1f5f9;
-            color: var(--text);
-            padding-bottom: 50px;
-        }
-
+        /* الهيدر */
         header {
-            position: sticky;
-            top: 0; z-index: 100;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--gray-border);
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
             padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .logo {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo i { color: var(--primary); }
-
-        .cart-trigger {
-            background: var(--dark);
-            color: white;
+        .brand { font-size: 1.4rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+        
+        .cart-icon-btn {
+            background: #f1f5f9;
             border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 30px;
+            padding: 0.6rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
             font-weight: 700;
-            font-size: 0.95rem;
             display: flex;
             align-items: center;
             gap: 8px;
-            cursor: pointer;
-            transition: transform 0.2s;
+            position: relative;
         }
+        .cart-badge { background: #ef4444; color: white; font-size: 0.75rem; border-radius: 50%; padding: 2px 6px; }
 
-        .cart-trigger:hover { transform: scale(1.03); }
+        /* البنرات الإعلانية */
+        .banner-container { width: 100%; margin-bottom: 1.5rem; border-radius: var(--radius); overflow: hidden; background: #000; }
+        .banner-video { width: 100%; height: 220px; object-fit: cover; display: block; }
 
-        .cart-count {
-            background: var(--primary);
+        /* قسم خدمة العامل الزراعي */
+        .service-card {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
             color: white;
-            font-size: 0.8rem;
-            width: 22px; height: 22px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .container { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; }
-
-        .video-banner-box {
-            width: 100%;
             border-radius: var(--radius);
-            overflow: hidden;
-            margin-bottom: 2rem;
-            background: #000;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-        }
-
-        .video-banner-box video {
-            width: 100%;
-            max-height: 420px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .section-header {
+            padding: 1.5rem;
+            margin: 1.5rem;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.2rem;
-            border-right: 5px solid var(--primary);
-            padding-right: 12px;
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.3);
         }
-
-        .section-title {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--dark);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 2.5rem;
-        }
-
-        @media (min-width: 768px) {
-            .grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-        }
-
-        @media (min-width: 1024px) {
-            .grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
-        }
-
-        .card {
+        .service-info h3 { font-size: 1.2rem; margin-bottom: 0.3rem; }
+        .service-info p { font-size: 0.85rem; opacity: 0.9; }
+        .service-price { font-size: 1.4rem; font-weight: 800; }
+        .btn-service {
             background: white;
-            border-radius: var(--radius);
-            overflow: hidden;
-            border: 1px solid var(--gray-border);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
-
-        .card-img { width: 100%; height: 180px; object-fit: cover; }
-        
-        @media (max-width: 600px) {
-            .card-img { height: 130px; }
-        }
-
-        .card-body { padding: 1rem; display: flex; flex-direction: column; flex-grow: 1; }
-        .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--dark); }
-        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.5rem; }
-        .price { font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); }
-
-        .add-btn {
-            background: var(--accent);
             color: var(--primary-dark);
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            font-weight: 800;
             cursor: pointer;
-            font-weight: 700;
-            font-size: 0.88rem;
-            transition: background 0.2s;
+            margin-top: 8px;
+            transition: transform 0.2s;
+        }
+        .btn-service:active { transform: scale(0.95); }
+
+        /* الأقسام والمنتجات */
+        .container { padding: 1rem 1.5rem; max-width: 1200px; margin: 0 auto; }
+        .section-title { font-size: 1.3rem; font-weight: 800; margin: 1.5rem 0 1rem; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+
+        .grid-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
         }
 
-        .add-btn:hover { background: var(--primary); color: white; }
-
-        .empty-msg, .loading-msg {
-            text-align: center;
-            padding: 2rem;
-            color: #94a3b8;
-            font-size: 0.95rem;
-            grid-column: 1 / -1;
-            background: white;
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             border-radius: var(--radius);
-            border: 1px dashed var(--gray-border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
+        .product-img { width: 100%; height: 140px; object-fit: cover; }
+        .product-details { padding: 0.8rem; }
+        .product-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+        .product-price { color: var(--primary-dark); font-weight: 800; font-size: 1rem; }
+        .btn-add {
+            width: 100%;
+            background: #f1f5f9;
+            color: var(--text-dark);
+            border: none;
+            padding: 0.5rem;
+            font-weight: 700;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-add:hover { background: var(--primary); color: white; }
+
+        /* نافذة السلة والدفع (Modal) */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 1000;
+        }
+        @media(min-width: 600px) { .modal { align-items: center; } }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 24px 24px 0 0;
+            padding: 1.5rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        @media(min-width: 600px) { .modal-content { border-radius: 24px; } }
+
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .close-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
+        .delivery-notice { background: #fef3c7; color: #92400e; padding: 0.8rem; border-radius: 12px; font-size: 0.85rem; font-weight: 700; margin: 1rem 0; text-align: center; }
+
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem; }
+        .summary-total { font-weight: 800; font-size: 1.1rem; border-top: 2px dashed var(--border); padding-top: 0.8rem; margin-top: 0.8rem; }
+
+        .bank-card { background: #f8fafc; border: 1px solid var(--border); padding: 1rem; border-radius: 12px; margin: 1rem 0; }
+        .bank-card p { font-size: 0.85rem; margin-bottom: 0.3rem; }
+        .bank-card strong { color: var(--text-dark); font-size: 0.95rem; }
+
+        .form-group { margin-bottom: 0.8rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem; }
+        .form-group input { width: 100%; padding: 0.7rem; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+
+        .btn-checkout { background: var(--primary); color: white; border: none; width: 100%; padding: 0.9rem; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 1rem; }
     </style>
 </head>
 <body>
 
+    <!-- الهيدر -->
     <header>
-        <div class="logo">
-            <i class="fa-solid fa-leaf"></i> متجر شتلة
+        <div class="brand">
+            <i class="fa-solid fa-leaf" style="color:var(--primary);"></i>
+            متجر شتلة
         </div>
-        <button class="cart-trigger">
-            <i class="fa-solid fa-bag-shopping"></i> السلة
-            <div class="cart-count" id="cart-count">0</div>
+        <button class="cart-icon-btn" onclick="openCart()">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>السلة</span>
+            <span class="cart-badge" id="cart-count">0</span>
         </button>
     </header>
 
-    <div class="container" id="main-content">
-        <div class="loading-msg">جاري تحميل المنتجات والبيانات... 🌿</div>
+    <!-- مكان البنر العلوي (Header Banner) -->
+    <div id="banner-top-container"></div>
+
+    <!-- بطاقة خدمة العامل الزراعي -->
+    <div class="service-card">
+        <div class="service-info">
+            <h3><i class="fa-solid fa-user-gear"></i> خدمة عامل زراعي</h3>
+            <p>زيارة 8 أيام بالشهر للعناية بحديقتك</p>
+            <div class="service-price">500 ر.س <span style="font-size:0.7rem; font-weight:normal;">/ شهرياً</span></div>
+            <button class="btn-service" onclick="addWorkerService()">+ طلب الخدمة</button>
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي (الأقسام والمنتجات) -->
+    <div class="container" id="main-store-content">
+        <p style="text-align: center; color: var(--text-muted); margin: 2rem 0;">جاري تحميل المنتجات...</p>
+    </div>
+
+    <!-- نافذة السلة والدفع (Modal) -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-weight: 800;"><i class="fa-solid fa-basket-shopping"></i> سلة المشتريات</h3>
+                <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div id="cart-items-list">
+                <!-- المنتجات بالسلة -->
+            </div>
+
+            <!-- ملاحظة التوصيل -->
+            <div class="delivery-notice" id="delivery-notice">
+                التوصيل 50 ر.س للطلبات أقل من 100 ر.س (مجاني فوق 100 ر.س)
+            </div>
+
+            <!-- تفاصيل الحساب -->
+            <div>
+                <div class="summary-row"><span>مجموع المنتجات:</span><span id="subtotal-val">0 ر.س</span></div>
+                <div class="summary-row"><span>رسوم التوصيل:</span><span id="shipping-val">0 ر.س</span></div>
+                <div class="summary-row summary-total"><span>الإجمالي الكلي:</span><span id="grandtotal-val" style="color:var(--primary-dark)">0 ر.س</span></div>
+            </div>
+
+            <!-- معلومات التحويل البنكي -->
+            <div class="bank-card">
+                <p style="color: var(--primary-dark); font-weight:800; margin-bottom:0.5rem;"><i class="fa-solid fa-building-columns"></i> تفاصيل الحساب البنكي للتحويل:</p>
+                <p>اسم البنك: <strong>البنك الأهلي / الراجحي</strong></p>
+                <p>اسم الحساب: <strong>مؤسسة شتلة للزراعة</strong></p>
+                <p>رقم الآيبان (IBAN): <code style="user-select: all; background:#e2e8f0; padding:2px 4px; border-radius:4px;">SA0380000000123456789012</code></p>
+            </div>
+
+            <!-- نموذج استكمال الطلب -->
+            <form onsubmit="handlePlaceOrder(event)">
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="cust-name" required placeholder="أدخل اسمك الكريم">
+                </div>
+                <div class="form-group">
+                    <label>رقم الجوال</label>
+                    <input type="tel" id="cust-phone" required placeholder="05xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>العنوان (المدينة / الحي)</label>
+                    <input type="text" id="cust-address" required placeholder="مثال: الرياض - حي الملقا">
+                </div>
+                <div class="form-group">
+                    <label>رابط أو صورة إثبات التحويل (الإيصال)</label>
+                    <input type="url" id="cust-proof" required placeholder="ضع رابط صورة الإيصال هنا">
+                </div>
+
+                <button type="submit" class="btn-checkout" id="btn-submit-order">إرسال الطلب وتأكيد الدفع</button>
+            </form>
+        </div>
     </div>
 
     <script>
-        // 1️⃣ إعداد وإعادة تهيئة الاتصال بـ Supabase
+        // 1. Supabase Initialization
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // السلة المحلية
+        let cart = [];
 
-        // 2️⃣ جلب البيانات من الجداول
-        async function fetchStoreData() {
+        // --- جلب البيانات وعرض الصفحة ---
+        async function loadStoreData() {
             try {
+                // جلب الأقسام، المنتجات، والبنرات بالتوازي
                 const [catsRes, prodsRes, bannersRes] = await Promise.all([
-                    supabaseClient.from('categories').select('*'),
-                    supabaseClient.from('products').select('*'),
-                    supabaseClient.from('banners').select('*')
+                    _supabase.from('categories').select('*').order('id', { ascending: true }),
+                    _supabase.from('products').select('*').order('id', { ascending: false }),
+                    _supabase.from('banners').select('*')
                 ]);
 
                 const categories = catsRes.data || [];
                 const products = prodsRes.data || [];
                 const banners = bannersRes.data || [];
 
-                renderStoreFront(categories, products, banners);
-            } catch (error) {
-                console.error("خطأ أثناء جلب البيانات:", error);
-                document.getElementById('main-content').innerHTML = `
-                    <div class="empty-msg">حدث خطأ أثناء تحميل البيانات من قاعدة البيانات.</div>
+                renderBanners(banners, categories);
+                renderStoreContent(categories, products, banners);
+
+            } catch (err) {
+                console.error("خطأ في جلب البيانات:", err);
+                document.getElementById('main-store-content').innerHTML = `<p style="text-align:center; color:red;">حدث خطأ أثناء تحميل المتجر.</p>`;
+            }
+        }
+
+        // عرض البنرات الإعلانية
+        function renderBanners(banners, categories) {
+            const topBanner = banners.find(b => b.position === 'top');
+            if (topBanner) {
+                document.getElementById('banner-top-container').innerHTML = `
+                    <div class="banner-container">
+                        <video class="banner-video" src="${topBanner.video_url}" autoplay loop muted playsinline></video>
+                    </div>
                 `;
             }
         }
 
-        // 3️⃣ عرض البيانات على الواجهة
-        function renderStoreFront(categories, products, banners) {
-            const container = document.getElementById('main-content');
+        // بناء أقسام المتجر ومنتجاته
+        function renderStoreContent(categories, products, banners) {
+            const container = document.getElementById('main-store-content');
             container.innerHTML = '';
 
-            // فيديو أعلى الصفحة
-            const topBanner = banners.find(b => b.position === 'top');
-            if (topBanner && topBanner.video_url) {
-                container.innerHTML += `
-                    <div class="video-banner-box">
-                        <video src="${topBanner.video_url}" autoplay loop muted playsinline webkit-playsinline></video>
-                    </div>
-                `;
-            }
-
             if (categories.length === 0) {
-                container.innerHTML += `<div class="empty-msg">لا توجد أقسام متوفرة حالياً.</div>`;
+                container.innerHTML = '<p style="text-align:center;">لا توجد أقسام حالياً.</p>';
                 return;
             }
 
-            // إظهار الأقسام مع المنتجات والبنرات
             categories.forEach(cat => {
-                let html = `
-                    <div class="section-header">
-                        <h2 class="section-title">${cat.name}</h2>
+                // تجميع المنتجات التابعة للقسم
+                const catProducts = products.filter(p => p.category_id == cat.id);
+
+                let catHTML = `
+                    <div class="section-title">
+                        <i class="fa-solid fa-leaf" style="color:var(--primary)"></i> ${cat.name}
                     </div>
                 `;
 
-                const catProducts = products.filter(p => p.category_id == cat.id);
-                if (catProducts.length > 0) {
-                    html += `<div class="grid">`;
-                    catProducts.forEach(p => {
-                        html += `
-                            <div class="card">
-                                <img src="${p.image || 'https://via.placeholder.com/300'}" class="card-img" alt="${p.name}">
-                                <div class="card-body">
-                                    <div class="card-title">${p.name}</div>
-                                    <div class="card-footer">
-                                        <div class="price">${p.price} ر.س</div>
-                                        <button class="add-btn" onclick="addToCart(${p.id})">+ إضافة</button>
-                                    </div>
+                if (catProducts.length === 0) {
+                    catHTML += `<p style="color:var(--text-muted); font-size:0.9rem;">لا توجد شتلات في هذا القسم حالياً.</p>`;
+                } else {
+                    catHTML += `<div class="grid-products">`;
+                    catProducts.forEach(prod => {
+                        catHTML += `
+                            <div class="product-card">
+                                <img src="${prod.image_url}" class="product-img" alt="${prod.name}" onerror="this.src='https://via.placeholder.com/150'">
+                                <div class="product-details">
+                                    <div class="product-name">${prod.name}</div>
+                                    <div class="product-price">${prod.price} ر.س</div>
+                                    <button class="btn-add" onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price})">+ إضافة للسلة</button>
                                 </div>
                             </div>
                         `;
                     });
-                    html += `</div>`;
-                } else {
-                    html += `<div class="empty-msg">لا توجد شتلات معروضة في هذا القسم حالياً.</div>`;
+                    catHTML += `</div>`;
                 }
 
-                container.innerHTML += html;
-
-                // فيديو إعلاني بعد القسم
-                const middleBanner = banners.find(b => b.position === `after_${cat.id}`);
-                if (middleBanner && middleBanner.video_url) {
-                    container.innerHTML += `
-                        <div class="video-banner-box">
-                            <video src="${middleBanner.video_url}" autoplay loop muted playsinline webkit-playsinline></video>
+                // فحص إذا كان هناك بنر بعد هذا القسم
+                const afterBanner = banners.find(b => b.position === `after_${cat.id}`);
+                if (afterBanner) {
+                    catHTML += `
+                        <div class="banner-container" style="margin-top:1.5rem;">
+                            <video class="banner-video" src="${afterBanner.video_url}" autoplay loop muted playsinline></video>
                         </div>
                     `;
                 }
+
+                container.innerHTML += catHTML;
             });
         }
 
-        function addToCart(id) {
-            let count = parseInt(document.getElementById('cart-count').innerText);
-            document.getElementById('cart-count').innerText = count + 1;
-            alert("تمت إضافة الشتلة إلى السلة 🌿");
+        // --- إدارة السلة والشروط ---
+
+        function addToCart(id, name, price) {
+            const existing = cart.find(item => item.id === id);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ id, name, price, qty: 1 });
+            }
+            updateCartUI();
         }
 
-        // بدء الجلب عند تحميل الصفحة
-        fetchStoreData();
+        function addWorkerService() {
+            addToCart('service_worker', 'خدمة عامل زراعي (8 أيام بالشهر)', 500);
+            openCart();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            // تحديث شارة العدد
+            const totalCount = cart.reduce((sum, item) => sum += item.qty, 0);
+            document.getElementById('cart-count').textContent = totalCount;
+
+            // تحديث قائمة عناصر السلة
+            const listEl = document.getElementById('cart-items-list');
+            if (cart.length === 0) {
+                listEl.innerHTML = '<p style="text-align:center; padding:1rem; color:var(--text-muted);">السلة فارغة حالياً.</p>';
+            } else {
+                listEl.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div>
+                            <div style="font-weight:700;">${item.name}</div>
+                            <div style="font-size:0.85rem; color:var(--text-muted);">${item.price} ر.س × ${item.qty}</div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <strong style="color:var(--primary-dark);">${item.price * item.qty} ر.س</strong>
+                            <button onclick="removeFromCart('${item.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // حساب المجموع والشرط الخاص بالتوصيل (تحت 100 توصيل 50، فوق 100 مجاني)
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            let shipping = 0;
+
+            if (subtotal > 0 && subtotal < 100) {
+                shipping = 50;
+            } else {
+                shipping = 0; // فوق 100 ر.س أو السلة فارغة
+            }
+
+            const grandTotal = subtotal + shipping;
+
+            document.getElementById('subtotal-val').textContent = `${subtotal} ر.س`;
+            document.getElementById('shipping-val').textContent = shipping === 0 ? (subtotal >= 100 ? 'مجاني 🎉' : '0 ر.س') : `${shipping} ر.س`;
+            document.getElementById('grandtotal-val').textContent = `${grandTotal} ر.س`;
+        }
+
+        function openCart() {
+            document.getElementById('cart-modal').style.display = 'flex';
+        }
+
+        function closeCart() {
+            document.getElementById('cart-modal').style.display = 'none';
+        }
+
+        // --- إرسال الطلب والدفع ---
+        async function handlePlaceOrder(e) {
+            e.preventDefault();
+            if (cart.length === 0) {
+                alert("السلة فارغة! يرجى إضافة منتجات أولاً.");
+                return;
+            }
+
+            const btn = document.getElementById('btn-submit-order');
+            btn.disabled = true;
+            btn.textContent = "جاري إرسال الطلب...";
+
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const address = document.getElementById('cust-address').value;
+            const proof = document.getElementById('cust-proof').value;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const shipping = (subtotal > 0 && subtotal < 100) ? 50 : 0;
+            const total = subtotal + shipping;
+
+            try {
+                // إدراج الطلب في قاعدة بيانات Supabase (جدول orders)
+                const { error } = await _supabase.from('orders').insert([{
+                    customer_name: name,
+                    customer_phone: phone,
+                    customer_address: address,
+                    cart_items: cart,
+                    total_amount: total,
+                    payment_proof_url: proof,
+                    status: 'pending'
+                }]);
+
+                if (error) throw error;
+
+                alert("تم إرسال طلبك بنجاح! سنقوم بمراجعة التحويل وتأكيد طلبك قريباً.");
+                cart = [];
+                updateCartUI();
+                closeCart();
+                e.target.reset();
+
+            } catch (err) {
+                console.error("خطأ أثناء إرسال الطلب:", err);
+                alert("حدث خطأ أثناء إرسال الطلب، يرجى المحاولة لاحقاً.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "إرسال الطلب وتأكيد الدفع";
+            }
+        }
+
+        // بدء تحميل الصفحة
+        loadStoreData();
     </script>
 </body>
 </html>
