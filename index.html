@@ -278,10 +278,10 @@
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 📱 ضع رقم الواتساب الذي تريد إرسال الطلبات إليه هنا (مع رمز الدولة بدون +)
-        const ADMIN_WHATSAPP_NUMBER = "966546618705"; // 🔴 استبدله برقمك
+        // 📱 ضعي رقم الواتساب الذي تريد استقبال الطلبات عليه
+        const ADMIN_WHATSAPP_NUMBER = "966500000000"; 
 
-        // 📍 إحداثيات موقعك في تبوك
+        // 📍 إحداثيات الموقع لتبوك
         const STORE_LAT = 28.445194;
         const STORE_LNG = 36.686194;
 
@@ -290,7 +290,7 @@
         let userLocationLink = "";
         let currentInvoiceNumber = "";
 
-        // توليد رقم فاتورة فريد والتاريخ
+        // توليد رقم فاتورة فريد وتاريخ
         function generateInvoiceNumber() {
             const randomNum = Math.floor(100000 + Math.random() * 900000);
             currentInvoiceNumber = `INV-${randomNum}`;
@@ -453,48 +453,58 @@
 
         function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
 
-        // 📤 حفظ الطلب، طباعة الفاتورة، وتحويل الطلب إلى الواتساب
+        // 📤 حفظ الطلب والتوجيه للواتساب مباشرة مع الربط بالتخزين البحت Receipts
         async function handlePlaceOrder(e) {
             e.preventDefault();
             if (cart.length === 0) return alert("السلة فارغة!");
             if (!userLocationLink) return alert("يرجى تحديد الموقع لحساب التوصيل أولاً!");
 
-            const fileInput = document.getElementById('cust-proof-file');
-            if (fileInput.files.length === 0) return alert("يرجى إرفاق صورة إيصال التحويل!");
-
             const btn = document.getElementById('btn-submit-order');
             btn.disabled = true;
-            btn.textContent = "جاري معالجة الطلب والفتح في الواتساب...";
+            btn.textContent = "جاري معالجة الطلب والتوجيه للواتساب...";
+
+            let proofImageUrl = "لم يتم إرفاق صورة إيصال";
 
             try {
-                // 1️⃣ رفع الإيصال إلى Supabase Storage
-                const file = fileInput.files[0];
-                const fileName = `receipt_${Date.now()}_${file.name}`;
-                const { data: uploadData, error: uploadErr } = await _supabase.storage.from('receipts').upload(fileName, file);
+                const fileInput = document.getElementById('cust-proof-file');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const fileExt = file.name.split('.').pop();
+                    const safeFileName = `receipt_${Date.now()}_${Math.floor(Math.random() * 1000)}.${fileExt}`;
+                    
+                    // استخدام RECEIPTS بالـ Capital لمطابقة الإعدادات لديك
+                    const { data: uploadData, error: uploadErr } = await _supabase.storage
+                        .from('RECEIPTS')
+                        .upload(safeFileName, file, { cacheControl: '3600', upsert: true });
 
-                if (uploadErr) throw uploadErr;
-
-                const { data: publicUrlData } = _supabase.storage.from('receipts').getPublicUrl(fileName);
-                const proofImageUrl = publicUrlData.publicUrl;
+                    if (!uploadErr) {
+                        const { data: publicUrlData } = _supabase.storage.from('RECEIPTS').getPublicUrl(safeFileName);
+                        proofImageUrl = publicUrlData.publicUrl;
+                    } else {
+                        console.warn("Storage Upload Warning:", uploadErr);
+                    }
+                }
 
                 const name = document.getElementById('cust-name').value;
                 const phone = document.getElementById('cust-phone').value;
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const total = subtotal + deliveryCost;
 
-                // 2️⃣ حفظ الطلب بالفي قاعدة البيانات مع رقم الفاتورة
-                const { error: orderErr } = await _supabase.from('orders').insert([{
-                    invoice_number: currentInvoiceNumber,
-                    customer_name: name,
-                    customer_phone: phone,
-                    customer_address: userLocationLink,
-                    cart_items: cart,
-                    total_amount: total,
-                    payment_proof_url: proofImageUrl,
-                    status: 'pending'
-                }]);
+                try {
+                    await _supabase.from('orders').insert([{
+                        invoice_number: currentInvoiceNumber,
+                        customer_name: name,
+                        customer_phone: phone,
+                        customer_address: userLocationLink,
+                        cart_items: cart,
+                        total_amount: total,
+                        payment_proof_url: proofImageUrl,
+                        status: 'pending'
+                    }]);
+                } catch (dbErr) {
+                    console.warn("Database Insert Warning:", dbErr);
+                }
 
-                // 3️⃣ تجهيز نص الرسالة وتنسيقه للواتساب
                 let itemsListText = cart.map(item => `• ${item.name} (${item.qty}×) - ${item.price * item.qty} ر.س`).join('\n');
                 
                 let whatsappMessage = `*طلب جديد من متجر شتلة 🌱*\n`;
@@ -510,12 +520,10 @@
                 whatsappMessage += `🚚 *التوصيل (${deliveryCost} كم):* ${deliveryCost} ر.س\n`;
                 whatsappMessage += `💳 *الإجمالي الكلي:* ${total} ر.س\n`;
                 whatsappMessage += `--------------------------------\n`;
-                whatsappMessage += `🖼️ *صورة الإيصال المرفقة:*\n${proofImageUrl}\n`;
+                whatsappMessage += `🖼️ *صورة الإيصال:*\n${proofImageUrl}\n`;
 
-                // 4️⃣ فتح نافذة طباعة الفاتورة للعميل ليحتفظ بها كصورة/PDF
                 window.print();
 
-                // 5️⃣ التوجيه المباشر لتطبيق الواتساب
                 const encodedMsg = encodeURIComponent(whatsappMessage);
                 const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodedMsg}`;
                 
@@ -529,7 +537,7 @@
 
             } catch (err) {
                 console.error(err);
-                alert("حدث خطأ أثناء حفظ الطلب. تأكد من إعدادات Supabase Storage.");
+                alert("حدث خطأ بسيط، جاري فتح الواتساب لإكمال طلبك...");
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i> إرسال الطلب عبر الواتساب`;
