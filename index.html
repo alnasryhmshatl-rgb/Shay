@@ -9,6 +9,9 @@
     
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- html2pdf Library لتحويل الفاتورة إلى PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         :root {
@@ -171,12 +174,6 @@
 
         .btn-checkout { background: #25D366; color: white; border: none; width: 100%; padding: 0.9rem; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; }
         .btn-checkout:hover { background: #1eb854; }
-
-        @media print {
-            body * { visibility: hidden; }
-            #printable-invoice, #printable-invoice * { visibility: visible; }
-            #printable-invoice { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
-        }
     </style>
 </head>
 <body>
@@ -206,6 +203,7 @@
                 <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
+            <!-- الفاتورة المخصصة للتنزيل والطباعة -->
             <div class="invoice-card" id="printable-invoice">
                 <div class="invoice-header">
                     <div>
@@ -269,7 +267,7 @@
                 </div>
 
                 <button type="submit" class="btn-checkout" id="btn-submit-order">
-                    <i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i> إرسال الطلب عبر الواتساب
+                    <i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i> تحميل الفاتورة PDF والتحويل للواتساب
                 </button>
             </form>
         </div>
@@ -464,6 +462,19 @@
 
         function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
 
+        // دوال تحويل الفاتورة إلى ملف PDF
+        async function downloadInvoicePDF() {
+            const element = document.getElementById('printable-invoice');
+            const opt = {
+                margin:       0.5,
+                filename:     `Invoice_${currentInvoiceNumber}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            return html2pdf().set(opt).from(element).save();
+        }
+
         async function handlePlaceOrder(e) {
             e.preventDefault();
             if (cart.length === 0) return alert("السلة فارغة!");
@@ -471,11 +482,12 @@
 
             const btn = document.getElementById('btn-submit-order');
             btn.disabled = true;
-            btn.textContent = "جاري معالجة الطلب والتوجيه للواتساب...";
+            btn.textContent = "جاري إنشاء الفاتورة PDF ومعالجة الطلب...";
 
             let proofImageUrl = "لم يتم إرفاق صورة إيصال";
 
             try {
+                // 1. رفع صورة إيصال التحويل
                 const fileInput = document.getElementById('cust-proof-file');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
@@ -489,8 +501,6 @@
                     if (!uploadErr) {
                         const { data: publicUrlData } = _supabase.storage.from('RECEIPTS').getPublicUrl(safeFileName);
                         proofImageUrl = publicUrlData.publicUrl;
-                    } else {
-                        console.warn("Storage Upload Warning:", uploadErr);
                     }
                 }
 
@@ -499,7 +509,8 @@
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const total = subtotal + deliveryCost;
 
-                const { error: dbErr } = await _supabase.from('orders').insert([{
+                // 2. إدخال بيانات الطلب في قاعدة البيانات Supabase
+                await _supabase.from('orders').insert([{
                     invoice_number: currentInvoiceNumber,
                     customer_name: name,
                     customer_phone: phone,
@@ -510,10 +521,10 @@
                     status: 'pending'
                 }]);
 
-                if (dbErr) {
-                    console.warn("Database Insert Warning:", dbErr);
-                }
+                // 3. تحويل الفاتورة إلى ملف PDF وحفظها بجهاز العميل
+                await downloadInvoicePDF();
 
+                // 4. تجهيز النص للواتساب
                 let itemsListText = cart.map(item => `• ${item.name} (${item.qty}×) - ${item.price * item.qty} ر.س`).join('\n');
                 
                 let whatsappMessage = `*طلب جديد من مشتل الناصرية 🌱*\n`;
@@ -529,10 +540,10 @@
                 whatsappMessage += `🚚 *التوصيل (${deliveryCost} كم):* ${deliveryCost} ر.س\n`;
                 whatsappMessage += `💳 *الإجمالي الكلي:* ${total} ر.س\n`;
                 whatsappMessage += `--------------------------------\n`;
-                whatsappMessage += `🖼️ *صورة الإيصال:*\n${proofImageUrl}\n`;
+                whatsappMessage += `🖼️ *صورة الإيصال:*\n${proofImageUrl}\n\n`;
+                whatsappMessage += `📎 *ملاحظة:* تم تحميل الفاتورة تلقائياً بكود (Invoice_${currentInvoiceNumber}.pdf) يرجى إرفاقها مع هذه الرسالة.`;
 
-                window.print();
-
+                // 5. فتح تطبيق الواتساب
                 const encodedMsg = encodeURIComponent(whatsappMessage);
                 const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodedMsg}`;
                 
@@ -547,10 +558,10 @@
 
             } catch (err) {
                 console.error(err);
-                alert("حدث خطأ بسيط، جاري فتح الواتساب لإكمال طلبك...");
+                alert("حدث خطأ، يرجى المحاولة مرة أخرى...");
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i> إرسال الطلب عبر الواتساب`;
+                btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i> تحميل الفاتورة PDF والتحويل للواتساب`;
             }
         }
 
