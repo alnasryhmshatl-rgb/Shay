@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>متجر شتلة | Flora Store</title>
+    
     <!-- Google Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
         :root {
@@ -85,7 +89,6 @@
 
         .container { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; }
 
-        /* Banner Video Style */
         .video-banner-box {
             width: 100%;
             border-radius: var(--radius);
@@ -116,7 +119,6 @@
             color: var(--dark);
         }
 
-        /* Grid layout for Mobile and Desktop */
         .grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -172,7 +174,7 @@
 
         .add-btn:hover { background: var(--primary); color: white; }
 
-        .empty-msg {
+        .empty-msg, .loading-msg {
             text-align: center;
             padding: 2rem;
             color: #94a3b8;
@@ -197,26 +199,44 @@
     </header>
 
     <div class="container" id="main-content">
-        <!-- يتم تحميل المحتوى ديناميكياً -->
+        <div class="loading-msg">جاري تحميل المنتجات والبيانات... 🌿</div>
     </div>
 
     <script>
-        const STORAGE_KEY_CATS = "flora_categories";
-        const STORAGE_KEY_PRODS = "flora_products";
-        const STORAGE_KEY_BANNERS = "flora_banners";
+        // 1️⃣ إعداد وإعادة تهيئة الاتصال بـ Supabase
+        const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
 
-        let categories = JSON.parse(localStorage.getItem(STORAGE_KEY_CATS)) || [
-            { id: 1, name: "شتلات الزينة الداخلية" },
-            { id: 2, name: "الأشجار الداخلية" }
-        ];
-        let products = JSON.parse(localStorage.getItem(STORAGE_KEY_PRODS)) || [];
-        let banners = JSON.parse(localStorage.getItem(STORAGE_KEY_BANNERS)) || [];
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function renderStoreFront() {
+        // 2️⃣ جلب البيانات من الجداول
+        async function fetchStoreData() {
+            try {
+                const [catsRes, prodsRes, bannersRes] = await Promise.all([
+                    supabaseClient.from('categories').select('*'),
+                    supabaseClient.from('products').select('*'),
+                    supabaseClient.from('banners').select('*')
+                ]);
+
+                const categories = catsRes.data || [];
+                const products = prodsRes.data || [];
+                const banners = bannersRes.data || [];
+
+                renderStoreFront(categories, products, banners);
+            } catch (error) {
+                console.error("خطأ أثناء جلب البيانات:", error);
+                document.getElementById('main-content').innerHTML = `
+                    <div class="empty-msg">حدث خطأ أثناء تحميل البيانات من قاعدة البيانات.</div>
+                `;
+            }
+        }
+
+        // 3️⃣ عرض البيانات على الواجهة
+        function renderStoreFront(categories, products, banners) {
             const container = document.getElementById('main-content');
             container.innerHTML = '';
 
-            // 1️⃣ فيديو أعلى الصفحة
+            // فيديو أعلى الصفحة
             const topBanner = banners.find(b => b.position === 'top');
             if (topBanner && topBanner.video_url) {
                 container.innerHTML += `
@@ -226,7 +246,12 @@
                 `;
             }
 
-            // 2️⃣ إظهار الأقسام مع الشتلات والبنرات
+            if (categories.length === 0) {
+                container.innerHTML += `<div class="empty-msg">لا توجد أقسام متوفرة حالياً.</div>`;
+                return;
+            }
+
+            // إظهار الأقسام مع المنتجات والبنرات
             categories.forEach(cat => {
                 let html = `
                     <div class="section-header">
@@ -276,7 +301,8 @@
             alert("تمت إضافة الشتلة إلى السلة 🌿");
         }
 
-        renderStoreFront();
+        // بدء الجلب عند تحميل الصفحة
+        fetchStoreData();
     </script>
 </body>
 </html>
