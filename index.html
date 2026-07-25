@@ -25,7 +25,6 @@
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text-dark); padding-bottom: 80px; }
 
-        /* الهيدر */
         header {
             background: var(--card-bg);
             border-bottom: 1px solid var(--border);
@@ -50,21 +49,19 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            position: relative;
         }
         .cart-badge { background: #ef4444; color: white; font-size: 0.75rem; border-radius: 50%; padding: 2px 6px; }
 
-        /* البنرات الإعلانية */
-        .banner-container { width: 100%; margin-bottom: 1.5rem; border-radius: var(--radius); overflow: hidden; background: #000; }
+        .banner-container { width: 100%; margin: 1rem 0; border-radius: var(--radius); overflow: hidden; background: #000; }
         .banner-video { width: 100%; height: 220px; object-fit: cover; display: block; }
 
-        /* قسم خدمة العامل الزراعي */
         .service-card {
             background: linear-gradient(135deg, #059669 0%, #10b981 100%);
             color: white;
             border-radius: var(--radius);
             padding: 1.5rem;
-            margin: 1.5rem;
+            margin: 1.5rem auto;
+            max-width: 1200px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -82,11 +79,8 @@
             font-weight: 800;
             cursor: pointer;
             margin-top: 8px;
-            transition: transform 0.2s;
         }
-        .btn-service:active { transform: scale(0.95); }
 
-        /* الأقسام والمنتجات */
         .container { padding: 1rem 1.5rem; max-width: 1200px; margin: 0 auto; }
         .section-title { font-size: 1.3rem; font-weight: 800; margin: 1.5rem 0 1rem; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
 
@@ -105,7 +99,7 @@
             flex-direction: column;
             justify-content: space-between;
         }
-        .product-img { width: 100%; height: 140px; object-fit: cover; }
+        .product-img { width: 100%; height: 140px; object-fit: cover; background: #eee; }
         .product-details { padding: 0.8rem; }
         .product-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
         .product-price { color: var(--primary-dark); font-weight: 800; font-size: 1rem; }
@@ -119,11 +113,8 @@
             border-radius: 8px;
             margin-top: 0.5rem;
             cursor: pointer;
-            transition: all 0.2s;
         }
-        .btn-add:hover { background: var(--primary); color: white; }
 
-        /* نافذة السلة والدفع (Modal) */
         .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -168,7 +159,6 @@
 </head>
 <body>
 
-    <!-- الهيدر -->
     <header>
         <div class="brand">
             <i class="fa-solid fa-leaf" style="color:var(--primary);"></i>
@@ -181,10 +171,10 @@
         </button>
     </header>
 
-    <!-- مكان البنر العلوي (Header Banner) -->
-    <div id="banner-top-container"></div>
+    <!-- مكان إعلان الأعلى -->
+    <div class="container" id="banner-top-container"></div>
 
-    <!-- بطاقة خدمة العامل الزراعي -->
+    <!-- خدمة العامل الزراعي -->
     <div class="service-card">
         <div class="service-info">
             <h3><i class="fa-solid fa-user-gear"></i> خدمة عامل زراعي</h3>
@@ -194,12 +184,12 @@
         </div>
     </div>
 
-    <!-- المحتوى الرئيسي (الأقسام والمنتجات) -->
+    <!-- متجر المنتجات والأقسام -->
     <div class="container" id="main-store-content">
-        <p style="text-align: center; color: var(--text-muted); margin: 2rem 0;">جاري تحميل المنتجات...</p>
+        <p style="text-align: center; color: var(--text-muted); margin: 2rem 0;">جاري تحميل المنتجات والبنرات...</p>
     </div>
 
-    <!-- نافذة السلة والدفع (Modal) -->
+    <!-- نافذة السلة والدفع -->
     <div class="modal" id="cart-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -207,23 +197,18 @@
                 <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <div id="cart-items-list">
-                <!-- المنتجات بالسلة -->
+            <div id="cart-items-list"></div>
+
+            <div class="delivery-notice">
+                التوصيل 50 ر.س للطلبات أقل من 100 ر.س (مجاني للطلبات بقيمة 100 ر.س وأكثر)
             </div>
 
-            <!-- ملاحظة التوصيل -->
-            <div class="delivery-notice" id="delivery-notice">
-                التوصيل 50 ر.س للطلبات أقل من 100 ر.س (مجاني فوق 100 ر.س)
-            </div>
-
-            <!-- تفاصيل الحساب -->
             <div>
                 <div class="summary-row"><span>مجموع المنتجات:</span><span id="subtotal-val">0 ر.س</span></div>
                 <div class="summary-row"><span>رسوم التوصيل:</span><span id="shipping-val">0 ر.س</span></div>
                 <div class="summary-row summary-total"><span>الإجمالي الكلي:</span><span id="grandtotal-val" style="color:var(--primary-dark)">0 ر.س</span></div>
             </div>
 
-            <!-- معلومات التحويل البنكي -->
             <div class="bank-card">
                 <p style="color: var(--primary-dark); font-weight:800; margin-bottom:0.5rem;"><i class="fa-solid fa-building-columns"></i> تفاصيل الحساب البنكي للتحويل:</p>
                 <p>اسم البنك: <strong>البنك الأهلي / الراجحي</strong></p>
@@ -231,7 +216,6 @@
                 <p>رقم الآيبان (IBAN): <code style="user-select: all; background:#e2e8f0; padding:2px 4px; border-radius:4px;">SA0380000000123456789012</code></p>
             </div>
 
-            <!-- نموذج استكمال الطلب -->
             <form onsubmit="handlePlaceOrder(event)">
                 <div class="form-group">
                     <label>الاسم الكامل</label>
@@ -256,103 +240,93 @@
     </div>
 
     <script>
-        // 1. Supabase Initialization
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // السلة المحلية
         let cart = [];
 
-        // --- جلب البيانات وعرض الصفحة ---
         async function loadStoreData() {
-            try {
-                // جلب الأقسام، المنتجات، والبنرات بالتوازي
-                const [catsRes, prodsRes, bannersRes] = await Promise.all([
-                    _supabase.from('categories').select('*').order('id', { ascending: true }),
-                    _supabase.from('products').select('*').order('id', { ascending: false }),
-                    _supabase.from('banners').select('*')
-                ]);
-
-                const categories = catsRes.data || [];
-                const products = prodsRes.data || [];
-                const banners = bannersRes.data || [];
-
-                renderBanners(banners, categories);
-                renderStoreContent(categories, products, banners);
-
-            } catch (err) {
-                console.error("خطأ في جلب البيانات:", err);
-                document.getElementById('main-store-content').innerHTML = `<p style="text-align:center; color:red;">حدث خطأ أثناء تحميل المتجر.</p>`;
-            }
-        }
-
-        // عرض البنرات الإعلانية
-        function renderBanners(banners, categories) {
-            const topBanner = banners.find(b => b.position === 'top');
-            if (topBanner) {
-                document.getElementById('banner-top-container').innerHTML = `
-                    <div class="banner-container">
-                        <video class="banner-video" src="${topBanner.video_url}" autoplay loop muted playsinline></video>
-                    </div>
-                `;
-            }
-        }
-
-        // بناء أقسام المتجر ومنتجاته
-        function renderStoreContent(categories, products, banners) {
             const container = document.getElementById('main-store-content');
-            container.innerHTML = '';
+            try {
+                // جلب البيانات بشكل فردي لتفادي أي إشكال في الاستعلامات
+                const { data: categories, error: catErr } = await _supabase.from('categories').select('*').order('id', { ascending: true });
+                const { data: products, error: prodErr } = await _supabase.from('products').select('*').order('id', { ascending: false });
+                const { data: banners, error: banErr } = await _supabase.from('banners').select('*');
 
-            if (categories.length === 0) {
-                container.innerHTML = '<p style="text-align:center;">لا توجد أقسام حالياً.</p>';
-                return;
-            }
+                if (catErr) console.error('خطأ الأقسام:', catErr);
+                if (prodErr) console.error('خطأ المنتجات:', prodErr);
+                if (banErr) console.error('خطأ البنرات:', banErr);
 
-            categories.forEach(cat => {
-                // تجميع المنتجات التابعة للقسم
-                const catProducts = products.filter(p => p.category_id == cat.id);
+                const cats = categories || [];
+                const prods = products || [];
+                const bans = banners || [];
 
-                let catHTML = `
-                    <div class="section-title">
-                        <i class="fa-solid fa-leaf" style="color:var(--primary)"></i> ${cat.name}
-                    </div>
-                `;
-
-                if (catProducts.length === 0) {
-                    catHTML += `<p style="color:var(--text-muted); font-size:0.9rem;">لا توجد شتلات في هذا القسم حالياً.</p>`;
-                } else {
-                    catHTML += `<div class="grid-products">`;
-                    catProducts.forEach(prod => {
-                        catHTML += `
-                            <div class="product-card">
-                                <img src="${prod.image_url}" class="product-img" alt="${prod.name}" onerror="this.src='https://via.placeholder.com/150'">
-                                <div class="product-details">
-                                    <div class="product-name">${prod.name}</div>
-                                    <div class="product-price">${prod.price} ر.س</div>
-                                    <button class="btn-add" onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price})">+ إضافة للسلة</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    catHTML += `</div>`;
-                }
-
-                // فحص إذا كان هناك بنر بعد هذا القسم
-                const afterBanner = banners.find(b => b.position === `after_${cat.id}`);
-                if (afterBanner) {
-                    catHTML += `
-                        <div class="banner-container" style="margin-top:1.5rem;">
-                            <video class="banner-video" src="${afterBanner.video_url}" autoplay loop muted playsinline></video>
+                // 1. عرض إعلان الأعلى
+                const topBanner = bans.find(b => b.position === 'top');
+                if (topBanner) {
+                    document.getElementById('banner-top-container').innerHTML = `
+                        <div class="banner-container">
+                            <video class="banner-video" src="${topBanner.video_url}" autoplay loop muted playsinline></video>
                         </div>
                     `;
                 }
 
-                container.innerHTML += catHTML;
-            });
-        }
+                // 2. عرض الأقسام والمنتجات
+                if (cats.length === 0 && prods.length === 0) {
+                    container.innerHTML = `<p style="text-align:center; padding:2rem;">لا توجد منتجات أو أقسام مضافة حالياً. قم بإضافتها من لوحة التحكم.</p>`;
+                    return;
+                }
 
-        // --- إدارة السلة والشروط ---
+                container.innerHTML = '';
+
+                // إذا كانت هناك منتجات بدون أقسام أو تم استخدام أقسام
+                cats.forEach(cat => {
+                    const catProducts = prods.filter(p => p.category_id == cat.id);
+
+                    let catHTML = `
+                        <div class="section-title">
+                            <i class="fa-solid fa-leaf" style="color:var(--primary)"></i> ${cat.name}
+                        </div>
+                    `;
+
+                    if (catProducts.length === 0) {
+                        catHTML += `<p style="color:var(--text-muted); font-size:0.9rem;">لا توجد شتلات في هذا القسم حالياً.</p>`;
+                    } else {
+                        catHTML += `<div class="grid-products">`;
+                        catProducts.forEach(prod => {
+                            catHTML += `
+                                <div class="product-card">
+                                    <img src="${prod.image_url}" class="product-img" alt="${prod.name}" onerror="this.src='https://via.placeholder.com/150'">
+                                    <div class="product-details">
+                                        <div class="product-name">${prod.name}</div>
+                                        <div class="product-price">${prod.price} ر.س</div>
+                                        <button class="btn-add" onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price})">+ إضافة للسلة</button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        catHTML += `</div>`;
+                    }
+
+                    // إعلان ما بعد القسم
+                    const afterBanner = bans.find(b => b.position === `after_${cat.id}`);
+                    if (afterBanner) {
+                        catHTML += `
+                            <div class="banner-container" style="margin-top:1.5rem;">
+                                <video class="banner-video" src="${afterBanner.video_url}" autoplay loop muted playsinline></video>
+                            </div>
+                        `;
+                    }
+
+                    container.innerHTML += catHTML;
+                });
+
+            } catch (err) {
+                console.error("خطأ جلب البيانات:", err);
+                container.innerHTML = `<p style="text-align:center; color:red;">حدث خطأ أثناء تحميل المنتجات.</p>`;
+            }
+        }
 
         function addToCart(id, name, price) {
             const existing = cart.find(item => item.id === id);
@@ -375,11 +349,9 @@
         }
 
         function updateCartUI() {
-            // تحديث شارة العدد
             const totalCount = cart.reduce((sum, item) => sum += item.qty, 0);
             document.getElementById('cart-count').textContent = totalCount;
 
-            // تحديث قائمة عناصر السلة
             const listEl = document.getElementById('cart-items-list');
             if (cart.length === 0) {
                 listEl.innerHTML = '<p style="text-align:center; padding:1rem; color:var(--text-muted);">السلة فارغة حالياً.</p>';
@@ -398,16 +370,8 @@
                 `).join('');
             }
 
-            // حساب المجموع والشرط الخاص بالتوصيل (تحت 100 توصيل 50، فوق 100 مجاني)
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            let shipping = 0;
-
-            if (subtotal > 0 && subtotal < 100) {
-                shipping = 50;
-            } else {
-                shipping = 0; // فوق 100 ر.س أو السلة فارغة
-            }
-
+            let shipping = (subtotal > 0 && subtotal < 100) ? 50 : 0;
             const grandTotal = subtotal + shipping;
 
             document.getElementById('subtotal-val').textContent = `${subtotal} ر.س`;
@@ -415,19 +379,13 @@
             document.getElementById('grandtotal-val').textContent = `${grandTotal} ر.س`;
         }
 
-        function openCart() {
-            document.getElementById('cart-modal').style.display = 'flex';
-        }
+        function openCart() { document.getElementById('cart-modal').style.display = 'flex'; }
+        function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
 
-        function closeCart() {
-            document.getElementById('cart-modal').style.display = 'none';
-        }
-
-        // --- إرسال الطلب والدفع ---
         async function handlePlaceOrder(e) {
             e.preventDefault();
             if (cart.length === 0) {
-                alert("السلة فارغة! يرجى إضافة منتجات أولاً.");
+                alert("السلة فارغة!");
                 return;
             }
 
@@ -445,7 +403,6 @@
             const total = subtotal + shipping;
 
             try {
-                // إدراج الطلب في قاعدة بيانات Supabase (جدول orders)
                 const { error } = await _supabase.from('orders').insert([{
                     customer_name: name,
                     customer_phone: phone,
@@ -458,22 +415,21 @@
 
                 if (error) throw error;
 
-                alert("تم إرسال طلبك بنجاح! سنقوم بمراجعة التحويل وتأكيد طلبك قريباً.");
+                alert("تم إرسال طلبك بنجاح!");
                 cart = [];
                 updateCartUI();
                 closeCart();
                 e.target.reset();
 
             } catch (err) {
-                console.error("خطأ أثناء إرسال الطلب:", err);
-                alert("حدث خطأ أثناء إرسال الطلب، يرجى المحاولة لاحقاً.");
+                console.error("خطأ إرسال الطلب:", err);
+                alert("حدث خطأ أثناء إرسال الطلب.");
             } finally {
                 btn.disabled = false;
                 btn.textContent = "إرسال الطلب وتأكيد الدفع";
             }
         }
 
-        // بدء تحميل الصفحة
         loadStoreData();
     </script>
 </body>
