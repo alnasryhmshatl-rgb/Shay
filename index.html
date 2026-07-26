@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مشتل الناصرية | الرئيسية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- خط تجوال الأنيق -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Supabase Client -->
@@ -12,114 +15,205 @@
 
     <style>
         :root {
-            --primary: #10b981;
-            --primary-dark: #059669;
+            --primary: #059669;
+            --primary-hover: #047857;
+            --primary-light: #ecfdf5;
+            --accent: #10b981;
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text-dark: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            --radius: 16px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text-dark); padding-bottom: 80px; }
+        body { background: var(--bg); color: var(--text-dark); padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
 
+        /* الهيدر */
         header {
-            background: var(--card-bg);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
-            padding: 1rem 1.5rem;
+            padding: 0.9rem 1.5rem;
             position: sticky;
             top: 0;
             z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: var(--shadow-sm);
         }
 
-        .brand { font-size: 1.4rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
-        
+        .brand {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-icon {
+            background: var(--primary-light);
+            color: var(--primary);
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
         .cart-icon-btn {
-            background: #f1f5f9;
-            border: none;
-            padding: 0.6rem 1rem;
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid rgba(5, 150, 105, 0.2);
+            padding: 0.55rem 1.1rem;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 700;
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: var(--transition);
+            position: relative;
         }
-        .cart-badge { background: #ef4444; color: white; font-size: 0.75rem; border-radius: 50%; padding: 2px 6px; }
+        .cart-icon-btn:hover { background: var(--primary); color: white; }
+        .cart-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
 
-        .banner-container { width: 100%; margin: 1rem 0; border-radius: var(--radius); overflow: hidden; background: #000; }
-        .banner-video { width: 100%; height: 220px; object-fit: cover; display: block; }
+        /* الفيديو والإعلانات */
+        .container { padding: 1rem 1.2rem; max-width: 1100px; margin: 0 auto; }
+        .banner-container {
+            width: 100%;
+            margin: 0.5rem 0 1.5rem;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background: #000;
+            box-shadow: var(--shadow-md);
+        }
+        .banner-video { width: 100%; height: 210px; object-fit: cover; display: block; }
 
-        .container { padding: 1rem 1.5rem; max-width: 1200px; margin: 0 auto; }
-        .section-title { font-size: 1.3rem; font-weight: 800; margin: 1.5rem 0 1rem; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+        /* عنوان القسم */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 1.8rem 0 1rem;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title::after {
+            content: '';
+            flex-grow: 1;
+            height: 2px;
+            background: var(--border);
+            border-radius: 2px;
+        }
 
+        /* شبكة المنتجات */
         .grid-products {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 1rem;
+            gap: 1.2rem;
+        }
+        @media (min-width: 640px) {
+            .grid-products { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
         }
 
         .product-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: var(--radius-lg);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
         }
-        .product-img { width: 100%; height: 140px; object-fit: cover; background: #eee; }
-        .product-details { padding: 0.8rem; }
-        .product-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
-        .product-price { color: var(--primary-dark); font-weight: 800; font-size: 1rem; }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent);
+        }
+        .product-img { width: 100%; height: 160px; object-fit: cover; background: #f1f5f9; }
+        .product-details { padding: 0.9rem; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; line-height: 1.4; color: var(--text-dark); }
+        .product-price { color: var(--primary); font-weight: 800; font-size: 1.1rem; margin-top: auto; }
+        
         .btn-add {
             width: 100%;
-            background: #f1f5f9;
-            color: var(--text-dark);
+            background: var(--primary-light);
+            color: var(--primary);
             border: none;
-            padding: 0.5rem;
+            padding: 0.65rem;
             font-weight: 700;
-            border-radius: 8px;
-            margin-top: 0.5rem;
+            border-radius: var(--radius-md);
+            margin-top: 0.8rem;
             cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
+        .btn-add:hover { background: var(--primary); color: white; }
 
+        /* المودال وسلة الشراء */
         .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
             display: none;
             justify-content: center;
             align-items: flex-end;
             z-index: 1000;
+            animation: fadeIn 0.2s ease-out;
         }
-        @media(min-width: 600px) { .modal { align-items: center; } }
+        @media(min-width: 600px) { .modal { align-items: center; padding: 1rem; } }
 
         .modal-content {
             background: white;
             width: 100%;
-            max-width: 550px;
+            max-width: 580px;
             border-radius: 24px 24px 0 0;
             padding: 1.5rem;
-            max-height: 90vh;
+            max-height: 88vh;
             overflow-y: auto;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
         }
-        @media(min-width: 600px) { .modal-content { border-radius: 24px; } }
+        @media(min-width: 600px) { .modal-content { border-radius: 24px; max-height: 90vh; } }
 
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .close-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+        .close-btn { background: #f1f5f9; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 1rem; cursor: pointer; color: var(--text-muted); transition: var(--transition); }
+        .close-btn:hover { background: #e2e8f0; color: var(--text-dark); }
 
+        /* بطاقات الإيصال والتحويل */
         .invoice-card {
             background: #ffffff;
-            border: 2px dashed var(--primary);
-            border-radius: 12px;
+            border: 2px dashed var(--accent);
+            border-radius: var(--radius-md);
             padding: 1.2rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .invoice-header {
@@ -132,53 +226,147 @@
         }
 
         .invoice-number {
-            background: #ecfdf5;
-            color: var(--primary-dark);
-            padding: 4px 10px;
-            border-radius: 6px;
+            background: var(--primary-light);
+            color: var(--primary-hover);
+            padding: 4px 12px;
+            border-radius: 20px;
             font-weight: 800;
             font-size: 0.85rem;
         }
 
-        .cart-item { display: flex; align-items: center; gap: 12px; padding: 0.6rem 0; border-bottom: 1px dashed var(--border); }
-        .cart-item-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; background: #f1f5f9; flex-shrink: 0; }
+        /* عناصر السلة والتحكم بالكمية */
+        .cart-item { display: flex; align-items: center; gap: 12px; padding: 0.75rem 0; border-bottom: 1px dashed var(--border); }
+        .cart-item-img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; background: #f1f5f9; flex-shrink: 0; }
         .cart-item-info { flex-grow: 1; }
-        .cart-item-title { font-weight: 700; font-size: 0.9rem; color: var(--text-dark); }
+        .cart-item-title { font-weight: 700; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 2px; }
         .cart-item-price { font-size: 0.8rem; color: var(--text-muted); }
 
-        .worker-upsell-card {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white; padding: 0.8rem 1rem; border-radius: 12px; margin: 1rem 0;
-            display: flex; align-items: center; justify-content: space-between;
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 3px 8px;
+            border-radius: 8px;
         }
-        .worker-upsell-info h4 { font-size: 0.9rem; font-weight: 800; }
+        .btn-qty {
+            background: white;
+            border: 1px solid var(--border);
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+        }
+        .btn-qty:hover { background: var(--primary-light); color: var(--primary); }
+
+        /* خدمة العامل الزراعي */
+        .worker-upsell-card {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white; padding: 1rem; border-radius: var(--radius-md); margin: 1rem 0;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+        }
+        .worker-upsell-info h4 { font-size: 0.9rem; font-weight: 800; margin-bottom: 2px; }
         .worker-upsell-info p { font-size: 0.75rem; opacity: 0.9; }
-        .btn-toggle-worker { background: white; color: var(--primary-dark); border: none; padding: 0.4rem 0.8rem; border-radius: 8px; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
-        .btn-toggle-worker.added { background: #ef4444; color: white; }
+        .btn-toggle-worker {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-toggle-worker.added { background: #fee2e2; color: #ef4444; }
 
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.9rem; }
-        .summary-total { font-weight: 800; font-size: 1.1rem; border-top: 2px solid var(--border); padding-top: 0.6rem; margin-top: 0.6rem; }
+        .summary-total { font-weight: 800; font-size: 1.15rem; border-top: 2px solid var(--border); padding-top: 0.6rem; margin-top: 0.6rem; }
 
-        .bank-card { background: #f8fafc; border: 1px solid var(--border); padding: 0.8rem; border-radius: 12px; margin: 1rem 0; font-size: 0.85rem; }
-
-        .form-group { margin-bottom: 0.8rem; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem; }
-        .form-group input { width: 100%; padding: 0.7rem; border: 1px solid var(--border); border-radius: 8px; outline: none; }
-
-        .btn-location {
-            background: #3b82f6; color: white; border: none; padding: 0.7rem; border-radius: 8px; width: 100%; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 0.5rem;
+        /* تفاصيل البنك والنسخ */
+        .bank-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin: 1rem 0;
+            font-size: 0.85rem;
+        }
+        .bank-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            background: white;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .btn-copy {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-weight: bold;
         }
 
-        .btn-checkout { background: #25D366; color: white; border: none; width: 100%; padding: 0.9rem; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; }
-        .btn-checkout:hover { background: #1eb854; }
+        /* عناصر المدخلات والأزرار */
+        .form-group { margin-bottom: 0.9rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-dark); }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1); }
+
+        .btn-location {
+            background: #2563eb; color: white; border: none; padding: 0.75rem; border-radius: 10px; width: 100%; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 0.5rem; transition: var(--transition);
+        }
+        .btn-location:hover { background: #1d4ed8; }
+
+        .btn-checkout {
+            background: #25D366;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.05rem;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+            transition: var(--transition);
+        }
+        .btn-checkout:hover { background: #1eb854; transform: translateY(-1px); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <header>
         <div class="brand">
-            <i class="fa-solid fa-leaf" style="color:var(--primary);"></i>
-            مشتل الناصرية
+            <div class="brand-icon"><i class="fa-solid fa-leaf"></i></div>
+            <span>مشتل الناصرية</span>
         </div>
         <button class="cart-icon-btn" onclick="openCart()">
             <i class="fa-solid fa-cart-shopping"></i>
@@ -189,22 +377,24 @@
 
     <div class="container" id="banner-top-container"></div>
     <div class="container" id="main-store-content">
-        <p style="text-align: center; color: var(--text-muted); margin: 2rem 0;">جاري تحميل المنتجات...</p>
+        <p style="text-align: center; color: var(--text-muted); margin: 3rem 0; font-weight: bold;"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل المنتجات...</p>
     </div>
 
-    <!-- السلة والمودال -->
+    <!-- نافذة السلة والشراء -->
     <div class="modal" id="cart-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 style="font-weight: 800;"><i class="fa-solid fa-receipt"></i> تفاصيل الفاتورة</h3>
+                <h3 style="font-weight: 800; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-receipt" style="color:var(--primary)"></i> تفاصيل الفاتورة والطلب
+                </h3>
                 <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <div class="invoice-card">
                 <div class="invoice-header">
                     <div>
-                        <strong style="font-size: 1.1rem; color: var(--text-dark);">فاتورة شراء - مشاتل الناصرية</strong>
-                        <div style="font-size: 0.75rem; color: var(--text-muted);" id="invoice-date"></div>
+                        <strong style="font-size: 1rem; color: var(--text-dark);">فاتورة شراء - مشاتل الناصرية</strong>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top:2px;" id="invoice-date"></div>
                     </div>
                     <div class="invoice-number" id="invoice-id-display">#INV-0000</div>
                 </div>
@@ -213,70 +403,77 @@
 
                 <div style="margin-top: 1rem;">
                     <div class="summary-row"><span>المجموع الفرعي:</span><span id="subtotal-val">0 ر.س</span></div>
-                    <div class="summary-row"><span>التوصيل :</span><span id="shipping-val">0 ر.س</span></div>
-                    <div class="summary-row summary-total"><span>الإجمالي النهائي:</span><span id="grandtotal-val" style="color:var(--primary-dark)">0 ر.س</span></div>
+                    <div class="summary-row"><span>التوصيل:</span><span id="shipping-val">0 ر.س</span></div>
+                    <div class="summary-row summary-total"><span>الإجمالي النهائي:</span><span id="grandtotal-val" style="color:var(--primary)">0 ر.س</span></div>
                 </div>
             </div>
 
             <!-- إضافة عامل زراعي -->
             <div class="worker-upsell-card">
                 <div class="worker-upsell-info">
-                    <h4><i class="fa-solid fa-user-gear"></i> عامل زراعي (2أيام/شهر)</h4>
+                    <h4><i class="fa-solid fa-user-gear"></i> خدمة عامل زراعي (يومان/شهرياً)</h4>
                     <p>العناية بالحديقة وتقليم الأشجار (+299 ر.س)</p>
                 </div>
                 <button class="btn-toggle-worker" id="btn-worker-action" onclick="toggleWorkerService()">+ إضافة</button>
             </div>
 
+            <!-- التفاصيل البنكية -->
             <div class="bank-card">
-                <div style="font-family: Arial, sans-serif; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; background-color: #ffffff; text-align: right; direction: rtl;">
-                   <!-- شعار بنك الجزيرة -->
-                    <div style="text-align: center; margin-bottom: 10px;">
-                        <img src="https://vid.alarabiya.net/images/2026/01/28/087a3290-ca42-4fdf-b593-19eb75bfb72b/087a3290-ca42-4fdf-b593-19eb75bfb72b.jpg" alt="شعار بنك الجزيرة" style="max-width: 140px; height: auto; border-radius: 8px;">
+                <div style="text-align: center; margin-bottom: 8px;">
+                    <img src="https://vid.alarabiya.net/images/2026/01/28/087a3290-ca42-4fdf-b593-19eb75bfb72b/087a3290-ca42-4fdf-b593-19eb75bfb72b.jpg" alt="شعار بنك الجزيرة" style="max-width: 120px; height: auto; border-radius: 6px;">
+                </div>
+                <div style="color: #333; font-size: 0.85rem;">
+                    <p style="margin-bottom: 4px;"><strong>اسم الحساب:</strong> أسس الناصرية</p>
+                    
+                    <div class="bank-row">
+                        <span><strong>الحساب:</strong> <code>015482330145001</code></span>
+                        <button type="button" class="btn-copy" onclick="copyToClipboard('015482330145001')">نسخ</button>
                     </div>
-                    <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 10px;">
-                    <p style="margin: 5px 0; color: #333333; font-size: 14px;"><strong>اسم الحساب:</strong> اسس الناصرية</p>
-                    <p style="margin: 5px 0; color: #333333; font-size: 14px;"><strong>رقم الحساب:</strong> <code style="user-select: all; background: #f1f5f9; padding: 2px 5px; border-radius: 4px; color: #0f172a;">015482330145001</code></p>
-                    <p style="margin: 5px 0; color: #333333; font-size: 14px;"><strong>الآيبان:</strong> <code style="user-select: all; background: #f1f5f9; padding: 2px 5px; border-radius: 4px; color: #0f172a; word-break: break-all;">SA5460100015482330145001</code></p>
+                    <div class="bank-row">
+                        <span><strong>الآيبان:</strong> <code style="font-size: 0.75rem;">SA5460100015482330145001</code></span>
+                        <button type="button" class="btn-copy" onclick="copyToClipboard('SA5460100015482330145001')">نسخ</button>
+                    </div>
                 </div>
             </div>
 
+            <!-- نموذج العميل -->
             <form onsubmit="handlePlaceOrder(event)">
                 <div class="form-group">
-                    <label>الاسم الكامل</label>
+                    <label>الاسم الكامل <span style="color:red">*</span></label>
                     <input type="text" id="cust-name" required placeholder="أدخل اسمك الكريم">
                 </div>
                 <div class="form-group">
-                    <label>رقم الجوال</label>
+                    <label>رقم الجوال <span style="color:red">*</span></label>
                     <input type="tel" id="cust-phone" required placeholder="05xxxxxxxx">
                 </div>
 
                 <div class="form-group">
-                    <label>تحديد الموقع لحساب التوصيل</label>
+                    <label>تحديد موقع التوصيل <span style="color:red">*</span></label>
                     <button type="button" class="btn-location" onclick="getExactLocation()">
-                        <i class="fa-solid fa-location-dot"></i> <span id="loc-btn-text">تحديد الموقع تلقائياً (Google Maps)</span>
+                        <i class="fa-solid fa-location-dot"></i> <span id="loc-btn-text">تحديد الموقع تلقائياً (GPS)</span>
                     </button>
-                    <input type="text" id="cust-address" required placeholder="رابط الموقع سينزل هنا تلقائياً" readonly style="background: #f1f5f9;">
+                    <input type="text" id="cust-address" required placeholder="سيرفق رابط الخريطة هنا أو يمكنك كتابته" style="background: #ffffff;">
                 </div>
 
                 <div class="form-group">
-                    <label>إرفاق صورة إيصال التحويل</label>
-                    <input type="file" id="cust-proof-file" accept="image/*" required style="padding:0.4rem;">
+                    <label>إرفاق صورة إيصال التحويل البنكي <span style="color:red">*</span></label>
+                    <input type="file" id="cust-proof-file" accept="image/*" required style="padding:0.5rem; background:#f8fafc;">
                 </div>
 
                 <button type="submit" class="btn-checkout" id="btn-submit-order">
-                    <i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i> إرسال الطلب عبر الواتساب
+                    <i class="fa-brands fa-whatsapp" style="font-size:1.4rem;"></i> إرسال الطلب عبر الواتساب
                 </button>
             </form>
         </div>
     </div>
 
     <script>
+        // إعدادات Supabase والواتساب
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const ADMIN_WHATSAPP_NUMBER = "966546618705"; 
-
         const STORE_LAT = 28.445194;
         const STORE_LNG = 36.686194;
 
@@ -297,7 +494,7 @@
             try {
                 const { data: categories, error: catErr } = await _supabase.from('categories').select('*').order('id', { ascending: true });
                 const { data: products, error: prodErr } = await _supabase.from('products').select('*').order('id', { ascending: false });
-                const { data: banners, error: banErr } = await _supabase.from('banners').select('*');
+                const { data: banners } = await _supabase.from('banners').select('*');
 
                 if (catErr || prodErr) throw (catErr || prodErr);
 
@@ -315,7 +512,7 @@
                 }
 
                 if (cats.length === 0 && prods.length === 0) {
-                    container.innerHTML = `<p style="text-align:center; padding:2rem;">لا توجد منتجات مضافة حالياً.</p>`;
+                    container.innerHTML = `<p style="text-align:center; padding:3rem; color:var(--text-muted);">لا توجد منتجات مضافة حالياً.</p>`;
                     return;
                 }
 
@@ -325,17 +522,19 @@
                     let catHTML = `<div class="section-title"><i class="fa-solid fa-leaf" style="color:var(--primary)"></i> ${cat.name}</div>`;
 
                     if (catProducts.length === 0) {
-                        catHTML += `<p style="color:var(--text-muted); font-size:0.9rem;">لا توجد شتلات في هذا القسم.</p>`;
+                        catHTML += `<p style="color:var(--text-muted); font-size:0.9rem;">لا توجد منتجات متوفرة في هذا القسم.</p>`;
                     } else {
                         catHTML += `<div class="grid-products">`;
                         catProducts.forEach(prod => {
                             catHTML += `
                                 <div class="product-card">
-                                    <img src="${prod.image_url}" class="product-img" alt="${prod.name}" onerror="this.src='https://via.placeholder.com/150'">
+                                    <img src="${prod.image_url}" class="product-img" alt="${prod.name}" onerror="this.src='https://via.placeholder.com/200?text=لا+توجد+صورة'">
                                     <div class="product-details">
                                         <div class="product-name">${prod.name}</div>
-                                        <div class="product-price">${prod.price} ر.س</div>
-                                        <button class="btn-add" onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price}, '${prod.image_url}')">+ إضافة للسلة</button>
+                                        <div class="product-price">${prod.price} <small style="font-size:0.75rem;">ر.س</small></div>
+                                        <button class="btn-add" onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price}, '${prod.image_url}')">
+                                            <i class="fa-solid fa-cart-plus"></i> إضافة للسلة
+                                        </button>
                                     </div>
                                 </div>
                             `;
@@ -346,7 +545,7 @@
                 });
             } catch (err) { 
                 console.error("Error loading store data:", err);
-                container.innerHTML = `<p style="text-align:center; padding:2rem; color:red;">حدث خطأ أثناء تحميل المنتجات.</p>`;
+                container.innerHTML = `<p style="text-align:center; padding:2rem; color:red;">حدث خطأ أثناء تحميل المنتجات. يرجى إعادة المحاولة.</p>`;
             }
         }
 
@@ -354,6 +553,18 @@
             const existing = cart.find(item => item.id === id);
             if (existing) { existing.qty += 1; } else { cart.push({ id, name, price: Number(price), imgUrl, qty: 1 }); }
             updateCartUI();
+        }
+
+        function updateQuantity(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    removeFromCart(id);
+                } else {
+                    updateCartUI();
+                }
+            }
         }
 
         function toggleWorkerService() {
@@ -364,7 +575,7 @@
             } else {
                 cart.push({ 
                     id: workerId, 
-                    name: 'عامل زراعي (2أيام/شهر)', 
+                    name: 'عامل زراعي (يومان/شهر)', 
                     price: 299, 
                     imgUrl: 'https://cdn-icons-png.flaticon.com/512/1995/1995515.png', 
                     qty: 1 
@@ -391,16 +602,16 @@
                     document.getElementById('cust-address').value = userLocationLink;
 
                     const distanceKm = calculateDistance(STORE_LAT, STORE_LNG, lat, lng);
-                    deliveryCost = Math.max(1, Math.ceil(distanceKm));
+                    deliveryCost = Math.max(15, Math.ceil(distanceKm * 2)); // حد أدنى 15 ريال للتوصيل
 
-                    btnText.textContent = `تم التحديد (المسافة: ${deliveryCost} كم = ${deliveryCost} ر.س)`;
+                    btnText.textContent = `تم التحديد (المسافة: ${Math.ceil(distanceKm)} كم = ${deliveryCost} ر.س)`;
                     updateCartUI();
                 }, () => {
-                    alert("يرجى السماح بالوصول للموقع (GPS) لتحديد الموقع وحساب التوصيل.");
-                    btnText.textContent = "تحديد الموقع تلقائياً (Google Maps)";
+                    alert("تعذر الوصول التلقائي للموقع، يمكنك كتابة عنوانك بوضوح في خانة العنوان.");
+                    btnText.textContent = "تحديد الموقع تلقائياً (GPS)";
                 });
             } else {
-                alert("متصفحك لا يدعم تحديد الموقع.");
+                alert("متصفحك لا يدعم تحديد الموقع التلقائي.");
             }
         }
 
@@ -415,8 +626,17 @@
             return R * c; 
         }
 
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("تم نسخ النص بنجاح: " + text);
+            }).catch(err => {
+                console.error('فشل النسخ: ', err);
+            });
+        }
+
         function updateCartUI() {
-            document.getElementById('cart-count').textContent = cart.reduce((sum, item) => sum += item.qty, 0);
+            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cart-count').textContent = totalQty;
 
             const isWorkerAdded = cart.some(item => item.id === 'service_worker');
             const workerBtn = document.getElementById('btn-worker-action');
@@ -427,18 +647,23 @@
 
             const listEl = document.getElementById('cart-items-list');
             if (cart.length === 0) {
-                listEl.innerHTML = '<p style="text-align:center; padding:1rem; color:var(--text-muted);">السلة فارغة حالياً.</p>';
+                listEl.innerHTML = '<p style="text-align:center; padding:1.5rem; color:var(--text-muted);">السلة فارغة حالياً.</p>';
             } else {
                 listEl.innerHTML = cart.map(item => `
                     <div class="cart-item">
-                        <img src="${item.imgUrl}" class="cart-item-img" alt="${item.name}">
+                        <img src="${item.imgUrl}" class="cart-item-img" alt="${item.name}" onerror="this.src='https://via.placeholder.com/60'">
                         <div class="cart-item-info">
                             <div class="cart-item-title">${item.name}</div>
-                            <div class="cart-item-price">${item.price} ر.س × ${item.qty}</div>
+                            <div class="cart-item-price">${item.price} ر.س</div>
                         </div>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <strong style="color:var(--primary-dark);">${item.price * item.qty} ر.س</strong>
-                            <button type="button" onclick="removeFromCart('${item.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div class="qty-controls">
+                                <button type="button" class="btn-qty" onclick="updateQuantity('${item.id}', 1)">+</button>
+                                <span style="font-weight:bold; font-size:0.85rem; min-width:16px; text-align:center;">${item.qty}</span>
+                                <button type="button" class="btn-qty" onclick="updateQuantity('${item.id}', -1)">-</button>
+                            </div>
+                            <strong style="color:var(--primary); font-size:0.9rem;">${item.price * item.qty} ر.س</strong>
+                            <button type="button" onclick="removeFromCart('${item.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.9rem;"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                 `).join('');
@@ -448,7 +673,7 @@
             const grandTotal = subtotal + deliveryCost;
 
             document.getElementById('subtotal-val').textContent = `${subtotal} ر.س`;
-            document.getElementById('shipping-val').textContent = deliveryCost > 0 ? `${deliveryCost} ر.س (${deliveryCost} كم)` : `حدد الموقع`;
+            document.getElementById('shipping-val').textContent = deliveryCost > 0 ? `${deliveryCost} ر.س` : `حدد الموقع`;
             document.getElementById('grandtotal-val').textContent = `${grandTotal} ر.س`;
         }
 
@@ -461,12 +686,14 @@
 
         async function handlePlaceOrder(e) {
             e.preventDefault();
-            if (cart.length === 0) return alert("السلة فارغة!");
-            if (!userLocationLink) return alert("يرجى تحديد الموقع لحساب التوصيل أولاً!");
+            if (cart.length === 0) return alert("السلة فارغة، يرجى إضافة شتلات أولاً!");
+
+            const addressInput = document.getElementById('cust-address').value.trim();
+            if (!addressInput) return alert("يرجى تحديد الموقع أو كتابة العنوان!");
 
             const btn = document.getElementById('btn-submit-order');
             btn.disabled = true;
-            btn.textContent = "جاري التوجيه للواتساب...";
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري إرسال الطلب...`;
 
             let proofImageUrl = "لم يتم إرفاق صورة إيصال";
 
@@ -494,63 +721,61 @@
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const total = subtotal + deliveryCost;
 
-                // حفظ الطلب في قاعدة البيانات Supabase
-                const { error: dbErr } = await _supabase.from('orders').insert([{
+                // حفظ الطلب في Supabase
+                await _supabase.from('orders').insert([{
                     invoice_number: currentInvoiceNumber,
                     customer_name: name,
                     customer_phone: phone,
-                    customer_address: userLocationLink,
+                    customer_address: addressInput,
                     cart_items: cart,
                     total_amount: total,
                     payment_proof_url: proofImageUrl,
                     status: 'pending'
                 }]);
 
-                if (dbErr) {
-                    console.warn("Database Insert Warning:", dbErr);
-                }
-
-                // تجهيز النص للواتساب
-                let itemsListText = cart.map(item => `• ${item.name} (${item.qty}×) - ${item.price * item.qty} ر.س`).join('\n');
+                // صياغة رسالة الواتساب
+                let itemsListText = cart.map(item => `• ${item.name} (${item.qty}×) = ${item.price * item.qty} ر.س`).join('\n');
                 
-                let whatsappMessage = `*طلب جديد من مشتل الناصرية 🌱*\n`;
+                let whatsappMessage = `*طلب جديد - مشتل الناصرية 🌱*\n`;
                 whatsappMessage += `--------------------------------\n`;
                 whatsappMessage += `📄 *رقم الفاتورة:* #${currentInvoiceNumber}\n`;
                 whatsappMessage += `👤 *اسم العميل:* ${name}\n`;
                 whatsappMessage += `📞 *رقم الجوال:* ${phone}\n`;
-                whatsappMessage += `📍 *موقع التسليم:* ${userLocationLink}\n`;
+                whatsappMessage += `📍 *موقع التسليم:* ${addressInput}\n`;
                 whatsappMessage += `--------------------------------\n`;
                 whatsappMessage += `🛒 *المنتجات المطلوبة:*\n${itemsListText}\n`;
                 whatsappMessage += `--------------------------------\n`;
                 whatsappMessage += `💰 *المجموع:* ${subtotal} ر.س\n`;
-                whatsappMessage += `🚚 *التوصيل (${deliveryCost} كم):* ${deliveryCost} ر.س\n`;
+                whatsappMessage += `🚚 *التوصيل:* ${deliveryCost} ر.س\n`;
                 whatsappMessage += `💳 *الإجمالي الكلي:* ${total} ر.س\n`;
                 whatsappMessage += `--------------------------------\n`;
                 whatsappMessage += `🖼️ *صورة الإيصال:*\n${proofImageUrl}\n`;
 
-                // التوجيه المباشر إلى الواتساب من دون نافذة الطباعة/تحويل PDF
                 const encodedMsg = encodeURIComponent(whatsappMessage);
                 const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodedMsg}`;
                 
-                window.open(whatsappUrl, '_blank');
+                // التوجيه المباشر للواتساب
+                window.location.href = whatsappUrl;
 
-                // إعادة ضبط البيانات
+                // إعادة ضبط المتجر
                 cart = [];
                 deliveryCost = 0;
                 userLocationLink = "";
+                document.getElementById('loc-btn-text').textContent = "تحديد الموقع تلقائياً (GPS)";
                 updateCartUI();
                 closeCart();
                 e.target.reset();
 
             } catch (err) {
                 console.error(err);
-                alert("حدث خطأ بسيط، جاري فتح الواتساب لإكمال طلبك...");
+                alert("حدث خطأ، جاري فتح الواتساب لمتابعة طلبك...");
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i> إرسال الطلب عبر الواتساب`;
+                btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.4rem;"></i> إرسال الطلب عبر الواتساب`;
             }
         }
 
+        // تشغيل تحميل البيانات
         loadStoreData();
     </script>
 </body>
