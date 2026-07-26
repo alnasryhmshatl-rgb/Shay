@@ -175,6 +175,11 @@
             background: #fafafa;
             transition: all 0.2s;
         }
+        .form-group input[type="file"] {
+            background: white;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             border-color: var(--primary);
             background: white;
@@ -337,14 +342,14 @@
                         </div>
                         <div class="form-group">
                             <label>نوع الوسيط</label>
-                            <select id="banner-type" required>
-                                <option value="video">فيديو (Video)</option>
+                            <select id="banner-type" onchange="updateBannerAcceptAttribute()" required>
                                 <option value="image">صورة (Image)</option>
+                                <option value="video">فيديو (Video)</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>رابط الملف المباشر (URL)</label>
-                            <input type="url" id="banner-url" required placeholder="https://example.com/media.mp4">
+                            <label>اختيار الملف من المعرض / الجهاز</label>
+                            <input type="file" id="banner-file" accept="image/*" required>
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                             <div class="form-group">
@@ -361,7 +366,7 @@
                         </div>
                         
                         <button type="submit" class="btn btn-primary" id="btn-add-banner">
-                            <i class="fa-solid fa-save"></i> حفظ / إضافة البنر
+                            <i class="fa-solid fa-upload"></i> رفع وحفظ البنر
                         </button>
                     </form>
                     <div class="status-msg" id="msg-banner">جاري الحفظ...</div>
@@ -396,8 +401,8 @@
                             <input type="number" id="prod-price" required placeholder="50" step="any">
                         </div>
                         <div class="form-group" style="margin:0;">
-                            <label>رابط الصورة (URL)</label>
-                            <input type="url" id="prod-img-url" required placeholder="https://example.com/image.jpg">
+                            <label>صورة الشتلة (من المعرض)</label>
+                            <input type="file" id="prod-file" accept="image/*" required>
                         </div>
                         <div class="form-group" style="margin:0;">
                             <label>حالة التوفر</label>
@@ -412,7 +417,7 @@
                         </div>
                         <div style="grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; margin-top: 0.5rem;">
                             <button type="submit" class="btn btn-primary" id="btn-add-prod" style="max-width: 200px;">
-                                <i class="fa-solid fa-plus"></i> إضافة الشتلة
+                                <i class="fa-solid fa-upload"></i> رفع وإضافة الشتلة
                             </button>
                             <div class="status-msg" id="msg-prod" style="margin:0;">جاري الإضافة...</div>
                         </div>
@@ -446,6 +451,42 @@
             el.style.color = type === 'error' ? '#ef4444' : (type === 'success' ? '#10b981' : '#64748b');
             el.style.backgroundColor = type === 'error' ? '#fef2f2' : (type === 'success' ? '#ecfdf5' : '#f1f5f9');
             if(type === 'success') setTimeout(() => el.style.display = 'none', 4000);
+        }
+
+        // دالة مساعدة لرفع الملفات إلى Supabase Storage
+        async function uploadFileToSupabase(file, folderName = 'media') {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+            const filePath = `${folderName}/${fileName}`;
+
+            // رفع الملف إلى الـ bucket المسسمى "media"
+            const { data, error } = await _supabase.storage
+                .from('media')
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+
+            if (error) {
+                throw new Error("فشل رفع الملف إلى الخادم. تأكد من وجود Bucket باسم 'media' وإتاحة الصلاحيات: " + error.message);
+            }
+
+            // الحصول على رابط الملف المباشر
+            const { data: publicUrlData } = _supabase.storage
+                .from('media')
+                .getPublicUrl(filePath);
+
+            return publicUrlData.publicUrl;
+        }
+
+        function updateBannerAcceptAttribute() {
+            const mediaType = document.getElementById('banner-type').value;
+            const fileInput = document.getElementById('banner-file');
+            if (mediaType === 'image') {
+                fileInput.accept = 'image/*';
+            } else {
+                fileInput.accept = 'video/*';
+            }
         }
 
         async function loadCategories() {
@@ -573,27 +614,37 @@
             e.preventDefault();
             const posSel = document.getElementById('banner-pos');
             const typeSel = document.getElementById('banner-type');
-            const urlInput = document.getElementById('banner-url');
+            const fileInput = document.getElementById('banner-file');
             const orderInput = document.getElementById('banner-order');
             const activeSel = document.getElementById('banner-active');
             const btn = document.getElementById('btn-add-banner');
             
             const pos = posSel.value;
             const mediaType = typeSel.value;
-            const url = urlInput.value.trim();
+            const file = fileInput.files[0];
             const sortOrder = parseInt(orderInput.value) || 0;
             const isActive = activeSel.value === 'true';
 
-            if(!pos || !url) return;
+            if(!pos || !file) {
+                showStatus('msg-banner', 'يرجى اختيار المكان وتحديد الملف', 'error');
+                return;
+            }
+
             btn.disabled = true;
-            showStatus('msg-banner', 'جاري الحفظ...');
+            showStatus('msg-banner', 'جاري رفع الملف إلى الخادم...');
 
             try {
+                // 1. رفع الملف وتوليد الرابط
+                const uploadedUrl = await uploadFileToSupabase(file, 'banners');
+
+                showStatus('msg-banner', 'جاري حفظ البيانات...');
+
+                // 2. إدخال البيانات في الجدول
                 const payload = {
                     position: pos,
                     media_type: mediaType,
-                    media_url: url,
-                    video_url: url,
+                    media_url: uploadedUrl,
+                    video_url: uploadedUrl,
                     sort_order: sortOrder,
                     is_active: isActive
                 };
@@ -601,13 +652,13 @@
                 const { error } = await _supabase.from('banners').insert([payload]);
                 if (error) throw error;
                 
-                urlInput.value = '';
+                fileInput.value = '';
                 posSel.selectedIndex = 0;
-                showStatus('msg-banner', 'تم الحفظ بنجاح!', 'success');
+                showStatus('msg-banner', 'تم رفع البنر وحفظه بنجاح!', 'success');
                 loadBanners();
             } catch (err) {
                 console.error("تفاصيل الخطأ كاملة:", err);
-                showStatus('msg-banner', 'سبب الخطأ: ' + (err.message || err.error_description || JSON.stringify(err)), 'error');
+                showStatus('msg-banner', 'سبب الخطأ: ' + (err.message || JSON.stringify(err)), 'error');
             } finally {
                 btn.disabled = false;
             }
@@ -664,16 +715,26 @@
             const name = document.getElementById('prod-name').value.trim();
             const catId = document.getElementById('prod-cat').value;
             const price = document.getElementById('prod-price').value;
-            const imgUrl = document.getElementById('prod-img-url').value.trim();
+            const fileInput = document.getElementById('prod-file');
             const isAvailable = document.getElementById('prod-available').value === 'true';
             const description = document.getElementById('prod-desc').value.trim();
+            const file = fileInput.files[0];
 
-            if(!name || !catId || !price || !imgUrl) return;
+            if(!name || !catId || !price || !file) {
+                showStatus('msg-prod', 'يرجى ملء كافة الحقول واختيار الصورة', 'error');
+                return;
+            }
 
             btn.disabled = true;
-            showStatus('msg-prod', 'جاري الإضافة...');
+            showStatus('msg-prod', 'جاري رفع صورة الشتلة...');
 
             try {
+                // 1. رفع الصورة وتوليد الرابط
+                const imgUrl = await uploadFileToSupabase(file, 'products');
+
+                showStatus('msg-prod', 'جاري حفظ الشتلة...');
+
+                // 2. إدخال البيانات في قاعدة البيانات
                 const { error } = await _supabase.from('products').insert([{
                     name: name,
                     category_id: parseInt(catId),
@@ -685,7 +746,7 @@
                 if (error) throw error;
                 
                 e.target.reset();
-                showStatus('msg-prod', 'تمت الإضافة بنجاح!', 'success');
+                showStatus('msg-prod', 'تمت إضافة الشتلة ورفع صورتها بنجاح!', 'success');
                 loadProducts();
             } catch (err) {
                 showStatus('msg-prod', 'خطأ: ' + err.message, 'error');
