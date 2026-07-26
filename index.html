@@ -52,7 +52,7 @@
         }
         .cart-badge { background: #ef4444; color: white; font-size: 0.75rem; border-radius: 50%; padding: 2px 6px; }
 
-        .banner-container { width: 100%; margin: 1rem 0; border-radius: var(--radius); overflow: hidden; background: #000; }
+        .banner-container { width: 100%; margin: 1rem 0; border-radius: var(--radius); overflow: hidden; background: #f1f5f9; }
         .banner-video { width: 100%; height: 220px; object-fit: cover; display: block; }
 
         .container { padding: 1rem 1.5rem; max-width: 1200px; margin: 0 auto; }
@@ -200,7 +200,7 @@
                 <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <div class="invoice-card">
+            <div class="invoice-card" id="printable-invoice">
                 <div class="invoice-header">
                     <div>
                         <strong style="font-size: 1.1rem; color: var(--text-dark);">فاتورة شراء - مشاتل الناصرية</strong>
@@ -230,9 +230,9 @@
             <div class="bank-card">
                 <div style="font-family: Arial, sans-serif; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; background-color: #ffffff; text-align: right; direction: rtl;">
                    <!-- شعار بنك الجزيرة -->
-                    <div style="text-align: center; margin-bottom: 10px;">
-                        <img src="https://vid.alarabiya.net/images/2026/01/28/087a3290-ca42-4fdf-b593-19eb75bfb72b/087a3290-ca42-4fdf-b593-19eb75bfb72b.jpg" alt="شعار بنك الجزيرة" style="max-width: 140px; height: auto; border-radius: 8px;">
-                    </div>
+                   <div style="text-align: center; margin-bottom: 10px;">
+                       <img src="https://vid.alarabiya.net/images/2026/01/28/087a3290-ca42-4fdf-b593-19eb75bfb72b/087a3290-ca42-4fdf-b593-19eb75bfb72b.jpg" alt="شعار بنك الجزيرة" style="max-width: 140px; height: auto; border-radius: 8px;">
+                   </div>
                     <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 10px;">
                     <p style="margin: 5px 0; color: #333333; font-size: 14px;"><strong>اسم الحساب:</strong> اسس الناصرية</p>
                     <p style="margin: 5px 0; color: #333333; font-size: 14px;"><strong>رقم الحساب:</strong> <code style="user-select: all; background: #f1f5f9; padding: 2px 5px; border-radius: 4px; color: #0f172a;">015482330145001</code></p>
@@ -259,8 +259,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label>إرفاق صورة إيصال التحويل</label>
-                    <input type="file" id="cust-proof-file" accept="image/*" required style="padding:0.4rem;">
+                    <label>إرفاق صورة إيصال التحويل (اختياري)</label>
+                    <input type="file" id="cust-proof-file" accept="image/*" style="padding:0.4rem;">
                 </div>
 
                 <button type="submit" class="btn-checkout" id="btn-submit-order">
@@ -272,8 +272,15 @@
 
     <script>
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6210MDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
+        
+        let _supabase;
+        
+        try {
+            _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (e) {
+            console.error("خطأ في التهيئة:", e);
+        }
 
         const ADMIN_WHATSAPP_NUMBER = "966546618705"; 
 
@@ -295,23 +302,46 @@
         async function loadStoreData() {
             const container = document.getElementById('main-store-content');
             try {
+                // جلب الأقسام والمنتجات
                 const { data: categories, error: catErr } = await _supabase.from('categories').select('*').order('id', { ascending: true });
                 const { data: products, error: prodErr } = await _supabase.from('products').select('*').order('id', { ascending: false });
-                const { data: banners, error: banErr } = await _supabase.from('banners').select('*');
+                
+                let banners = [];
+                try {
+                    const res = await _supabase.from('banners').select('*');
+                    if (res.data) banners = res.data;
+                } catch(e) {}
 
-                if (catErr || prodErr) throw (catErr || prodErr);
+                if (catErr || prodErr) {
+                    console.error("تفاصيل الخطأ من Supabase:", catErr || prodErr);
+                    throw (catErr || prodErr);
+                }
 
                 const cats = categories || [];
                 const prods = products || [];
-                const bans = banners || [];
 
-                const topBanner = bans.find(b => b.position === 'top');
-                if (topBanner && topBanner.video_url) {
-                    document.getElementById('banner-top-container').innerHTML = `
-                        <div class="banner-container">
-                            <video class="banner-video" src="${topBanner.video_url}" autoplay loop muted playsinline></video>
-                        </div>
-                    `;
+                // المعالجة المحدثة للبانر
+                const topBanner = banners.find(b => b.position === 'top');
+                if (topBanner && (topBanner.video_url || topBanner.image_url)) {
+                    const bannerMedia = topBanner.video_url || topBanner.image_url;
+                    const isVideo = /\.(mp4|webm|mov)($|\?)/i.test(bannerMedia);
+
+                    if (isVideo) {
+                        document.getElementById('banner-top-container').innerHTML = `
+                            <div class="banner-container">
+                                <video class="banner-video" autoplay loop muted playsinline preload="metadata">
+                                    <source src="${bannerMedia}" type="video/mp4">
+                                    متصفحك لا يدعم تشغيل الفيديو.
+                                </video>
+                            </div>
+                        `;
+                    } else {
+                        document.getElementById('banner-top-container').innerHTML = `
+                            <div class="banner-container">
+                                <img src="${bannerMedia}" class="banner-video" style="object-fit: cover;" alt="البانر">
+                            </div>
+                        `;
+                    }
                 }
 
                 if (cats.length === 0 && prods.length === 0) {
@@ -320,6 +350,19 @@
                 }
 
                 container.innerHTML = '';
+                
+                // في حال عدم وجود أقسام، عرض المنتجات مباشرة
+                if (cats.length === 0 && prods.length > 0) {
+                    let catHTML = `<div class="section-title"><i class="fa-solid fa-leaf" style="color:var(--primary)"></i> كافة المنتجات</div><div class="grid-products">`;
+                    prods.forEach(prod => {
+                        catHTML += renderProductCard(prod);
+                    });
+                    catHTML += `</div>`;
+                    container.innerHTML = catHTML;
+                    return;
+                }
+
+                // عرض المنتجات حسب القسم
                 cats.forEach(cat => {
                     const catProducts = prods.filter(p => p.category_id == cat.id);
                     let catHTML = `<div class="section-title"><i class="fa-solid fa-leaf" style="color:var(--primary)"></i> ${cat.name}</div>`;
@@ -329,25 +372,34 @@
                     } else {
                         catHTML += `<div class="grid-products">`;
                         catProducts.forEach(prod => {
-                            catHTML += `
-                                <div class="product-card">
-                                    <img src="${prod.image_url}" class="product-img" alt="${prod.name}" onerror="this.src='https://via.placeholder.com/150'">
-                                    <div class="product-details">
-                                        <div class="product-name">${prod.name}</div>
-                                        <div class="product-price">${prod.price} ر.س</div>
-                                        <button class="btn-add" onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price}, '${prod.image_url}')">+ إضافة للسلة</button>
-                                    </div>
-                                </div>
-                            `;
+                            catHTML += renderProductCard(prod);
                         });
                         catHTML += `</div>`;
                     }
                     container.innerHTML += catHTML;
                 });
+
             } catch (err) { 
                 console.error("Error loading store data:", err);
-                container.innerHTML = `<p style="text-align:center; padding:2rem; color:red;">حدث خطأ أثناء تحميل المنتجات.</p>`;
+                container.innerHTML = `
+                    <div style="text-align:center; padding:2rem; color:#ef4444;">
+                        <p style="font-weight:bold; font-size:1.1rem;">تعذر جلب البيانات من قاعدة البيانات.</p>
+                        <p style="font-size:0.85rem; color:#64748b; margin-top:5px;">تأكد من إيقاف أو ضبط RLS Policies لجدول المنتجات والأقسام في Supabase.</p>
+                    </div>`;
             }
+        }
+
+        function renderProductCard(prod) {
+            return `
+                <div class="product-card">
+                    <img src="${prod.image_url}" class="product-img" alt="${prod.name}" onerror="this.src='https://via.placeholder.com/150'">
+                    <div class="product-details">
+                        <div class="product-name">${prod.name}</div>
+                        <div class="product-price">${prod.price} ر.س</div>
+                        <button class="btn-add" onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price}, '${prod.image_url}')">+ إضافة للسلة</button>
+                    </div>
+                </div>
+            `;
         }
 
         function addToCart(id, name, price, imgUrl) {
@@ -466,13 +518,13 @@
 
             const btn = document.getElementById('btn-submit-order');
             btn.disabled = true;
-            btn.textContent = "جاري التوجيه للواتساب...";
+            btn.textContent = "جاري معالجة الطلب والتوجيه للواتساب...";
 
             let proofImageUrl = "لم يتم إرفاق صورة إيصال";
 
             try {
                 const fileInput = document.getElementById('cust-proof-file');
-                if (fileInput.files.length > 0) {
+                if (fileInput && fileInput.files.length > 0) {
                     const file = fileInput.files[0];
                     const fileExt = file.name.split('.').pop();
                     const safeFileName = `receipt_${Date.now()}_${Math.floor(Math.random() * 1000)}.${fileExt}`;
@@ -494,7 +546,6 @@
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const total = subtotal + deliveryCost;
 
-                // حفظ الطلب في قاعدة البيانات Supabase
                 const { error: dbErr } = await _supabase.from('orders').insert([{
                     invoice_number: currentInvoiceNumber,
                     customer_name: name,
@@ -510,7 +561,6 @@
                     console.warn("Database Insert Warning:", dbErr);
                 }
 
-                // تجهيز النص للواتساب
                 let itemsListText = cart.map(item => `• ${item.name} (${item.qty}×) - ${item.price * item.qty} ر.س`).join('\n');
                 
                 let whatsappMessage = `*طلب جديد من مشتل الناصرية 🌱*\n`;
@@ -528,13 +578,12 @@
                 whatsappMessage += `--------------------------------\n`;
                 whatsappMessage += `🖼️ *صورة الإيصال:*\n${proofImageUrl}\n`;
 
-                // التوجيه المباشر إلى الواتساب من دون نافذة الطباعة/تحويل PDF
+                // التوجيه للواتساب مباشر بدون window.print()
                 const encodedMsg = encodeURIComponent(whatsappMessage);
                 const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodedMsg}`;
                 
                 window.open(whatsappUrl, '_blank');
 
-                // إعادة ضبط البيانات
                 cart = [];
                 deliveryCost = 0;
                 userLocationLink = "";
@@ -551,7 +600,9 @@
             }
         }
 
-        loadStoreData();
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStoreData();
+        });
     </script>
 </body>
 </html>
