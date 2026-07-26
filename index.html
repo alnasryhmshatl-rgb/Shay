@@ -171,12 +171,6 @@
 
         .btn-checkout { background: #25D366; color: white; border: none; width: 100%; padding: 0.9rem; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; }
         .btn-checkout:hover { background: #1eb854; }
-
-        @media print {
-            body * { visibility: hidden; }
-            #printable-invoice, #printable-invoice * { visibility: visible; }
-            #printable-invoice { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
-        }
     </style>
 </head>
 <body>
@@ -206,7 +200,7 @@
                 <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <div class="invoice-card" id="printable-invoice">
+            <div class="invoice-card">
                 <div class="invoice-header">
                     <div>
                         <strong style="font-size: 1.1rem; color: var(--text-dark);">فاتورة شراء - مشاتل الناصرية</strong>
@@ -235,10 +229,10 @@
 
             <div class="bank-card">
                 <div style="font-family: Arial, sans-serif; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; background-color: #ffffff; text-align: right; direction: rtl;">
-                   <!-- شعار بنك الجزيرة الجديد -->
-<div style="text-align: center; margin-bottom: 10px;">
-    <img src="https://vid.alarabiya.net/images/2026/01/28/087a3290-ca42-4fdf-b593-19eb75bfb72b/087a3290-ca42-4fdf-b593-19eb75bfb72b.jpg" alt="شعار بنك الجزيرة" style="max-width: 140px; height: auto; border-radius: 8px;">
-</div>
+                   <!-- شعار بنك الجزيرة -->
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <img src="https://vid.alarabiya.net/images/2026/01/28/087a3290-ca42-4fdf-b593-19eb75bfb72b/087a3290-ca42-4fdf-b593-19eb75bfb72b.jpg" alt="شعار بنك الجزيرة" style="max-width: 140px; height: auto; border-radius: 8px;">
+                    </div>
                     <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 10px;">
                     <p style="margin: 5px 0; color: #333333; font-size: 14px;"><strong>اسم الحساب:</strong> اسس الناصرية</p>
                     <p style="margin: 5px 0; color: #333333; font-size: 14px;"><strong>رقم الحساب:</strong> <code style="user-select: all; background: #f1f5f9; padding: 2px 5px; border-radius: 4px; color: #0f172a;">015482330145001</code></p>
@@ -472,7 +466,7 @@
 
             const btn = document.getElementById('btn-submit-order');
             btn.disabled = true;
-            btn.textContent = "جاري معالجة الطلب والتوجيه للواتساب...";
+            btn.textContent = "جاري التوجيه للواتساب...";
 
             let proofImageUrl = "لم يتم إرفاق صورة إيصال";
 
@@ -500,6 +494,7 @@
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const total = subtotal + deliveryCost;
 
+                // حفظ الطلب في قاعدة البيانات Supabase
                 const { error: dbErr } = await _supabase.from('orders').insert([{
                     invoice_number: currentInvoiceNumber,
                     customer_name: name,
@@ -515,6 +510,7 @@
                     console.warn("Database Insert Warning:", dbErr);
                 }
 
+                // تجهيز النص للواتساب
                 let itemsListText = cart.map(item => `• ${item.name} (${item.qty}×) - ${item.price * item.qty} ر.س`).join('\n');
                 
                 let whatsappMessage = `*طلب جديد من مشتل الناصرية 🌱*\n`;
@@ -532,13 +528,13 @@
                 whatsappMessage += `--------------------------------\n`;
                 whatsappMessage += `🖼️ *صورة الإيصال:*\n${proofImageUrl}\n`;
 
-                window.print();
-
+                // التوجيه المباشر إلى الواتساب من دون نافذة الطباعة/تحويل PDF
                 const encodedMsg = encodeURIComponent(whatsappMessage);
                 const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodedMsg}`;
                 
                 window.open(whatsappUrl, '_blank');
 
+                // إعادة ضبط البيانات
                 cart = [];
                 deliveryCost = 0;
                 userLocationLink = "";
