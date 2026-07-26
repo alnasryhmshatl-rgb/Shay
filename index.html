@@ -98,17 +98,24 @@
             font-weight: 800;
         }
 
-        /* الفيديو والإعلانات */
+        /* الفيديو والإعلانات والبنرات */
         .container { padding: 1rem 1.2rem; max-width: 1100px; margin: 0 auto; }
-        .banner-container {
+        
+        .banner-wrapper {
             width: 100%;
-            margin: 0.5rem 0 1.5rem;
+            margin: 0.5rem 0 1rem;
             border-radius: var(--radius-lg);
             overflow: hidden;
             background: #000;
             box-shadow: var(--shadow-md);
+            position: relative;
         }
-        .banner-video { width: 100%; height: 210px; object-fit: cover; display: block; }
+        .banner-media {
+            width: 100%;
+            max-height: 260px;
+            object-fit: cover;
+            display: block;
+        }
 
         /* عنوان القسم */
         .section-title {
@@ -377,7 +384,7 @@
 
     <div class="container" id="banner-top-container"></div>
     <div class="container" id="main-store-content">
-        <p style="text-align: center; color: var(--text-muted); margin: 3rem 0; font-weight: bold;"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل المنتجات...</p>
+        <p style="text-align: center; color: var(--text-muted); margin: 3rem 0; font-weight: bold;"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل المنتجات والبنرات...</p>
     </div>
 
     <!-- نافذة السلة والشراء -->
@@ -420,7 +427,7 @@
             <!-- التفاصيل البنكية -->
             <div class="bank-card">
                 <div style="text-align: center; margin-bottom: 8px;">
-                    <img src="https://vid.alarabiya.net/images/2026/01/28/087a3290-ca42-4fdf-b593-19eb75bfb72b/087a3290-ca42-4fdf-b593-19eb75bfb72b.jpg" alt="شعار بنك الجزيرة" style="max-width: 120px; height: auto; border-radius: 6px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Aljazira_Bank_Logo.svg" alt="شعار بنك الجزيرة" style="max-width: 120px; height: auto; border-radius: 6px;">
                 </div>
                 <div style="color: #333; font-size: 0.85rem;">
                     <p style="margin-bottom: 4px;"><strong>اسم الحساب:</strong> أسس الناصرية</p>
@@ -468,7 +475,6 @@
     </div>
 
     <script>
-        // إعدادات Supabase والواتساب
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -482,6 +488,10 @@
         let userLocationLink = "";
         let currentInvoiceNumber = "";
 
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStoreData();
+        });
+
         function generateInvoiceNumber() {
             const randomNum = Math.floor(100000 + Math.random() * 900000);
             currentInvoiceNumber = `INV-${randomNum}`;
@@ -489,12 +499,43 @@
             document.getElementById('invoice-date').textContent = new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         }
 
+        /* دالة إنشاء البنر (فيديو أو صورة) */
+        function renderBannerHTML(banner) {
+            if (!banner) return '';
+            const mediaUrl = banner.video_url || banner.image_url || banner.url;
+            if (!mediaUrl) return '';
+
+            const isVideo = banner.video_url || mediaUrl.match(/\.(mp4|webm|ogg)$/i);
+
+            if (isVideo) {
+                return `
+                    <div class="banner-wrapper">
+                        <video class="banner-media" src="${mediaUrl}" autoplay loop muted playsinline></video>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="banner-wrapper">
+                        <img class="banner-media" src="${mediaUrl}" alt="بنر إعلاني" onerror="this.parentElement.style.display='none'">
+                    </div>
+                `;
+            }
+        }
+
         async function loadStoreData() {
             const container = document.getElementById('main-store-content');
+            const topBannerContainer = document.getElementById('banner-top-container');
+
             try {
-                const { data: categories, error: catErr } = await _supabase.from('categories').select('*').order('id', { ascending: true });
-                const { data: products, error: prodErr } = await _supabase.from('products').select('*').order('id', { ascending: false });
-                const { data: banners } = await _supabase.from('banners').select('*');
+                const [
+                    { data: categories, error: catErr },
+                    { data: products, error: prodErr },
+                    { data: banners, error: banErr }
+                ] = await Promise.all([
+                    _supabase.from('categories').select('*').order('id', { ascending: true }),
+                    _supabase.from('products').select('*').order('id', { ascending: false }),
+                    _supabase.from('banners').select('*')
+                ]);
 
                 if (catErr || prodErr) throw (catErr || prodErr);
 
@@ -502,14 +543,14 @@
                 const prods = products || [];
                 const bans = banners || [];
 
-                const topBanner = bans.find(b => b.position === 'top');
-                if (topBanner && topBanner.video_url) {
-                    document.getElementById('banner-top-container').innerHTML = `
-                        <div class="banner-container">
-                            <video class="banner-video" src="${topBanner.video_url}" autoplay loop muted playsinline></video>
-                        </div>
-                    `;
+                // 1. عرض البنر العلوي (سواء باسم position 'top' أو أول بنر متاح)
+                const topBanner = bans.find(b => b.position === 'top') || bans[0];
+                if (topBanner) {
+                    topBannerContainer.innerHTML = renderBannerHTML(topBanner);
                 }
+
+                // 2. تصفية باقي البنرات الإعلانية
+                const otherBanners = bans.filter(b => b !== topBanner);
 
                 if (cats.length === 0 && prods.length === 0) {
                     container.innerHTML = `<p style="text-align:center; padding:3rem; color:var(--text-muted);">لا توجد منتجات مضافة حالياً.</p>`;
@@ -517,7 +558,9 @@
                 }
 
                 container.innerHTML = '';
-                cats.forEach(cat => {
+
+                // عرض المنتجات حسب الأقسام وإدراج باقي البنرات بين الأقسام
+                cats.forEach((cat, index) => {
                     const catProducts = prods.filter(p => p.category_id == cat.id);
                     let catHTML = `<div class="section-title"><i class="fa-solid fa-leaf" style="color:var(--primary)"></i> ${cat.name}</div>`;
 
@@ -541,11 +584,18 @@
                         });
                         catHTML += `</div>`;
                     }
+
+                    // إضافة بنر فرعي بين الأقسام إذا توفر
+                    if (otherBanners[index]) {
+                        catHTML += renderBannerHTML(otherBanners[index]);
+                    }
+
                     container.innerHTML += catHTML;
                 });
+
             } catch (err) { 
                 console.error("Error loading store data:", err);
-                container.innerHTML = `<p style="text-align:center; padding:2rem; color:red;">حدث خطأ أثناء تحميل المنتجات. يرجى إعادة المحاولة.</p>`;
+                container.innerHTML = `<p style="text-align:center; padding:2rem; color:red;">حدث خطأ أثناء تحميل البيانات. يرجى إعادة المحاولة.</p>`;
             }
         }
 
@@ -602,7 +652,7 @@
                     document.getElementById('cust-address').value = userLocationLink;
 
                     const distanceKm = calculateDistance(STORE_LAT, STORE_LNG, lat, lng);
-                    deliveryCost = Math.max(15, Math.ceil(distanceKm * 2)); // حد أدنى 15 ريال للتوصيل
+                    deliveryCost = Math.max(15, Math.ceil(distanceKm * 2));
 
                     btnText.textContent = `تم التحديد (المسافة: ${Math.ceil(distanceKm)} كم = ${deliveryCost} ر.س)`;
                     updateCartUI();
@@ -721,62 +771,52 @@
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const total = subtotal + deliveryCost;
 
-                // حفظ الطلب في Supabase
-                await _supabase.from('orders').insert([{
+                const { error: insertErr } = await _supabase.from('orders').insert([{
                     invoice_number: currentInvoiceNumber,
                     customer_name: name,
                     customer_phone: phone,
                     customer_address: addressInput,
                     cart_items: cart,
+                    subtotal: subtotal,
+                    delivery_cost: deliveryCost,
                     total_amount: total,
-                    payment_proof_url: proofImageUrl,
-                    status: 'pending'
+                    proof_image_url: proofImageUrl
                 }]);
 
-                // صياغة رسالة الواتساب
-                let itemsListText = cart.map(item => `• ${item.name} (${item.qty}×) = ${item.price * item.qty} ر.س`).join('\n');
-                
-                let whatsappMessage = `*طلب جديد - مشتل الناصرية 🌱*\n`;
-                whatsappMessage += `--------------------------------\n`;
-                whatsappMessage += `📄 *رقم الفاتورة:* #${currentInvoiceNumber}\n`;
-                whatsappMessage += `👤 *اسم العميل:* ${name}\n`;
-                whatsappMessage += `📞 *رقم الجوال:* ${phone}\n`;
-                whatsappMessage += `📍 *موقع التسليم:* ${addressInput}\n`;
-                whatsappMessage += `--------------------------------\n`;
-                whatsappMessage += `🛒 *المنتجات المطلوبة:*\n${itemsListText}\n`;
-                whatsappMessage += `--------------------------------\n`;
-                whatsappMessage += `💰 *المجموع:* ${subtotal} ر.س\n`;
-                whatsappMessage += `🚚 *التوصيل:* ${deliveryCost} ر.س\n`;
-                whatsappMessage += `💳 *الإجمالي الكلي:* ${total} ر.س\n`;
-                whatsappMessage += `--------------------------------\n`;
-                whatsappMessage += `🖼️ *صورة الإيصال:*\n${proofImageUrl}\n`;
+                if (insertErr) {
+                    console.error("Order Insert Error:", insertErr);
+                }
 
-                const encodedMsg = encodeURIComponent(whatsappMessage);
-                const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodedMsg}`;
+                let itemsListText = cart.map((i, idx) => `${idx + 1}. ${i.name} (الكمية: ${i.qty}) - ${i.price * i.qty} ر.س`).join('\n');
                 
-                // التوجيه المباشر للواتساب
+                let whatsappMsg = `🌱 *طلب جديد - مشاتل الناصرية*\n`;
+                whatsappMsg += `📄 *رقم الفاتورة:* ${currentInvoiceNumber}\n`;
+                whatsappMsg += `------------------------------------\n`;
+                whatsappMsg += `👤 *الاسم:* ${name}\n`;
+                whatsappMsg += `📞 *الجوال:* ${phone}\n`;
+                whatsappMsg += `📍 *الموقع/العنوان:* ${addressInput}\n`;
+                whatsappMsg += `------------------------------------\n`;
+                whatsappMsg += `🛒 *الطلبات:*\n${itemsListText}\n`;
+                whatsappMsg += `------------------------------------\n`;
+                whatsappMsg += `💰 *المجموع الفرعي:* ${subtotal} ر.س\n`;
+                whatsappMsg += `🚚 *رسوم التوصيل:* ${deliveryCost} ر.س\n`;
+                whatsappMsg += `إجمالي الفاتورة النهائي: *${total} ر.س*\n`;
+                whatsappMsg += `------------------------------------\n`;
+                whatsappMsg += `🖼️ *إيصال التحويل البنكي:*\n${proofImageUrl}`;
+
+                const encodedMsg = encodeURIComponent(whatsappMsg);
+                const whatsappUrl = `https://api.whatsapp.com/send?phone=${ADMIN_WHATSAPP_NUMBER}&text=${encodedMsg}`;
+
                 window.location.href = whatsappUrl;
 
-                // إعادة ضبط المتجر
-                cart = [];
-                deliveryCost = 0;
-                userLocationLink = "";
-                document.getElementById('loc-btn-text').textContent = "تحديد الموقع تلقائياً (GPS)";
-                updateCartUI();
-                closeCart();
-                e.target.reset();
-
             } catch (err) {
-                console.error(err);
-                alert("حدث خطأ، جاري فتح الواتساب لمتابعة طلبك...");
+                console.error("Error processing order:", err);
+                alert("حدث خطأ أثناء معالجة الطلب، يرجى التثبت من البيانات والتحقق من اتصال الإنترنت.");
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.4rem;"></i> إرسال الطلب عبر الواتساب`;
             }
         }
-
-        // تشغيل تحميل البيانات
-        loadStoreData();
     </script>
 </body>
 </html>
