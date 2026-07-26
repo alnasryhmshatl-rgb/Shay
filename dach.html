@@ -165,7 +165,7 @@
         /* النماذج المدخلة */
         .form-group { margin-bottom: 1rem; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-dark); }
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 0.8rem 1rem;
             border: 1px solid var(--border);
@@ -175,7 +175,7 @@
             background: #fafafa;
             transition: all 0.2s;
         }
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             border-color: var(--primary);
             background: white;
             box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
@@ -247,6 +247,15 @@
             border-radius: 8px;
             font-weight: 700;
         }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
     </style>
 </head>
 <body>
@@ -266,7 +275,7 @@
                 <ul class="nav-menu">
                     <li class="nav-item active"><a href="#"><i class="fa-solid fa-chart-pie"></i> لوحة التحكم</a></li>
                     <li class="nav-item"><a href="#categories-section"><i class="fa-solid fa-layer-group"></i> الأقسام</a></li>
-                    <li class="nav-item"><a href="#banners-section"><i class="fa-solid fa-video"></i> الإعلانات</a></li>
+                    <li class="nav-item"><a href="#banners-section"><i class="fa-solid fa-rectangle-ad"></i> الإعلانات والبنرات</a></li>
                     <li class="nav-item"><a href="#products-section"><i class="fa-solid fa-seedling"></i> الشتلات</a></li>
                 </ul>
             </div>
@@ -315,31 +324,51 @@
                 <!-- 2️⃣ إدارة اللوحات الإعلانية -->
                 <div class="dashboard-box" id="banners-section">
                     <div class="box-title">
-                        <i class="fa-solid fa-video" style="color: #3b82f6;"></i> 
-                        2. لوحة إعلانية (فيديو)
+                        <i class="fa-solid fa-rectangle-ad" style="color: #3b82f6;"></i> 
+                        2. البنرات الإعلانية
                     </div>
                     <form onsubmit="handleAddBanner(event)">
                         <div class="form-group">
-                            <label>مكان العرض</label>
+                            <label>موقع العرض</label>
                             <select id="banner-pos" required>
                                 <option value="" disabled selected>اختر المكان...</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>رابط فيديو مباشر (URL)</label>
-                            <input type="url" id="banner-url" required placeholder="https://example.com/video.mp4">
+                            <label>نوع الوسيط</label>
+                            <select id="banner-type" required>
+                                <option value="video">فيديو (Video)</option>
+                                <option value="image">صورة (Image)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>رابط الملف المباشر (URL)</label>
+                            <input type="url" id="banner-url" required placeholder="https://example.com/media.mp4">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="form-group">
+                                <label>الترتيب / الأولوية</label>
+                                <input type="number" id="banner-order" value="0" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>حالة التفعيل</label>
+                                <select id="banner-active">
+                                    <option value="true">مفعل</option>
+                                    <option value="false">معطل</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <button type="submit" class="btn btn-primary" id="btn-add-banner">
-                            <i class="fa-solid fa-save"></i> حفظ / تحديث اللوحة
+                            <i class="fa-solid fa-save"></i> حفظ / إضافة البنر
                         </button>
                     </form>
                     <div class="status-msg" id="msg-banner">جاري الحفظ...</div>
 
                     <div class="table-responsive">
                         <table>
-                            <thead><tr><th>ID</th><th>الموقع</th><th>المعاينة</th><th>إجراء</th></tr></thead>
-                            <tbody id="banners-table"><tr><td colspan="4" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                            <thead><tr><th>ID</th><th>الموقع</th><th>النوع</th><th>المعاينة</th><th>الحالة</th><th>إجراء</th></tr></thead>
+                            <tbody id="banners-table"><tr><td colspan="6" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -369,6 +398,17 @@
                             <label>رابط الصورة (URL)</label>
                             <input type="url" id="prod-img-url" required placeholder="https://example.com/image.jpg">
                         </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>حالة التوفر</label>
+                            <select id="prod-available">
+                                <option value="true">متوفر</option>
+                                <option value="false">غير متوفر</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin:0; grid-column: 1 / -1;">
+                            <label>وصف الشتلة</label>
+                            <textarea id="prod-desc" rows="2" placeholder="أدخل تفاصيل عن النبات وطريقة العناية به..."></textarea>
+                        </div>
                         <div style="grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; margin-top: 0.5rem;">
                             <button type="submit" class="btn btn-primary" id="btn-add-prod" style="max-width: 200px;">
                                 <i class="fa-solid fa-plus"></i> إضافة الشتلة
@@ -379,8 +419,8 @@
 
                     <div class="table-responsive">
                         <table>
-                            <thead><tr><th>ID</th><th>اسم الشتلة</th><th>القسم</th><th>السعر</th><th>إجراء</th></tr></thead>
-                            <tbody id="products-table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                            <thead><tr><th>ID</th><th>اسم الشتلة</th><th>القسم</th><th>السعر</th><th>الحالة</th><th>إجراء</th></tr></thead>
+                            <tbody id="products-table"><tr><td colspan="6" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -389,7 +429,7 @@
         </main>
     </div>
 
-    <!-- السكريبت البرمجي الأصلي بدون أي تعديل في الربط أو الرموز البرمجية -->
+    <!-- السكريبت البرمجي التفاعلي متوافق مع Supabase -->
     <script>
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
@@ -476,7 +516,7 @@
         }
 
         async function handleDeleteCategory(id) {
-            if(!confirm("هل أنت متأكد من حذف هذا القسم؟")) return;
+            if(!confirm("هل أنت متأكد من حذف هذا القسم؟ قد تتأثر المنتجات المرتبطة به.")) return;
             try {
                 const { error } = await _supabase.from('categories').delete().eq('id', id);
                 if (error) throw error;
@@ -490,7 +530,7 @@
 
         async function loadBanners() {
             try {
-                const { data, error } = await _supabase.from('banners').select('*').order('id', { ascending: true });
+                const { data, error } = await _supabase.from('banners').select('*').order('sort_order', { ascending: true });
                 if (error) throw error;
                 renderBannersTable(data);
             } catch (err) {
@@ -500,17 +540,27 @@
 
         function renderBannersTable(data) {
             const tbody = document.getElementById('banners-table');
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد بنرات حالياً.</td></tr>';
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد بنرات حالياً.</td></tr>';
                 return;
             }
             tbody.innerHTML = data.map(b => {
                 let posText = b.position === 'top' ? 'أعلى الشاشة' : `بعد قسم (ID: ${b.position.replace('after_', '')})`;
+                let mediaPreview = b.media_type === 'image' 
+                    ? `<img src="${b.media_url || b.video_url}" style="height:40px; width:60px; object-fit:cover; border-radius:6px;">`
+                    : `<video src="${b.media_url || b.video_url}" style="height:40px; width:60px; object-fit:cover; border-radius:6px; background:#000;" muted></video>`;
+                
+                let activeBadge = (b.is_active !== false) 
+                    ? `<span class="badge badge-success">مفعل</span>`
+                    : `<span class="badge badge-danger">معطل</span>`;
+
                 return `
                     <tr>
                         <td><code>${b.id}</code></td>
                         <td>${posText}</td>
-                        <td><video src="${b.video_url}" style="height:40px; width:60px; object-fit:cover; border-radius:6px; background:#000;" muted></video></td>
+                        <td>${b.media_type === 'image' ? 'صورة' : 'فيديو'}</td>
+                        <td>${mediaPreview}</td>
+                        <td>${activeBadge}</td>
                         <td><button class="btn btn-danger btn-sm" onclick="handleDeleteBanner(${b.id})"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>
                 `;
@@ -520,18 +570,33 @@
         async function handleAddBanner(e) {
             e.preventDefault();
             const posSel = document.getElementById('banner-pos');
+            const typeSel = document.getElementById('banner-type');
             const urlInput = document.getElementById('banner-url');
+            const orderInput = document.getElementById('banner-order');
+            const activeSel = document.getElementById('banner-active');
             const btn = document.getElementById('btn-add-banner');
             
             const pos = posSel.value;
+            const mediaType = typeSel.value;
             const url = urlInput.value.trim();
+            const sortOrder = parseInt(orderInput.value) || 0;
+            const isActive = activeSel.value === 'true';
 
             if(!pos || !url) return;
             btn.disabled = true;
             showStatus('msg-banner', 'جاري الحفظ...');
 
             try {
-                const { error } = await _supabase.from('banners').upsert({ position: pos, video_url: url }, { onConflict: 'position' });
+                const payload = {
+                    position: pos,
+                    media_type: mediaType,
+                    media_url: url,
+                    video_url: url, // للتوافق العكسي مع الكود القديم
+                    sort_order: sortOrder,
+                    is_active: isActive
+                };
+
+                const { error } = await _supabase.from('banners').insert([payload]);
                 if (error) throw error;
                 
                 urlInput.value = '';
@@ -568,19 +633,26 @@
 
         function renderProductsTable(data) {
             const tbody = document.getElementById('products-table');
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">لا توجد شتلات حالياً.</td></tr>';
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد شتلات حالياً.</td></tr>';
                 return;
             }
-            tbody.innerHTML = data.map(p => `
-                <tr>
-                    <td><code>${p.id}</code></td>
-                    <td><strong>${p.name}</strong></td>
-                    <td>${p.categories ? p.categories.name : '-'}</td>
-                    <td><strong style="color:var(--primary-dark)">${p.price} ر.س</strong></td>
-                    <td><button class="btn btn-danger btn-sm" onclick="handleDeleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button></td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = data.map(p => {
+                let availBadge = (p.is_available !== false)
+                    ? `<span class="badge badge-success">متوفر</span>`
+                    : `<span class="badge badge-danger">غير متوفر</span>`;
+
+                return `
+                    <tr>
+                        <td><code>${p.id}</code></td>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.categories ? p.categories.name : '-'}</td>
+                        <td><strong style="color:var(--primary-dark)">${p.price} ر.س</strong></td>
+                        <td>${availBadge}</td>
+                        <td><button class="btn btn-danger btn-sm" onclick="handleDeleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         async function handleAddProduct(e) {
@@ -590,6 +662,8 @@
             const catId = document.getElementById('prod-cat').value;
             const price = document.getElementById('prod-price').value;
             const imgUrl = document.getElementById('prod-img-url').value.trim();
+            const isAvailable = document.getElementById('prod-available').value === 'true';
+            const description = document.getElementById('prod-desc').value.trim();
 
             if(!name || !catId || !price || !imgUrl) return;
 
@@ -601,7 +675,9 @@
                     name: name,
                     category_id: parseInt(catId),
                     price: parseFloat(price),
-                    image_url: imgUrl
+                    image_url: imgUrl,
+                    description: description,
+                    is_available: isAvailable
                 }]);
                 if (error) throw error;
                 
