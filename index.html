@@ -741,7 +741,10 @@
             const addressInput = document.getElementById('cust-address').value.trim();
             if (!addressInput) return alert("يرجى تحديد الموقع أو كتابة العنوان!");
 
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
             const btn = document.getElementById('btn-submit-order');
+
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري إرسال الطلب...`;
 
@@ -752,67 +755,73 @@
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
                     const fileExt = file.name.split('.').pop();
-                    const safeFileName = `receipt_${Date.now()}_${Math.floor(Math.random() * 1000)}.${fileExt}`;
-                    
-                    const { data: uploadData, error: uploadErr } = await _supabase.storage
-                        .from('RECEIPTS')
-                        .upload(safeFileName, file, { cacheControl: '3600', upsert: true });
+                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
 
-                    if (!uploadErr) {
-                        const { data: publicUrlData } = _supabase.storage.from('RECEIPTS').getPublicUrl(safeFileName);
-                        proofImageUrl = publicUrlData.publicUrl;
+                    const { data: uploadData, error: uploadErr } = await _supabase.storage
+                        .from('receipts')
+                        .upload(fileName, file);
+
+                    if (uploadErr) {
+                        console.error("Storage Error:", uploadErr);
                     } else {
-                        console.warn("Storage Upload Warning:", uploadErr);
+                        const { data: publicUrlData } = _supabase.storage
+                            .from('receipts')
+                            .getPublicUrl(fileName);
+                        proofImageUrl = publicUrlData.publicUrl;
                     }
                 }
 
-                const name = document.getElementById('cust-name').value;
-                const phone = document.getElementById('cust-phone').value;
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-                const total = subtotal + deliveryCost;
+                const grandTotal = subtotal + deliveryCost;
 
-                const { error: insertErr } = await _supabase.from('orders').insert([{
-                    invoice_number: currentInvoiceNumber,
-                    customer_name: name,
-                    customer_phone: phone,
-                    customer_address: addressInput,
-                    cart_items: cart,
-                    subtotal: subtotal,
-                    delivery_cost: deliveryCost,
-                    total_amount: total,
-                    proof_image_url: proofImageUrl
-                }]);
+                // 1. حفظ الطلب في جدول orders بفي Supabase
+                const { data: orderData, error: orderErr } = await _supabase
+                    .from('orders')
+                    .insert([{
+                        invoice_id: currentInvoiceNumber,
+                        customer_name: name,
+                        customer_phone: phone,
+                        address: addressInput,
+                        proof_image: proofImageUrl,
+                        subtotal: subtotal,
+                        delivery_cost: deliveryCost,
+                        total_amount: grandTotal,
+                        items: cart,
+                        status: 'pending'
+                    }]);
 
-                if (insertErr) {
-                    console.error("Order Insert Error:", insertErr);
+                if (orderErr) {
+                    console.error("Order Insert Error:", orderErr);
                 }
 
-                let itemsListText = cart.map((i, idx) => `${idx + 1}. ${i.name} (الكمية: ${i.qty}) - ${i.price * i.qty} ر.س`).join('\n');
+                // 2. تجهيز نص رسالة الواتساب
+                let itemsListText = cart.map(item => `• ${item.name} (${item.qty}×) - ${item.price * item.qty} ر.س`).join('\n');
                 
-                let whatsappMsg = `🌱 *طلب جديد - مشاتل الناصرية*\n`;
-                whatsappMsg += `📄 *رقم الفاتورة:* ${currentInvoiceNumber}\n`;
-                whatsappMsg += `------------------------------------\n`;
-                whatsappMsg += `👤 *الاسم:* ${name}\n`;
-                whatsappMsg += `📞 *الجوال:* ${phone}\n`;
-                whatsappMsg += `📍 *الموقع/العنوان:* ${addressInput}\n`;
-                whatsappMsg += `------------------------------------\n`;
-                whatsappMsg += `🛒 *الطلبات:*\n${itemsListText}\n`;
-                whatsappMsg += `------------------------------------\n`;
-                whatsappMsg += `💰 *المجموع الفرعي:* ${subtotal} ر.س\n`;
-                whatsappMsg += `🚚 *رسوم التوصيل:* ${deliveryCost} ر.س\n`;
-                whatsappMsg += `إجمالي الفاتورة النهائي: *${total} ر.س*\n`;
-                whatsappMsg += `------------------------------------\n`;
-                whatsappMsg += `🖼️ *إيصال التحويل البنكي:*\n${proofImageUrl}`;
+                let message = `*طلب جديد رقم:* ${currentInvoiceNumber}\n`;
+                message += `-------------------------\n`;
+                message += `*الاسم:* ${name}\n`;
+                message += `*رقم الجوال:* ${phone}\n`;
+                message += `*العنوان/الموقع:* ${addressInput}\n\n`;
+                message += `*المنتجات:*\n${itemsListText}\n\n`;
+                message += `-------------------------\n`;
+                message += `*المجموع الفرعي:* ${subtotal} ر.س\n`;
+                message += `*التوصيل:* ${deliveryCost} ر.س\n`;
+                message += `*الإجمالي النهائي:* ${grandTotal} ر.س\n`;
+                message += `-------------------------\n`;
+                message += `*رابط إيصال التحويل:* ${proofImageUrl}`;
 
-                const encodedMsg = encodeURIComponent(whatsappMsg);
-                const whatsappUrl = `https://api.whatsapp.com/send?phone=${ADMIN_WHATSAPP_NUMBER}&text=${encodedMsg}`;
-
-                window.location.href = whatsappUrl;
+                const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+                
+                // إعادة الضبط وفتح الواتساب
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.4rem;"></i> إرسال الطلب عبر الواتساب`;
+                closeCart();
+                
+                window.open(whatsappUrl, '_blank');
 
             } catch (err) {
-                console.error("Error processing order:", err);
-                alert("حدث خطأ أثناء معالجة الطلب، يرجى التثبت من البيانات والتحقق من اتصال الإنترنت.");
-            } finally {
+                console.error("Error submitting order:", err);
+                alert("حدث خطأ أثناء معالجة الطلب، حاول مرة أخرى.");
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.4rem;"></i> إرسال الطلب عبر الواتساب`;
             }
