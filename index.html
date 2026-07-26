@@ -652,7 +652,9 @@
                     document.getElementById('cust-address').value = userLocationLink;
 
                     const distanceKm = calculateDistance(STORE_LAT, STORE_LNG, lat, lng);
-                    deliveryCost = Math.max(15, Math.ceil(distanceKm * 2));
+                    
+                    // التعديل: كل 1 كم يساوي 1 ريال
+                    deliveryCost = Math.ceil(distanceKm);
 
                     btnText.textContent = `تم التحديد (المسافة: ${Math.ceil(distanceKm)} كم = ${deliveryCost} ر.س)`;
                     updateCartUI();
@@ -748,80 +750,42 @@
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري إرسال الطلب...`;
 
-            let proofImageUrl = "لم يتم إرفاق صورة إيصال";
-
             try {
-                const fileInput = document.getElementById('cust-proof-file');
-                if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    const fileExt = file.name.split('.').pop();
-                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+                const proofFileInput = document.getElementById('cust-proof-file');
+                let proofUrl = "لم يتم إرفاق إيصال";
 
-                    const { data: uploadData, error: uploadErr } = await _supabase.storage
-                        .from('receipts')
-                        .upload(fileName, file);
-
-                    if (uploadErr) {
-                        console.error("Storage Error:", uploadErr);
-                    } else {
-                        const { data: publicUrlData } = _supabase.storage
-                            .from('receipts')
-                            .getPublicUrl(fileName);
-                        proofImageUrl = publicUrlData.publicUrl;
+                if (proofFileInput.files.length > 0) {
+                    const file = proofFileInput.files[0];
+                    const fileName = `${Date.now()}_${file.name}`;
+                    const { data: uploadData, error: uploadErr } = await _supabase.storage.from('receipts').upload(fileName, file);
+                    if (!uploadErr && uploadData) {
+                        const { data: publicUrlData } = _supabase.storage.from('receipts').getPublicUrl(fileName);
+                        proofUrl = publicUrlData.publicUrl;
                     }
                 }
 
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const grandTotal = subtotal + deliveryCost;
 
-                // 1. حفظ الطلب في جدول orders بفي Supabase
-                const { data: orderData, error: orderErr } = await _supabase
-                    .from('orders')
-                    .insert([{
-                        invoice_id: currentInvoiceNumber,
-                        customer_name: name,
-                        customer_phone: phone,
-                        address: addressInput,
-                        proof_image: proofImageUrl,
-                        subtotal: subtotal,
-                        delivery_cost: deliveryCost,
-                        total_amount: grandTotal,
-                        items: cart,
-                        status: 'pending'
-                    }]);
+                let itemsText = cart.map(item => `• ${item.name} (${item.qty}×) - ${item.price * item.qty} ر.س`).join('\n');
 
-                if (orderErr) {
-                    console.error("Order Insert Error:", orderErr);
-                }
-
-                // 2. تجهيز نص رسالة الواتساب
-                let itemsListText = cart.map(item => `• ${item.name} (${item.qty}×) - ${item.price * item.qty} ر.س`).join('\n');
-                
-                let message = `*طلب جديد رقم:* ${currentInvoiceNumber}\n`;
-                message += `-------------------------\n`;
-                message += `*الاسم:* ${name}\n`;
-                message += `*رقم الجوال:* ${phone}\n`;
-                message += `*العنوان/الموقع:* ${addressInput}\n\n`;
-                message += `*المنتجات:*\n${itemsListText}\n\n`;
-                message += `-------------------------\n`;
-                message += `*المجموع الفرعي:* ${subtotal} ر.س\n`;
-                message += `*التوصيل:* ${deliveryCost} ر.س\n`;
-                message += `*الإجمالي النهائي:* ${grandTotal} ر.س\n`;
-                message += `-------------------------\n`;
-                message += `*رابط إيصال التحويل:* ${proofImageUrl}`;
+                const message = `*طلب جديد من مشتل الناصرية* 🌿\n` +
+                    `*رقم الفاتورة:* ${currentInvoiceNumber}\n` +
+                    `*الاسم:* ${name}\n` +
+                    `*رقم الجوال:* ${phone}\n` +
+                    `*الموقع:* ${addressInput}\n\n` +
+                    `*الطلبات:*\n${itemsText}\n\n` +
+                    `*المجموع الفرعي:* ${subtotal} ر.س\n` +
+                    `*سعر التوصيل:* ${deliveryCost} ر.س\n` +
+                    `*الإجمالي النهائي:* ${grandTotal} ر.س\n\n` +
+                    `*رابط الإيصال:* ${proofUrl}`;
 
                 const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-                
-                // إعادة الضبط وفتح الواتساب
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.4rem;"></i> إرسال الطلب عبر الواتساب`;
-                closeCart();
-                
                 window.open(whatsappUrl, '_blank');
-
             } catch (err) {
-                console.error("Error submitting order:", err);
-                alert("حدث خطأ أثناء معالجة الطلب، حاول مرة أخرى.");
+                console.error(err);
+                alert("حدث خطأ أثناء معالجة الطلب.");
+            } finally {
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.4rem;"></i> إرسال الطلب عبر الواتساب`;
             }
