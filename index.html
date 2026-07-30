@@ -3,677 +3,796 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر شاي العندليب | تجربة تسوق فريدة</title>
-    <!-- الخط المعتمد لمتاجر سلة -->
+    <title>مشتل الناصرية | الرئيسية</title>
+    
+    <!-- خط تجوال الأنيق -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-    <!-- مكتبة الأيقونات FontAwesome -->
+    <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- مكتبة Supabase JS -->
+    <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
-            --salla-primary: #00b894;
-            --salla-primary-hover: #00a383;
-            --salla-bg: #f8fafc;
-            --salla-text: #1e293b;
-            --salla-border: #e2e8f0;
-            --salla-card-bg: #ffffff;
-            --salla-radius-lg: 16px;
-            --salla-radius-md: 10px;
-            --salla-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --primary: #059669;
+            --primary-hover: #047857;
+            --primary-light: #ecfdf5;
+            --accent: #10b981;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--salla-bg); color: var(--salla-text); padding-bottom: 80px; }
-
-        /* شريط التنبيه العالي */
-        .announcement-bar {
-            background: linear-gradient(90deg, #10b981, #059669);
-            color: #ffffff;
-            text-align: center;
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
+        body { background: var(--bg); color: var(--text-dark); padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
 
         /* الهيدر */
         header {
-            background: #ffffff;
-            border-bottom: 1px solid var(--salla-border);
-            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.9rem 1.5rem;
             position: sticky;
             top: 0;
             z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            box-shadow: var(--shadow-sm);
         }
 
-        .brand { 
-            font-size: 1.5rem; 
-            font-weight: 900; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            color: var(--salla-text); 
-            text-decoration: none;
-        }
-        .brand i { color: var(--salla-primary); font-size: 1.7rem; }
-
-        .header-actions { display: flex; align-items: center; gap: 12px; }
-
-        .btn-auth {
-            background: #ffffff;
-            border: 1px solid var(--salla-border);
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.88rem;
-            color: #475569;
-            transition: 0.2s ease;
-        }
-        .btn-auth:hover { background: #f1f5f9; color: var(--salla-primary); }
-
-        .cart-btn {
-            background: #e6f7f4;
-            color: var(--salla-primary);
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
+        .brand {
+            font-size: 1.35rem;
             font-weight: 800;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-icon {
+            background: var(--primary-light);
+            color: var(--primary);
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .cart-icon-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid rgba(5, 150, 105, 0.2);
+            padding: 0.55rem 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.9rem;
+            transition: var(--transition);
             position: relative;
-            transition: 0.2s ease;
         }
-        .cart-btn:hover { background: #d0f2ec; }
-
+        .cart-icon-btn:hover { background: var(--primary); color: white; }
         .cart-badge {
             background: #ef4444;
             color: white;
             font-size: 0.75rem;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
         }
 
-        /* تنسيق البنرات بين الأقسام وفي الهيدر */
-        .banners-row {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 1200px;
-            margin: 1.5rem auto;
-            padding: 0 1.5rem;
-        }
-
-        .banner-card {
+        /* الفيديو والإعلانات والبنرات */
+        .container { padding: 1rem 1.2rem; max-width: 1100px; margin: 0 auto; }
+        
+        .banner-wrapper {
             width: 100%;
-            border-radius: var(--salla-radius-lg);
+            margin: 1rem 0;
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            background: linear-gradient(135deg, #00b894, #006266);
-            box-shadow: var(--salla-shadow);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #000;
+            box-shadow: var(--shadow-md);
+            position: relative;
         }
-
-        .banner-card img, 
-        .banner-card video {
+        .banner-media {
             width: 100%;
-            height: auto;
-            max-height: 380px;
+            max-height: 320px;
             object-fit: cover;
             display: block;
-            border: none;
         }
 
-        /* شبكة المنتجات والأقسام */
-        .container { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
-        .section-block { margin-bottom: 2.5rem; }
-        .section-title { font-size: 1.4rem; font-weight: 900; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px; color: #0f172a; }
-        .section-title i { color: var(--salla-primary); }
-
-        .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
-        .product-card { 
-            background: white; 
-            border: 1px solid var(--salla-border); 
-            border-radius: var(--salla-radius-lg); 
-            padding: 1.2rem; 
-            box-shadow: var(--salla-shadow);
-            text-align: center;
+        /* عنوان القسم */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 1.8rem 0 1rem;
+            color: var(--text-dark);
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            align-items: center;
+            gap: 10px;
         }
-        .product-card:hover { transform: translateY(-4px); box-shadow: 0 15px 30px -5px rgba(0,0,0,0.08); }
+        .section-title::after {
+            content: '';
+            flex-grow: 1;
+            height: 2px;
+            background: var(--border);
+            border-radius: 2px;
+        }
 
-        .img-box {
-            width: 100%;
-            height: 200px;
-            background: #f8fafc;
-            border-radius: var(--salla-radius-md);
+        /* شبكة المنتجات */
+        .grid-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.2rem;
+        }
+        @media (min-width: 640px) {
+            .grid-products { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
             overflow: hidden;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
         }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; }
-
-        .product-title { font-weight: 800; font-size: 1.05rem; margin-bottom: 8px; color: #1e293b; }
-        .product-price { color: var(--salla-primary); font-weight: 900; font-size: 1.25rem; margin-bottom: 12px; }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent);
+        }
+        .product-img { width: 100%; height: 160px; object-fit: cover; background: #f1f5f9; }
+        .product-details { padding: 0.9rem; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; line-height: 1.4; color: var(--text-dark); }
+        .product-price { color: var(--primary); font-weight: 800; font-size: 1.1rem; margin-top: auto; }
         
-        .btn-add { 
-            width: 100%; 
-            background: var(--salla-primary); 
-            color: white; 
-            border: none; 
-            padding: 0.85rem; 
-            border-radius: var(--salla-radius-md); 
-            font-weight: 800; 
-            cursor: pointer; 
-            transition: background 0.2s ease;
+        .btn-add {
+            width: 100%;
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            padding: 0.65rem;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            margin-top: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
-        .btn-add:hover { background: var(--salla-primary-hover); }
+        .btn-add:hover { background: var(--primary); color: white; }
 
-        /* نافذة تسجيل الدخول (Modal) */
-        .modal-overlay {
+        /* المودال وسلة الشراء */
+        .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
             display: none;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease-out;
+        }
+        @media(min-width: 600px) { .modal { align-items: center; padding: 1rem; } }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 580px;
+            border-radius: 24px 24px 0 0;
+            padding: 1.5rem;
+            max-height: 88vh;
+            overflow-y: auto;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+        }
+        @media(min-width: 600px) { .modal-content { border-radius: 24px; max-height: 90vh; } }
+
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+        .close-btn { background: #f1f5f9; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 1rem; cursor: pointer; color: var(--text-muted); transition: var(--transition); }
+        .close-btn:hover { background: #e2e8f0; color: var(--text-dark); }
+
+        /* بطاقات الإيصال والتحويل */
+        .invoice-card {
+            background: #ffffff;
+            border: 2px dashed var(--accent);
+            border-radius: var(--radius-md);
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .invoice-number {
+            background: var(--primary-light);
+            color: var(--primary-hover);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        /* عناصر السلة والتحكم بالكمية */
+        .cart-item { display: flex; align-items: center; gap: 12px; padding: 0.75rem 0; border-bottom: 1px dashed var(--border); }
+        .cart-item-img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; background: #f1f5f9; flex-shrink: 0; }
+        .cart-item-info { flex-grow: 1; }
+        .cart-item-title { font-weight: 700; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 2px; }
+        .cart-item-price { font-size: 0.8rem; color: var(--text-muted); }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 3px 8px;
+            border-radius: 8px;
+        }
+        .btn-qty {
+            background: white;
+            border: 1px solid var(--border);
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
+            color: var(--text-dark);
         }
-        .modal-box {
-            background: white;
-            padding: 2rem;
-            border-radius: var(--salla-radius-lg);
-            width: 90%;
-            max-width: 420px;
-            position: relative;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-        .modal-close {
-            position: absolute;
-            top: 15px; left: 15px;
-            border: none; background: none;
-            font-size: 1.3rem; cursor: pointer; color: #94a3b8;
-        }
-        .form-group { margin-bottom: 1.2rem; text-align: right; }
-        .form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 0.88rem; color: #334155; }
-        .form-group input {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid var(--salla-border);
-            border-radius: var(--salla-radius-md);
-            font-size: 0.95rem;
-            outline: none;
-        }
-        .form-group input:focus { border-color: var(--salla-primary); }
+        .btn-qty:hover { background: var(--primary-light); color: var(--primary); }
 
-        .btn-submit {
-            width: 100%;
-            background: var(--salla-primary);
-            color: white;
+        /* خدمة العامل الزراعي */
+        .worker-upsell-card {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white; padding: 1rem; border-radius: var(--radius-md); margin: 1rem 0;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+        }
+        .worker-upsell-info h4 { font-size: 0.9rem; font-weight: 800; margin-bottom: 2px; }
+        .worker-upsell-info p { font-size: 0.75rem; opacity: 0.9; }
+        .btn-toggle-worker {
+            background: white;
+            color: var(--primary);
             border: none;
-            padding: 0.85rem;
-            border-radius: var(--salla-radius-md);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
             font-weight: 800;
+            font-size: 0.8rem;
             cursor: pointer;
-            font-size: 1rem;
+            transition: var(--transition);
         }
-        .toggle-auth { text-align: center; margin-top: 1.2rem; font-size: 0.88rem; color: var(--salla-primary); cursor: pointer; font-weight: 700; }
+        .btn-toggle-worker.added { background: #fee2e2; color: #ef4444; }
 
-        /* درج سلة المشتريات (Cart Drawer) */
-        .cart-drawer {
-            position: fixed;
-            top: 0; left: -420px;
-            width: 100%; max-width: 400px;
-            height: 100%;
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.9rem; }
+        .summary-total { font-weight: 800; font-size: 1.15rem; border-top: 2px solid var(--border); padding-top: 0.6rem; margin-top: 0.6rem; }
+
+        /* تفاصيل البنك والنسخ */
+        .bank-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin: 1rem 0;
+            font-size: 0.85rem;
+        }
+        .bank-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
             background: white;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-            z-index: 999;
-            transition: left 0.3s ease;
-            display: flex;
-            flex-direction: column;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
         }
-        .cart-drawer.open { left: 0; }
-        .cart-header {
-            padding: 1.2rem 1.5rem;
-            border-bottom: 1px solid var(--salla-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 900;
-            font-size: 1.1rem;
-        }
-        .cart-items { flex: 1; overflow-y: auto; padding: 1.2rem; }
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--salla-border);
-        }
-        .cart-footer {
-            padding: 1.2rem 1.5rem;
-            border-top: 1px solid var(--salla-border);
-            background: var(--salla-bg);
-        }
-        .cart-total { display: flex; justify-content: space-between; font-weight: 900; font-size: 1.2rem; margin-bottom: 1rem; }
-
-        .qty-btn {
-            background: #f1f5f9;
-            border: 1px solid var(--salla-border);
-            width: 28px;
-            height: 28px;
+        .btn-copy {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            padding: 4px 8px;
             border-radius: 6px;
+            font-size: 0.75rem;
             cursor: pointer;
             font-weight: bold;
         }
+
+        /* عناصر المدخلات والأزرار */
+        .form-group { margin-bottom: 0.9rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-dark); }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1); }
+
+        .btn-location {
+            background: #2563eb; color: white; border: none; padding: 0.75rem; border-radius: 10px; width: 100%; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 0.5rem; transition: var(--transition);
+        }
+        .btn-location:hover { background: #1d4ed8; }
+
+        .btn-checkout {
+            background: #25D366;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.05rem;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+            transition: var(--transition);
+        }
+        .btn-checkout:hover { background: #1eb854; transform: translateY(-1px); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="announcement-bar">
-        <span>⚡ شحن مجاني للطلبات لأكثر من 199 ريال!</span>
-    </div>
-
     <header>
-        <div class="header-actions">
-            <button class="cart-btn" onclick="toggleCart()">
-                <i class="fa-solid fa-bag-shopping"></i>
-                <span class="cart-badge" id="cart-count">0</span>
-            </button>
-            <button class="btn-auth" id="user-btn" onclick="openAuthModal()">
-                <i class="fa-solid fa-user"></i>
-                <span id="user-btn-text">دخول / تسجيل</span>
-            </button>
+        <div class="brand">
+            <div class="brand-icon"><i class="fa-solid fa-leaf"></i></div>
+            <span>مشتل الناصرية</span>
         </div>
-
-        <a href="#" class="brand">
-            <i class="fa-solid fa-mug-hot"></i>
-            شاي العندليب
-        </a>
+        <button class="cart-icon-btn" onclick="openCart()">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>السلة</span>
+            <span class="cart-badge" id="cart-count">0</span>
+        </button>
     </header>
 
-    <!-- البنر الرئيسي في القمة -->
-    <div class="banners-row">
-        <div class="banner-card" id="main-db-banner">
-            <span style="color:white; font-weight:900; padding:3rem;">🍃 أهلاً بكم في متجر شاي العندليب 🍃</span>
-        </div>
+    <div class="container" id="banner-top-container"></div>
+    <div class="container" id="main-store-content">
+        <p style="text-align: center; color: var(--text-muted); margin: 3rem 0; font-weight: bold;"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل المنتجات والبنرات...</p>
     </div>
 
-    <!-- منطقة عرض الأقسام والمنتجات -->
-    <div class="container" id="sections-container">
-        <p style="text-align:center; font-weight:bold; color:#64748b; padding: 2rem;">جاري جلب الأقسام والمنتجات...</p>
-    </div>
-
-    <!-- نافذة تسجيل الدخول وإنشاء حساب -->
-    <div class="modal-overlay" id="auth-modal">
-        <div class="modal-box">
-            <button class="modal-close" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="modal-title" style="margin-bottom: 1.5rem; text-align: center; font-weight: 900;">تسجيل الدخول</h3>
-            
-            <form id="auth-form" onsubmit="handleAuth(event)">
-                <div class="form-group">
-                    <label>البريد الإلكتروني</label>
-                    <input type="email" id="auth-email" required placeholder="name@example.com">
-                </div>
-                <div class="form-group">
-                    <label>كلمة المرور</label>
-                    <input type="password" id="auth-password" required placeholder="******">
-                </div>
-                <button type="submit" class="btn-submit" id="auth-submit-btn">تسجيل الدخول</button>
-            </form>
-            <div class="toggle-auth" id="toggle-auth-btn" onclick="switchAuthMode()">حساب جديد؟ اضغط هنا لإنشاء حساب</div>
-        </div>
-    </div>
-
-    <!-- سلة المشتريات الجانبية -->
-    <div class="cart-drawer" id="cart-drawer">
-        <div class="cart-header">
-            <span><i class="fa-solid fa-bag-shopping" style="color:var(--salla-primary);"></i> سلة المشتريات</span>
-            <button style="border:none; background:none; cursor:pointer;" onclick="toggleCart()"><i class="fa-solid fa-xmark" style="font-size:1.2rem;"></i></button>
-        </div>
-        <div class="cart-items" id="cart-items-container">
-            <p style="text-align:center; color:#64748b; margin-top: 3rem;">السلة فارغة حالياً</p>
-        </div>
-        <div class="cart-footer">
-            <div class="cart-total">
-                <span>الإجمالي:</span>
-                <span id="cart-total-price">0 ر.س</span>
+    <!-- نافذة السلة والشراء -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-weight: 800; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-receipt" style="color:var(--primary)"></i> تفاصيل الفاتورة والطلب
+                </h3>
+                <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <button class="btn-submit" onclick="checkout()">إتمام الطلب</button>
+
+            <div class="invoice-card">
+                <div class="invoice-header">
+                    <div>
+                        <strong style="font-size: 1rem; color: var(--text-dark);">فاتورة شراء - مشاتل الناصرية</strong>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top:2px;" id="invoice-date"></div>
+                    </div>
+                    <div class="invoice-number" id="invoice-id-display">#INV-0000</div>
+                </div>
+
+                <div id="cart-items-list"></div>
+
+                <div style="margin-top: 1rem;">
+                    <div class="summary-row"><span>المجموع الفرعي:</span><span id="subtotal-val">0 ر.س</span></div>
+                    <div class="summary-row"><span>التوصيل:</span><span id="shipping-val">0 ر.س</span></div>
+                    <div class="summary-row summary-total"><span>الإجمالي النهائي:</span><span id="grandtotal-val" style="color:var(--primary)">0 ر.س</span></div>
+                </div>
+            </div>
+
+            <!-- إضافة عامل زراعي -->
+            <div class="worker-upsell-card">
+                <div class="worker-upsell-info">
+                    <h4><i class="fa-solid fa-user-gear"></i> خدمة عامل زراعي (يومان/شهرياً)</h4>
+                    <p>العناية بالحديقة وتقليم الأشجار (+299 ر.س)</p>
+                </div>
+                <button class="btn-toggle-worker" id="btn-worker-action" onclick="toggleWorkerService()">+ إضافة</button>
+            </div>
+
+            <!-- التفاصيل البنكية -->
+            <div class="bank-card">
+                <div style="text-align: center; margin-bottom: 8px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Aljazira_Bank_Logo.svg" alt="شعار بنك الجزيرة" style="max-width: 120px; height: auto; border-radius: 6px;">
+                </div>
+                <div style="color: #333; font-size: 0.85rem;">
+                    <p style="margin-bottom: 4px;"><strong>اسم الحساب:</strong> أسس الناصرية</p>
+                    
+                    <div class="bank-row">
+                        <span><strong>الحساب:</strong> <code>015482330145001</code></span>
+                        <button type="button" class="btn-copy" onclick="copyToClipboard('015482330145001')">نسخ</button>
+                    </div>
+                    <div class="bank-row">
+                        <span><strong>الآيبان:</strong> <code style="font-size: 0.75rem;">SA5460100015482330145001</code></span>
+                        <button type="button" class="btn-copy" onclick="copyToClipboard('SA5460100015482330145001')">نسخ</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- نموذج العميل -->
+            <form onsubmit="handlePlaceOrder(event)">
+                <div class="form-group">
+                    <label>الاسم الكامل <span style="color:red">*</span></label>
+                    <input type="text" id="cust-name" required placeholder="أدخل اسمك الكريم">
+                </div>
+                <div class="form-group">
+                    <label>رقم الجوال <span style="color:red">*</span></label>
+                    <input type="tel" id="cust-phone" required placeholder="05xxxxxxxx">
+                </div>
+
+                <div class="form-group">
+                    <label>تحديد موقع التوصيل <span style="color:red">*</span></label>
+                    <button type="button" class="btn-location" onclick="getExactLocation()">
+                        <i class="fa-solid fa-location-dot"></i> <span id="loc-btn-text">تحديد الموقع تلقائياً (GPS)</span>
+                    </button>
+                    <input type="text" id="cust-address" required placeholder="سيرفق رابط الخريطة هنا أو يمكنك كتابته" style="background: #ffffff;">
+                </div>
+
+                <div class="form-group">
+                    <label>إرفاق صورة إيصال التحويل البنكي <span style="color:red">*</span></label>
+                    <input type="file" id="cust-proof-file" accept="image/*" required style="padding:0.5rem; background:#f8fafc;">
+                </div>
+
+                <button type="submit" class="btn-checkout" id="btn-submit-order">
+                    <i class="fa-brands fa-whatsapp" style="font-size:1.4rem;"></i> إرسال الطلب عبر الواتساب
+                </button>
+            </form>
         </div>
     </div>
 
     <script>
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
-        
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        const ADMIN_WHATSAPP_NUMBER = "966546618705"; 
+        const STORE_LAT = 28.445194;
+        const STORE_LNG = 36.686194;
+
         let cart = [];
-        let isSignUp = false;
-        let currentUser = null;
+        let deliveryCost = 0;
+        let userLocationLink = "";
+        let currentInvoiceNumber = "";
 
-        // --- إدارة السلة ---
-        function toggleCart() {
-            document.getElementById('cart-drawer').classList.toggle('open');
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStoreData();
+        });
+
+        function generateInvoiceNumber() {
+            const randomNum = Math.floor(100000 + Math.random() * 900000);
+            currentInvoiceNumber = `INV-${randomNum}`;
+            document.getElementById('invoice-id-display').textContent = `#${currentInvoiceNumber}`;
+            document.getElementById('invoice-date').textContent = new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         }
 
-        function addToCart(id, name, price) {
-            const existing = cart.find(item => item.id === id);
-            if (existing) {
-                existing.qty++;
+        /* دالة تشغيل البنر الذكية (فيديو أو صورة) */
+        function renderBannerHTML(banner) {
+            if (!banner) return '';
+            
+            // محاولة جلب رابط الميديا من مختلف الحقول المحتملة في الجدول
+            const mediaUrl = banner.video_url || banner.image_url || banner.url || banner.src || banner.file_url;
+            if (!mediaUrl) return '';
+
+            // فحص هل الملف فيديو أم صورة
+            const isVideo = banner.type === 'video' || banner.video_url || mediaUrl.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i);
+
+            if (isVideo) {
+                return `
+                    <div class="banner-wrapper">
+                        <video class="banner-media" src="${mediaUrl}" autoplay loop muted playsinline></video>
+                    </div>
+                `;
             } else {
-                cart.push({ id, name, price: Number(price), qty: 1 });
+                return `
+                    <div class="banner-wrapper">
+                        <img class="banner-media" src="${mediaUrl}" alt="بنر إعلاني" onerror="this.parentElement.style.display='none'">
+                    </div>
+                `;
             }
-            updateCartUI();
-            toggleCart();
         }
 
-        function updateQty(id, delta) {
+        async function loadStoreData() {
+            const container = document.getElementById('main-store-content');
+            const topBannerContainer = document.getElementById('banner-top-container');
+
+            try {
+                const [
+                    { data: categories, error: catErr },
+                    { data: products, error: prodErr },
+                    { data: banners, error: banErr }
+                ] = await Promise.all([
+                    _supabase.from('categories').select('*').order('id', { ascending: true }),
+                    _supabase.from('products').select('*').order('id', { ascending: false }),
+                    _supabase.from('banners').select('*')
+                ]);
+
+                if (catErr || prodErr) throw (catErr || prodErr);
+
+                const cats = categories || [];
+                const prods = products || [];
+                const bans = banners || [];
+
+                // 1. عزل بنر القمة (سواء كان حقل Position ينص على top أو أخذ البنر الأول)
+                const topBanner = bans.find(b => b.position === 'top' || b.type === 'top') || bans[0];
+                if (topBanner) {
+                    topBannerContainer.innerHTML = renderBannerHTML(topBanner);
+                }
+
+                // 2. تصفية باقي البنرات لإدراجها بين الأقسام
+                const otherBanners = bans.filter(b => b !== topBanner);
+
+                if (cats.length === 0 && prods.length === 0) {
+                    container.innerHTML = `<p style="text-align:center; padding:3rem; color:var(--text-muted);">لا توجد منتجات مضافة حالياً.</p>`;
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                // عرض المنتجات حسب الأقسام وتوزيع البنرات المتبقية بينها
+                cats.forEach((cat, index) => {
+                    const catProducts = prods.filter(p => p.category_id == cat.id);
+                    let catHTML = `<div class="section-title"><i class="fa-solid fa-leaf" style="color:var(--primary)"></i> ${cat.name}</div>`;
+
+                    if (catProducts.length === 0) {
+                        catHTML += `<p style="color:var(--text-muted); font-size:0.9rem;">لا توجد منتجات متوفرة في هذا القسم.</p>`;
+                    } else {
+                        catHTML += `<div class="grid-products">`;
+                        catProducts.forEach(prod => {
+                            catHTML += `
+                                <div class="product-card">
+                                    <img src="${prod.image_url}" class="product-img" alt="${prod.name}" onerror="this.src='https://via.placeholder.com/200?text=لا+توجد+صورة'">
+                                    <div class="product-details">
+                                        <div class="product-name">${prod.name}</div>
+                                        <div class="product-price">${prod.price} <small style="font-size:0.75rem;">ر.س</small></div>
+                                        <button class="btn-add" onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price}, '${prod.image_url}')">
+                                            <i class="fa-solid fa-cart-plus"></i> إضافة للسلة
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        catHTML += `</div>`;
+                    }
+
+                    // دمج بنر إعلاني إضافي بعد قسم المنتجات إن وجد
+                    if (otherBanners[index]) {
+                        catHTML += renderBannerHTML(otherBanners[index]);
+                    }
+
+                    container.innerHTML += catHTML;
+                });
+
+            } catch (err) { 
+                console.error("Error loading store data:", err);
+                container.innerHTML = `<p style="text-align:center; padding:2rem; color:red;">حدث خطأ أثناء تحميل البيانات. يرجى إعادة المحاولة.</p>`;
+            }
+        }
+
+        function addToCart(id, name, price, imgUrl) {
+            const existing = cart.find(item => item.id === id);
+            if (existing) { existing.qty += 1; } else { cart.push({ id, name, price: Number(price), imgUrl, qty: 1 }); }
+            updateCartUI();
+        }
+
+        function updateQuantity(id, delta) {
             const item = cart.find(i => i.id === id);
             if (item) {
                 item.qty += delta;
                 if (item.qty <= 0) {
-                    cart = cart.filter(i => i.id !== id);
+                    removeFromCart(id);
+                } else {
+                    updateCartUI();
                 }
             }
+        }
+
+        function toggleWorkerService() {
+            const workerId = 'service_worker';
+            const existingIndex = cart.findIndex(item => item.id === workerId);
+            if (existingIndex > -1) { 
+                cart.splice(existingIndex, 1); 
+            } else {
+                cart.push({ 
+                    id: workerId, 
+                    name: 'عامل زراعي (يومان/شهر)', 
+                    price: 299, 
+                    imgUrl: 'https://cdn-icons-png.flaticon.com/512/1995/1995515.png', 
+                    qty: 1 
+                });
+            }
             updateCartUI();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+        }
+
+        function getExactLocation() {
+            const btnText = document.getElementById('loc-btn-text');
+            btnText.textContent = "جاري حساب المسافة والتوصيل...";
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    userLocationLink = `https://www.google.com/maps?q=${lat},${lng}`;
+
+                    document.getElementById('cust-address').value = userLocationLink;
+
+                    const distanceKm = calculateDistance(STORE_LAT, STORE_LNG, lat, lng);
+                    
+                    // حساب سعر التوصيل: 1 ريال لكل 1 كيلومتر
+                    deliveryCost = Math.ceil(distanceKm);
+
+                    btnText.textContent = `تم التحديد (المسافة: ${Math.ceil(distanceKm)} كم = ${deliveryCost} ر.س)`;
+                    updateCartUI();
+                }, () => {
+                    alert("تعذر الوصول التلقائي للموقع، يمكنك كتابة عنوانك بوضوح في خانة العنوان.");
+                    btnText.textContent = "تحديد الموقع تلقائياً (GPS)";
+                });
+            } else {
+                alert("متصفحك لا يدعم تحديد الموقع التلقائي.");
+            }
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; 
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("تم نسخ النص بنجاح: " + text);
+            }).catch(err => {
+                console.error('فشل النسخ: ', err);
+            });
         }
 
         function updateCartUI() {
-            const container = document.getElementById('cart-items-container');
-            const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
-            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cart-count').textContent = totalQty;
 
-            document.getElementById('cart-count').innerText = totalCount;
-            document.getElementById('cart-total-price').innerText = totalPrice + ' ر.س';
-
-            if (cart.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#64748b; margin-top: 3rem;">السلة فارغة حالياً</p>';
-                return;
+            const isWorkerAdded = cart.some(item => item.id === 'service_worker');
+            const workerBtn = document.getElementById('btn-worker-action');
+            if (workerBtn) {
+                workerBtn.textContent = isWorkerAdded ? '✓ مضاف (إلغاء)' : '+ إضافة';
+                workerBtn.classList.toggle('added', isWorkerAdded);
             }
 
-            let html = '';
-            cart.forEach(item => {
-                html += `
+            const listEl = document.getElementById('cart-items-list');
+            if (cart.length === 0) {
+                listEl.innerHTML = '<p style="text-align:center; padding:1.5rem; color:var(--text-muted);">السلة فارغة حالياً.</p>';
+            } else {
+                listEl.innerHTML = cart.map(item => `
                     <div class="cart-item">
-                        <div>
-                            <div style="font-weight:800;">${item.name}</div>
-                            <div style="font-size:0.88rem; color:var(--salla-primary); font-weight:700;">${item.price} ر.س</div>
+                        <img src="${item.imgUrl}" class="cart-item-img" alt="${item.name}" onerror="this.src='https://via.placeholder.com/60'">
+                        <div class="cart-item-info">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-price">${item.price} ر.س</div>
                         </div>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <button class="qty-btn" onclick="updateQty('${item.id}', -1)">-</button>
-                            <span style="font-weight:bold;">${item.qty}</span>
-                            <button class="qty-btn" onclick="updateQty('${item.id}', 1)">+</button>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        function checkout() {
-            if (cart.length === 0) {
-                alert('سلتك فارغة!');
-                return;
-            }
-            alert('تم تسجيل طلبك بنجاح! الإجمالي: ' + document.getElementById('cart-total-price').innerText);
-            cart = [];
-            updateCartUI();
-            toggleCart();
-        }
-
-        // --- إدارة تسجيل الدخول وإنشاء حساب ---
-        function openAuthModal() {
-            if (currentUser) {
-                if (confirm('هل ترغب في تسجيل الخروج؟')) {
-                    _supabase.auth.signOut();
-                    currentUser = null;
-                    document.getElementById('user-btn-text').innerText = "دخول / تسجيل";
-                }
-                return;
-            }
-            document.getElementById('auth-modal').style.display = 'flex';
-        }
-
-        function closeAuthModal() {
-            document.getElementById('auth-modal').style.display = 'none';
-        }
-
-        function switchAuthMode() {
-            isSignUp = !isSignUp;
-            document.getElementById('modal-title').innerText = isSignUp ? "إنشاء حساب جديد" : "تسجيل الدخول";
-            document.getElementById('auth-submit-btn').innerText = isSignUp ? "إنشاء حساب" : "تسجيل الدخول";
-            document.getElementById('toggle-auth-btn').innerText = isSignUp ? "لديك حساب بالفعل؟ تسجيل الدخول" : "حساب جديد؟ اضغط هنا لإنشاء حساب";
-        }
-
-        async function handleAuth(e) {
-            e.preventDefault();
-            const email = document.getElementById('auth-email').value.trim();
-            const password = document.getElementById('auth-password').value.trim();
-
-            try {
-                let res;
-                if (isSignUp) {
-                    res = await _supabase.auth.signUp({ email, password });
-                } else {
-                    res = await _supabase.auth.signInWithPassword({ email, password });
-                }
-
-                if (res.error) {
-                    if (res.error.message.includes("rate limit")) {
-                        alert("تم تجاوز حد المحاولات. يرجى الانتظار بضع دقائق أو تعطيل خيار Confirm Email من لوحة Supabase.");
-                    } else if (res.error.message.includes("Invalid login credentials")) {
-                        alert("البريد الإلكتروني أو كلمة المرور غير صحيحة، أو أن الحساب غير موجود. اضغط على 'حساب جديد' لإنشائه أولاً.");
-                    } else if (res.error.message.includes("invalid")) {
-                        alert("يرجى إدخال بريد إلكتروني صحيح.");
-                    } else {
-                        alert("خطأ: " + res.error.message);
-                    }
-                } else {
-                    alert(isSignUp ? "تم إنشاء الحساب بنجاح!" : "تم تسجيل الدخول بنجاح!");
-                    currentUser = res.data.user;
-                    document.getElementById('user-btn-text').innerText = email.split('@')[0];
-                    closeAuthModal();
-                }
-            } catch (err) {
-                alert("حدث خطأ غير متوقع: " + err.message);
-            }
-        }
-
-        // --- جلب البنر الرئيسي في القمة ---
-        async function loadMainBanner() {
-            const bannerDiv = document.getElementById('main-db-banner');
-            try {
-                const { data, error } = await _supabase.from('banners').select('*');
-                if (error || !data || data.length === 0) return;
-                
-                const latest = data[0]; // البنر الأول للرأسية
-                const mediaUrl = latest.media_url || latest.video_url || latest.image_url || latest.url;
-                const isVideo = mediaUrl && (mediaUrl.endsWith('.mp4') || latest.media_type === 'video');
-
-                if (mediaUrl) {
-                    if (isVideo) {
-                        bannerDiv.innerHTML = `
-                            <video autoplay loop muted playsinline>
-                                <source src="${mediaUrl}" type="video/mp4">
-                            </video>
-                        `;
-                    } else {
-                        bannerDiv.innerHTML = `<img src="${mediaUrl}" alt="البنر الإعلاني">`;
-                    }
-                }
-            } catch (e) { console.error(e); }
-        }
-
-        // --- جلب الأقسام والمنتجات معاً وعرض البنرات المخصصة لكل قسم ---
-        async function loadStoreStorefront() {
-            const container = document.getElementById('sections-container');
-            try {
-                const [productsRes, categoriesRes, bannersRes] = await Promise.all([
-                    _supabase.from('products').select('*'),
-                    _supabase.from('categories').select('*'),
-                    _supabase.from('banners').select('*')
-                ]);
-
-                const products = productsRes.data || [];
-                const categories = categoriesRes.data || [];
-                const banners = bannersRes.data || [];
-
-                if (products.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; padding:2rem; font-weight:bold;">لا توجد منتجات مضافة حالياً.</p>';
-                    return;
-                }
-
-                let fullHtml = '';
-
-                if (categories.length > 0) {
-                    categories.forEach((category, index) => {
-                        // تصفية منتجات هذا القسم فقط
-                        const categoryProducts = products.filter(p => p.category_id === category.id || p.category === category.name);
-                        
-                        if (categoryProducts.length > 0) {
-                            fullHtml += `
-                                <div class="section-block">
-                                    <div class="section-title">
-                                        <i class="fa-solid fa-layer-group"></i>
-                                        ${category.name || category.title || 'قسم'}
-                                    </div>
-                                    ${renderProductsGrid(categoryProducts)}
-                                </div>
-                            `;
-
-                            // إضافة البنر الخاص بهذا القسم فقط
-                            fullHtml += renderSectionSpecificBanner(banners, category, index);
-                        }
-                    });
-                } else {
-                    fullHtml += `
-                        <div class="section-block">
-                            <div class="section-title">
-                                <i class="fa-solid fa-boxes-stacked"></i>
-                                المنتجات المتميزة
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div class="qty-controls">
+                                <button type="button" class="btn-qty" onclick="updateQuantity('${item.id}', 1)">+</button>
+                                <span style="font-weight:bold; font-size:0.85rem; min-width:16px; text-align:center;">${item.qty}</span>
+                                <button type="button" class="btn-qty" onclick="updateQuantity('${item.id}', -1)">-</button>
                             </div>
-                            ${renderProductsGrid(products)}
+                            <strong style="color:var(--primary); font-size:0.9rem;">${item.price * item.qty} ر.س</strong>
+                            <button type="button" onclick="removeFromCart('${item.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.9rem;"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
-                    `;
-                }
-
-                container.innerHTML = fullHtml;
-
-            } catch (e) { 
-                console.error(e);
-                container.innerHTML = '<p style="text-align:center; color:red;">حدث خطأ في تحميل البيانات.</p>';
+                    </div>
+                `).join('');
             }
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const grandTotal = subtotal + deliveryCost;
+
+            document.getElementById('subtotal-val').textContent = `${subtotal} ر.س`;
+            document.getElementById('shipping-val').textContent = deliveryCost > 0 ? `${deliveryCost} ر.س` : `حدد الموقع`;
+            document.getElementById('grandtotal-val').textContent = `${grandTotal} ر.س`;
         }
 
-        // دالة توليد شبكة المنتجات
-        function renderProductsGrid(productsList) {
-            let html = '<div class="grid-products">';
-            productsList.forEach(item => {
-                const id = item.id || Math.random().toString();
-                const name = item.name || item.title || 'منتج';
-                const price = item.price || 0;
-                
-                let img = null;
-                for (let k in item) {
-                    if (item[k] && typeof item[k] === 'string' && (item[k].includes('http://') || item[k].includes('https://'))) {
-                        img = item[k].trim();
-                        break;
+        function openCart() {
+            generateInvoiceNumber();
+            document.getElementById('cart-modal').style.display = 'flex';
+        }
+
+        function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
+
+        async function handlePlaceOrder(e) {
+            e.preventDefault();
+            if (cart.length === 0) return alert("السلة فارغة، يرجى إضافة شتلات أولاً!");
+
+            const addressInput = document.getElementById('cust-address').value.trim();
+            if (!addressInput) return alert("يرجى تحديد الموقع أو كتابة العنوان!");
+
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const btn = document.getElementById('btn-submit-order');
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري إرسال الطلب...`;
+
+            try {
+                const proofFileInput = document.getElementById('cust-proof-file');
+                let proofUrl = "لم يتم إرفاق إيصال";
+
+                if (proofFileInput.files.length > 0) {
+                    const file = proofFileInput.files[0];
+                    const fileName = `${Date.now()}_${file.name}`;
+                    const { data: uploadData, error: uploadErr } = await _supabase.storage.from('receipts').upload(fileName, file);
+                    if (!uploadErr && uploadData) {
+                        const { data: publicUrlData } = _supabase.storage.from('receipts').getPublicUrl(fileName);
+                        proofUrl = publicUrlData.publicUrl;
                     }
                 }
 
-                let imgHtml = img 
-                    ? `<img src="${img}" alt="${name}">` 
-                    : `<div style="font-weight:bold; color:#64748b;"><i class="fa-solid fa-leaf" style="font-size:2.5rem; margin-bottom:8px; display:block; color:var(--salla-primary);"></i>${name}</div>`;
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                const grandTotal = subtotal + deliveryCost;
 
-                html += `
-                    <div class="product-card">
-                        <div>
-                            <div class="img-box">${imgHtml}</div>
-                            <div class="product-title">${name}</div>
-                        </div>
-                        <div>
-                            <div class="product-price">${price} ر.س</div>
-                            <button class="btn-add" onclick="addToCart('${id}', '${name}', ${price})">
-                                <i class="fa-solid fa-cart-plus"></i> إضافة للسلة
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-            html += '</div>';
-            return html;
-        }
+                let itemsText = cart.map(item => `• ${item.name} (${item.qty}×) - ${item.price * item.qty} ر.س`).join('\n');
 
-        // دالة عرض بنر مخصص لكل قسم بدون تكرار
-        function renderSectionSpecificBanner(banners, category, sectionIndex) {
-            // 1. البحث في Supabase عن بنر خاص بالقسم بواسطة ID القسم أو الترتيب
-            let matchedBanner = banners.find(b => 
-                (b.category_id && b.category_id === category.id) || 
-                (b.section_index !== undefined && Number(b.section_index) === sectionIndex)
-            );
+                const message = `*طلب جديد من مشتل الناصرية* 🌿\n` +
+                    `*رقم الفاتورة:* ${currentInvoiceNumber}\n` +
+                    `*الاسم:* ${name}\n` +
+                    `*رقم الجوال:* ${phone}\n` +
+                    `*الموقع:* ${addressInput}\n\n` +
+                    `*الطلبات:*\n${itemsText}\n\n` +
+                    `*المجموع الفرعي:* ${subtotal} ر.س\n` +
+                    `*سعر التوصيل:* ${deliveryCost} ر.س\n` +
+                    `*الإجمالي النهائي:* ${grandTotal} ر.س\n\n` +
+                    `*رابط الإيصال:* ${proofUrl}`;
 
-            // 2. أو استعراض البنرات حسب الترتيب (البنر التالي بعد الهيدر)
-            if (!matchedBanner && banners[sectionIndex + 1]) {
-                matchedBanner = banners[sectionIndex + 1];
+                const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+            } catch (err) {
+                console.error(err);
+                alert("حدث خطأ أثناء معالجة الطلب.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.4rem;"></i> إرسال الطلب عبر الواتساب`;
             }
-
-            // إذا لم يتوفر بنر مخصص، لا يُعرض أي شيء ولن يتكرر بنر القسم الأول
-            if (!matchedBanner) return '';
-
-            const mediaUrl = matchedBanner.media_url || matchedBanner.video_url || matchedBanner.image_url || matchedBanner.url;
-            if (!mediaUrl) return '';
-
-            const isVideo = mediaUrl.endsWith('.mp4') || matchedBanner.media_type === 'video';
-
-            return `
-                <div class="banners-row">
-                    <div class="banner-card">
-                        ${isVideo ? `
-                            <video autoplay loop muted playsinline>
-                                <source src="${mediaUrl}" type="video/mp4">
-                            </video>
-                        ` : `
-                            <img src="${mediaUrl}" alt="بنر قسم ${category.name || ''}">
-                        `}
-                    </div>
-                </div>
-            `;
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadMainBanner();
-            loadStoreStorefront();
-        });
     </script>
 </body>
 </html>
