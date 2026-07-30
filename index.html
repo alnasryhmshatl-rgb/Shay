@@ -123,12 +123,14 @@
     </div>
 
     <div class="container" id="main-content">
-        <p style="text-align:center; font-weight:bold;">جاري التحميل...</p>
+        <p style="text-align:center; font-weight:bold;">جاري الاتصال بقاعدة البيانات...</p>
     </div>
 
     <script>
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInRefiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
+        // المفتاح المصحح بدقة
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
+        
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         function showDebugError(msg) {
@@ -144,7 +146,7 @@
                 if (error) { showDebugError("خطأ البنر: " + error.message); return; }
                 
                 if (data && data.length > 0) {
-                    const banner = data[data.length - 1]; // أخذ أحدث بنر مضاف
+                    const banner = data[data.length - 1];
                     const url = banner.image_url || banner.image || banner.url;
                     if (url && url.startsWith('http')) {
                         document.getElementById('store-banner').innerHTML = `<img src="${url}" alt="بنر المتجر">`;
@@ -163,12 +165,12 @@
 
                 if (error) {
                     showDebugError("خطأ المنتجات: " + error.message);
-                    container.innerHTML = `<p style="text-align:center; color:red;">تعذر جلب البيانات. يرجى مراجعة صلاحيات Supabase.</p>`;
+                    container.innerHTML = `<p style="text-align:center; color:red;">تعذر جلب البيانات.</p>`;
                     return;
                 }
 
                 if (!data || data.length === 0) {
-                    container.innerHTML = '<p style="text-align:center;">لا توجد منتجات حتى الآن.</p>';
+                    container.innerHTML = '<p style="text-align:center;">لا توجد منتجات مضافة حالياً.</p>';
                     return;
                 }
 
