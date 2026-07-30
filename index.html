@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- مكتبة Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -24,6 +25,19 @@
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
         body { background: var(--bg); color: #0f172a; padding-bottom: 80px; }
 
+        .urgency-bar {
+            background: linear-gradient(90deg, #1e1b4b, #311b92);
+            color: #fde047;
+            text-align: center;
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
         header {
             background: #fff;
             border-bottom: 1px solid var(--border);
@@ -36,8 +50,54 @@
             align-items: center;
         }
 
-        .brand { font-size: 1.4rem; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .brand { font-size: 1.4rem; font-weight: 900; display: flex; align-items: center; gap: 8px; color: #0f172a; }
         .brand i { color: var(--primary); }
+
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+
+        .btn-auth {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 0.55rem 1.1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #334155;
+            transition: 0.2s;
+        }
+        .btn-auth:hover { background: #f1f5f9; }
+
+        .cart-btn {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border: none;
+            padding: 0.55rem 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .cart-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
 
         .banner-container { max-width: 1200px; margin: 1.5rem auto; padding: 0 1.5rem; }
         .hero-banner {
@@ -94,7 +154,9 @@
             font-weight: 800; 
             margin-top: 12px; 
             cursor: pointer; 
+            transition: 0.2s;
         }
+        .btn-add:hover { background: var(--primary-dark); }
 
         .debug-notice {
             background: #fff3cd;
@@ -111,9 +173,24 @@
 </head>
 <body>
 
+    <div class="urgency-bar">
+        <span>⚡ عروض حصرية لفترة محدودة!</span>
+    </div>
+
     <div id="debug-box" class="debug-notice"></div>
 
     <header>
+        <div class="header-actions">
+            <button class="cart-btn" onclick="alert('سلة المشتريات قيد التطوير')">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="cart-badge" id="cart-count">0</span>
+            </button>
+            <button class="btn-auth" onclick="alert('صفحة الدخول وتسجيل حساب جديد')">
+                <i class="fa-solid fa-user"></i>
+                <span>دخول / تسجيل</span>
+            </button>
+        </div>
+
         <div class="brand">
             <i class="fa-solid fa-mug-hot"></i>
             شاي العندليب
@@ -142,38 +219,26 @@
             box.innerHTML += `<div>📌 ${msg}</div>`;
         }
 
-        // جلب البنر مع دعم كل أسماء الأعمدة المحتملة
+        // جلب البنر
         async function loadBanner() {
             const bannerDiv = document.getElementById('store-banner');
             try {
                 const { data, error } = await _supabase.from('banners').select('*');
                 if (error) { 
-                    showDebug("خطأ في قراءة جدول البنرات: " + error.message); 
+                    showDebug("خطأ البنر: " + error.message); 
                     return; 
                 }
                 
-                if (!data || data.length === 0) {
-                    showDebug("جدول banners فارغ في قاعدة البيانات. أضف سطلاً جديداً يحتوي على رابط الصورة.");
-                    return;
-                }
+                if (data && data.length > 0) {
+                    const latest = data[data.length - 1];
+                    const bannerUrl = latest.image_url || latest.image || latest.url || latest.banner_url || latest.img;
 
-                // اختيار أحدث بنر
-                const latest = data[data.length - 1];
-                
-                // البحث عن الرابط بغض النظر عن اسم العمود في الجدول
-                const bannerUrl = latest.image_url || latest.image || latest.url || latest.banner_url || latest.img;
-
-                if (bannerUrl) {
-                    if (typeof bannerUrl === 'string' && bannerUrl.trim().startsWith('http')) {
-                        bannerDiv.innerHTML = `<img src="${bannerUrl.trim()}" alt="البنر الإعلاني" onerror="showDebug('فشل تحميل صورة البنر! تأكد أن الرابط المباشر يعمل عبر المتصفح.');">`;
-                    } else {
-                        showDebug(`قيمة رابط البنر المسجلة هي: "${bannerUrl}". يجب أن يبدأ الرابط بـ http:// أو https://`);
+                    if (bannerUrl && typeof bannerUrl === 'string' && bannerUrl.trim().startsWith('http')) {
+                        bannerDiv.innerHTML = `<img src="${bannerUrl.trim()}" alt="البنر الإعلاني" onerror="showDebug('فشل تحميل صورة البنر! تأكد أن رابط الصورة مباشر ومعروض للعامة.');">`;
                     }
-                } else {
-                    showDebug("تم العثور على سطر في جدول البنرات لكن لم يتم العثور على رابط في الأعمدة (image_url / image / url).");
                 }
             } catch (e) {
-                showDebug("استثناء في البنر: " + e.message);
+                showDebug("استثناء البنر: " + e.message);
             }
         }
 
