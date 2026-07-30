@@ -15,11 +15,7 @@
             --primary: #7c3aed;
             --primary-dark: #5b21b6;
             --primary-light: #f3e8ff;
-            --accent: #f59e0b;
             --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
             --border: #e2e8f0;
             --radius-lg: 20px;
             --radius-md: 12px;
@@ -27,24 +23,10 @@
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text-dark); padding-bottom: 110px; }
-
-        .urgency-bar {
-            background: linear-gradient(90deg, #1e1b4b, #311b92);
-            color: #fde047;
-            text-align: center;
-            padding: 0.6rem 1rem;
-            font-size: 0.85rem;
-            font-weight: 700;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
+        body { background: var(--bg); color: #0f172a; padding-bottom: 80px; }
 
         header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
+            background: #fff;
             border-bottom: 1px solid var(--border);
             padding: 1rem 2rem;
             position: sticky;
@@ -55,470 +37,171 @@
             align-items: center;
         }
 
-        .brand { font-size: 1.4rem; font-weight: 900; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
-        .brand i { color: var(--primary); font-size: 1.6rem; }
-        
-        .header-actions { display: flex; align-items: center; gap: 10px; }
+        .brand { font-size: 1.4rem; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .brand i { color: var(--primary); }
 
-        .btn-auth {
-            background: #fff;
-            border: 1px solid var(--border);
-            padding: 0.6rem 1.1rem;
-            border-radius: 50px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
-        }
-
-        .cart-icon-btn {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .cart-badge { background: #ef4444; color: white; font-size: 0.75rem; border-radius: 50%; padding: 2px 7px; }
-
-        /* تصميم البنر المربوط بالداشبورد */
-        .banner-container {
-            max-width: 1200px;
-            margin: 1.5rem auto 0.5rem auto;
-            padding: 0 1.5rem;
-        }
+        .banner-container { max-width: 1200px; margin: 1.5rem auto; padding: 0 1.5rem; }
         .hero-banner {
             width: 100%;
             height: 220px;
             border-radius: var(--radius-lg);
             overflow: hidden;
-            position: relative;
-            box-shadow: var(--shadow);
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 900;
         }
-        .hero-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .banner-placeholder-text { color: white; font-size: 1.8rem; font-weight: 900; text-align: center; }
+        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
 
         .container { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
-        .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
-        .product-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: space-between; }
-        .product-img { width: 100%; height: 180px; object-fit: cover; border-radius: var(--radius-md); background: #f1f5f9; }
-        .product-title { font-weight: 800; margin-top: 10px; font-size: 1.1rem; }
-        .product-price { color: var(--primary); font-weight: 900; margin-top: 5px; font-size: 1rem; }
-        .btn-add { width: 100%; background: var(--primary); color: white; border: none; padding: 0.7rem; border-radius: 8px; font-weight: 800; margin-top: 10px; cursor: pointer; transition: 0.2s ease; }
-        .btn-add:hover { background: var(--primary-dark); }
+        .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
+        .product-card { 
+            background: white; 
+            border: 1px solid var(--border); 
+            border-radius: var(--radius-lg); 
+            padding: 1.2rem; 
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
 
-        .modal {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
+        .img-box {
+            width: 100%;
+            height: 180px;
+            background: #f1f5f9;
+            border-radius: var(--radius-md);
+            overflow: hidden;
             display: flex;
-            justify-content: center;
             align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
+            justify-content: center;
+            margin-bottom: 12px;
         }
-        .modal.active { opacity: 1; pointer-events: auto; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 480px;
-            border-radius: var(--radius-lg);
-            padding: 1.8rem;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .close-btn { position: absolute; left: 1.5rem; top: 1.5rem; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; }
-
-        .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 800; margin-bottom: 0.4rem; }
-        .form-group input { width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: var(--radius-md); outline: none; font-weight: 600; }
-        .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 0.9rem; border-radius: var(--radius-md); font-weight: 800; cursor: pointer; }
-
-        .invoice-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; }
-        .invoice-header { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 0.8rem; margin-bottom: 0.8rem; }
-        .coupon-box { display: flex; gap: 8px; margin: 1rem 0; background: #f8fafc; padding: 6px; border-radius: 10px; border: 1px solid var(--border); }
-        .coupon-box input { flex-grow: 1; border: none; background: transparent; padding: 0.4rem; font-weight: 700; outline: none; }
-        .coupon-box button { background: var(--primary); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: 800; cursor: pointer; }
+        .product-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 6px; }
+        .product-price { color: var(--primary); font-weight: 900; font-size: 1.2rem; }
         
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            padding: 0.8rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            display: none;
+        .btn-add { 
+            width: 100%; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            padding: 0.75rem; 
+            border-radius: var(--radius-md); 
+            font-weight: 800; 
+            margin-top: 12px; 
+            cursor: pointer; 
         }
 
-        .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.9rem; }
+        .error-log {
+            background: #fef2f2;
+            color: #991b1b;
+            padding: 12px;
+            margin: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+            border: 1px solid #fca5a5;
+        }
     </style>
 </head>
 <body>
 
-    <div class="urgency-bar">
-        <span>⚡ عروض حصرية لفترة محدودة!</span>
-    </div>
+    <div id="error-box" class="error-log"></div>
 
     <header>
         <div class="brand">
             <i class="fa-solid fa-mug-hot"></i>
             شاي العندليب
         </div>
-        <div class="header-actions">
-            <div id="user-auth-btn">
-                <button class="btn-auth" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> دخول / تسجيل</button>
-            </div>
-            <button class="cart-icon-btn" onclick="openCart()">
-                <i class="fa-solid fa-bag-shopping"></i>
-                <span class="cart-badge" id="cart-count">0</span>
-            </button>
-        </div>
     </header>
 
-    <!-- البنر الإعلاني العاطفي المربوط بجداول Supabase -->
     <div class="banner-container">
-        <div class="hero-banner" id="store-banner">
-            <div class="banner-placeholder-text">🍃 أهلاً بكم في متجر شاي العندليب 🍃</div>
-        </div>
+        <div class="hero-banner" id="store-banner">🍃 أهلاً بكم في متجر شاي العندليب 🍃</div>
     </div>
 
-    <div class="container" id="main-store-content">
-        <p style="text-align:center; font-weight:bold;">جاري تحميل المنتجات...</p>
-    </div>
-
-    <!-- نافذة تسجيل الدخول/التسجيل -->
-    <div class="modal" id="auth-modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
-            <h3 style="margin-bottom: 1.2rem; font-weight: 900;" id="auth-title">تسجيل الدخول</h3>
-            
-            <div id="auth-error-msg" class="alert-error"></div>
-
-            <form id="auth-form" onsubmit="handleAuthSubmit(event)">
-                <div class="form-group" id="name-group" style="display: none;">
-                    <label>الاسم الكامل</label>
-                    <input type="text" id="auth-name" placeholder="أدخل اسمك الكريم">
-                </div>
-                <div class="form-group">
-                    <label>رقم الجوال</label>
-                    <input type="tel" id="auth-phone" required placeholder="05xxxxxxxx">
-                </div>
-                <div class="form-group">
-                    <label>كلمة المرور</label>
-                    <input type="password" id="auth-password" required placeholder="••••••••">
-                </div>
-                <button type="submit" class="btn-submit" id="auth-submit-btn">دخول</button>
-            </form>
-
-            <p style="text-align: center; margin-top: 1rem; font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">
-                <span id="auth-switch-text">ليس لديك حساب؟</span>
-                <a href="#" onclick="toggleAuthMode(event)" style="color: var(--primary); text-decoration: none;" id="auth-switch-link">إنشاء حساب جديد</a>
-            </p>
-        </div>
-    </div>
-
-    <!-- نافذة الفاتورة -->
-    <div class="modal" id="cart-modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
-            <h3 style="margin-bottom: 1rem; font-weight: 900;"><i class="fa-solid fa-file-invoice"></i> فاتورة الطلب</h3>
-
-            <div class="invoice-card">
-                <div class="invoice-header">
-                    <div><strong>شاي العندليب</strong></div>
-                    <div id="invoice-id-display" style="font-weight: 800; color: var(--primary);">#INV-0000</div>
-                </div>
-                <div id="cart-items-list"></div>
-
-                <div class="coupon-box">
-                    <input type="text" id="coupon-code-input" placeholder="كود الخصم (مثل: منتج سعودي)">
-                    <button type="button" onclick="applyDiscountCoupon()">تطبيق</button>
-                </div>
-
-                <div style="margin-top: 0.8rem; font-size: 0.9rem;">
-                    <div style="display:flex; justify-content:space-between;"><span>المجموع:</span><span id="subtotal-val">0 ر.س</span></div>
-                    <div style="display:flex; justify-content:space-between;"><span>التوصيل:</span><span id="shipping-val">0 ر.س</span></div>
-                    <div style="display:flex; justify-content:space-between; font-weight:900; margin-top:0.5rem; font-size:1.1rem;"><span>الإجمالي:</span><span id="grandtotal-val">0 ر.س</span></div>
-                </div>
-            </div>
-
-            <button onclick="sendOrderToWhatsApp()" class="btn-submit" style="background:#25D366;"><i class="fa-brands fa-whatsapp"></i> تأكيد وإرسال للواتساب</button>
-        </div>
+    <div class="container" id="main-content">
+        <p style="text-align:center; font-weight:bold;">جاري التحميل...</p>
     </div>
 
     <script>
-        // إعداد الاتصال بـ Supabase
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInRefiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let currentUser = JSON.parse(localStorage.getItem('user_session')) || null;
-        let isSignUpMode = false;
-        let cart = [];
-        let baseDelivery = 20;
-        let discountApplied = false;
-        let products = [];
+        function showDebugError(msg) {
+            const box = document.getElementById('error-box');
+            box.style.display = 'block';
+            box.innerHTML += `<div>⚠️ ${msg}</div>`;
+        }
 
-        // 1. جلب البنر الإعلاني من الداشبورد / Supabase
-        async function fetchBannerFromDatabase() {
-            const bannerDiv = document.getElementById('store-banner');
+        // جلب البنر
+        async function loadBanner() {
             try {
-                const { data, error } = await _supabase.from('banners').select('image_url').limit(1).maybeSingle();
-                if (data && data.image_url) {
-                    bannerDiv.innerHTML = `<img src="${data.image_url}" alt="البنر الإعلاني">`;
-                }
-            } catch (err) {
-                console.warn("لم يتم إيجاد بنر مخصص، تم استخدام البنر الافتراضي.");
-            }
-        }
-
-        // 2. جلب المنتجات من قاعدة البيانات
-        async function fetchProductsFromDatabase() {
-            const container = document.getElementById('main-store-content');
-            
-            const { data, error } = await _supabase.from('products').select('*');
-
-            if (error) {
-                container.innerHTML = `<p style="text-align:center; color:red; font-weight:bold;">حدث خطأ أثناء جلب المنتجات: ${error.message}</p>`;
-                return;
-            }
-
-            if (!data || data.length === 0) {
-                container.innerHTML = '<p style="text-align:center; font-weight:bold;">لا توجد منتجات متاحة حالياً.</p>';
-                return;
-            }
-
-            products = data;
-            renderProducts();
-        }
-
-        // عرض المنتجات في الصفحة
-        function renderProducts() {
-            const container = document.getElementById('main-store-content');
-            let html = '<div class="grid-products">';
-            const fallbackImage = 'https://via.placeholder.com/260x180?text=لا+توجد+صورة';
-
-            products.forEach(p => {
-                let imgUrl = (p.image && p.image.startsWith('http')) ? p.image : fallbackImage;
-
-                html += `
-                    <div class="product-card">
-                        <div>
-                            <img src="${imgUrl}" 
-                                 onerror="this.onerror=null; this.src='${fallbackImage}';" 
-                                 class="product-img" 
-                                 alt="${p.name}">
-                            <div class="product-title">${p.name}</div>
-                            <div class="product-price">${p.price} ر.س</div>
-                        </div>
-                        <button class="btn-add" onclick="addToCart('${p.id}')">إضافة للسلة</button>
-                    </div>
-                `;
-            });
-            html += '</div>';
-            container.innerHTML = html;
-        }
-
-        function addToCart(productId) {
-            const product = products.find(p => p.id == productId);
-            if (!product) return;
-
-            const item = cart.find(i => i.id == productId);
-            if (item) {
-                item.qty++;
-            } else {
-                cart.push({ ...product, qty: 1 });
-            }
-            updateCartUI();
-        }
-
-        function updateAuthUI() {
-            const btnContainer = document.getElementById('user-auth-btn');
-            if (currentUser) {
-                btnContainer.innerHTML = `
-                    <button class="btn-auth" style="color: var(--primary); font-weight:800;" onclick="logout()">
-                        <i class="fa-solid fa-circle-user"></i> ${currentUser.name} (خروج)
-                    </button>
-                `;
-            } else {
-                btnContainer.innerHTML = `
-                    <button class="btn-auth" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> دخول / تسجيل</button>
-                `;
-            }
-        }
-
-        function showError(msg) {
-            const errBox = document.getElementById('auth-error-msg');
-            errBox.textContent = msg;
-            errBox.style.display = 'block';
-        }
-
-        function clearError() {
-            const errBox = document.getElementById('auth-error-msg');
-            errBox.style.display = 'none';
-        }
-
-        function toggleAuthMode(e) {
-            e.preventDefault();
-            clearError();
-            isSignUpMode = !isSignUpMode;
-            document.getElementById('name-group').style.display = isSignUpMode ? 'block' : 'none';
-            document.getElementById('auth-title').textContent = isSignUpMode ? 'حساب جديد' : 'تسجيل الدخول';
-            document.getElementById('auth-submit-btn').textContent = isSignUpMode ? 'إنشاء حساب' : 'دخول';
-            document.getElementById('auth-switch-text').textContent = isSignUpMode ? 'لديك حساب بالفعل؟' : 'ليس لديك حساب؟';
-            document.getElementById('auth-switch-link').textContent = isSignUpMode ? 'تسجيل الدخول' : 'إنشاء حساب جديد';
-        }
-
-        // 3. تسجيل الدخول وإنشاء حساب مرتبطان بالداشبورد
-        async function handleAuthSubmit(e) {
-            e.preventDefault();
-            clearError();
-            
-            const phone = document.getElementById('auth-phone').value.trim();
-            const password = document.getElementById('auth-password').value.trim();
-            const name = document.getElementById('auth-name').value.trim();
-
-            if (isSignUpMode) {
-                if (!name) { showError("يرجى كتابة الاسم الكامل"); return; }
+                const { data, error } = await _supabase.from('banners').select('*');
+                if (error) { showDebugError("خطأ البنر: " + error.message); return; }
                 
-                const { data, error } = await _supabase.from('users_profiles').insert([{ phone, password, name }]);
-                
-                if (error) {
-                    if (error.message.includes('users_profiles')) {
-                        showError("جدول المستخدمين غير موجود في Supabase.");
-                    } else if (error.message.includes('unique constraint')) {
-                        showError("رقم الجوال هذا مسجل مسبقاً، حاول تسجيل الدخول.");
-                    } else {
-                        showError(error.message);
+                if (data && data.length > 0) {
+                    const banner = data[data.length - 1]; // أخذ أحدث بنر مضاف
+                    const url = banner.image_url || banner.image || banner.url;
+                    if (url && url.startsWith('http')) {
+                        document.getElementById('store-banner').innerHTML = `<img src="${url}" alt="بنر المتجر">`;
                     }
-                    return;
                 }
-                currentUser = { phone, name };
-            } else {
-                const { data, error } = await _supabase.from('users_profiles').select('*').eq('phone', phone).eq('password', password).maybeSingle();
-                
-                if (error) {
-                    showError("خطأ في الاتصال: " + error.message);
-                    return;
-                }
-                if (!data) {
-                    showError("رقم الجوال أو كلمة المرور غير صحيحة");
-                    return;
-                }
-                currentUser = { phone: data.phone, name: data.name };
+            } catch (e) {
+                showDebugError("استثناء البنر: " + e.message);
             }
-
-            localStorage.setItem('user_session', JSON.stringify(currentUser));
-            updateAuthUI();
-            closeAuthModal();
-            alert("تم التسجيل/الدخول بنجاح!");
         }
 
-        function logout() {
-            localStorage.removeItem('user_session');
-            currentUser = null;
-            updateAuthUI();
-        }
-
-        function openAuthModal() { clearError(); document.getElementById('auth-modal').classList.add('active'); }
-        function closeAuthModal() { document.getElementById('auth-modal').classList.remove('active'); }
-        function openCart() { document.getElementById('cart-modal').classList.add('active'); }
-        function closeCart() { document.getElementById('cart-modal').classList.remove('active'); }
-
-        // 4. تطبيق خصم الأكواد
-        async function applyDiscountCoupon() {
-            const code = document.getElementById('coupon-code-input').value.trim();
-            const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-
-            if (code === "منتج سعودي" && subtotal > 50) {
-                discountApplied = true;
-                alert("تم تطبيق التوصيل المجاني!");
-            } else {
-                discountApplied = false;
-                alert("الكود غير صحيح أو الإجمالي أقل من 50 ر.س");
-            }
-            updateCartUI();
-        }
-
-        function updateCartUI() {
-            const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
-            document.getElementById('cart-count').textContent = cartCount;
-
-            const listContainer = document.getElementById('cart-items-list');
-            if (cart.length === 0) {
-                listContainer.innerHTML = '<p style="text-align:center; color: var(--text-muted);">السلة فارغة</p>';
-            } else {
-                listContainer.innerHTML = cart.map(i => `
-                    <div class="cart-item">
-                        <span>${i.name} (${i.qty})</span>
-                        <strong>${i.price * i.qty} ر.س</strong>
-                    </div>
-                `).join('');
-            }
-
-            const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            const delivery = discountApplied ? 0 : (cart.length > 0 ? baseDelivery : 0);
-            document.getElementById('subtotal-val').textContent = `${subtotal} ر.س`;
-            document.getElementById('shipping-val').textContent = `${delivery} ر.س`;
-            document.getElementById('grandtotal-val').textContent = `${subtotal + delivery} ر.س`;
-        }
-
-        // 5. حفظ الطلب في جدول `orders` بالداشبورد ثم التوجيه للواتساب
-        async function sendOrderToWhatsApp() {
-            if (cart.length === 0) {
-                alert("السلة فارغة!");
-                return;
-            }
-
-            const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            const delivery = discountApplied ? 0 : baseDelivery;
-            const grandTotal = subtotal + delivery;
-
-            // حفظ الطلب في Supabase ليصل للداشبورد
+        // جلب المنتجات
+        async function loadProducts() {
+            const container = document.getElementById('main-content');
             try {
-                await _supabase.from('orders').insert([{
-                    customer_name: currentUser ? currentUser.name : 'زائر',
-                    customer_phone: currentUser ? currentUser.phone : 'غير محدد',
-                    items: JSON.stringify(cart),
-                    total_amount: grandTotal,
-                    status: 'جديد'
-                }]);
-            } catch (err) {
-                console.log("لم يتم حفظ الطلب بالداشبورد مباشرة ولكن سينتقل للواتساب.", err);
-            }
+                const { data, error } = await _supabase.from('products').select('*');
 
-            let msg = "طلب جديد من متجر شاي العندليب:\n";
-            cart.forEach(i => {
-                msg += `- ${i.name} x${i.qty} (${i.price * i.qty} ر.س)\n`;
-            });
-            msg += `\nالمجموع: ${subtotal} ر.س\nالتوصيل: ${delivery} ر.س\nالإجمالي: ${grandTotal} ر.س`;
-            
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+                if (error) {
+                    showDebugError("خطأ المنتجات: " + error.message);
+                    container.innerHTML = `<p style="text-align:center; color:red;">تعذر جلب البيانات. يرجى مراجعة صلاحيات Supabase.</p>`;
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p style="text-align:center;">لا توجد منتجات حتى الآن.</p>';
+                    return;
+                }
+
+                let html = '<div class="grid-products">';
+                data.forEach(item => {
+                    const name = item.name || item.title || 'منتج';
+                    const price = item.price || 0;
+                    const img = item.image || item.image_url;
+
+                    let imgHtml = (img && img.startsWith('http')) 
+                        ? `<img src="${img}" alt="${name}" onerror="this.src='https://via.placeholder.com/240x180?text=صورة+غير+صالحة'">` 
+                        : `<div style="font-weight:bold; color:#64748b;"><i class="fa-solid fa-leaf" style="font-size:2rem; margin-bottom:5px; display:block; color:var(--primary);"></i>${name}</div>`;
+
+                    html += `
+                        <div class="product-card">
+                            <div class="img-box">${imgHtml}</div>
+                            <div class="product-title">${name}</div>
+                            <div class="product-price">${price} ر.س</div>
+                            <button class="btn-add">إضافة للسلة</button>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+
+            } catch (e) {
+                showDebugError("استثناء المنتجات: " + e.message);
+            }
         }
 
-        // تشغيل الدوال الأساسية عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', () => {
-            updateAuthUI();
-            fetchBannerFromDatabase();
-            fetchProductsFromDatabase();
-            updateCartUI();
+            loadBanner();
+            loadProducts();
         });
     </script>
 </body>
