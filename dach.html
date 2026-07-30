@@ -443,6 +443,12 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let _categories = [];
 
+        window.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            loadBanners();
+            loadProducts();
+        });
+
         function showStatus(id, msg, type = 'load') {
             const el = document.getElementById(id);
             if(!el) return;
@@ -459,7 +465,7 @@
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
             const filePath = `${folderName}/${fileName}`;
 
-            // رفع الملف إلى الـ bucket المسسمى "media"
+            // رفع الملف إلى الـ bucket المسمى "media"
             const { data, error } = await _supabase.storage
                 .from('media')
                 .upload(filePath, file, {
@@ -756,7 +762,7 @@
         }
 
         async function handleDeleteProduct(id) {
-            if(!confirm("حذف هذه الشتلة؟")) return;
+            if(!confirm("هل أنت متأكد من حذف هذه الشتلة؟")) return;
             try {
                 const { error } = await _supabase.from('products').delete().eq('id', id);
                 if (error) throw error;
@@ -765,14 +771,6 @@
                 alert("خطأ أثناء الحذف: " + err.message);
             }
         }
-
-        async function initDashboard() {
-            await loadCategories();
-            loadBanners();
-            loadProducts();
-        }
-
-        initDashboard();
     </script>
 </body>
 </html>
