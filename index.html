@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- مكتبة Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -43,7 +42,7 @@
         .banner-container { max-width: 1200px; margin: 1.5rem auto; padding: 0 1.5rem; }
         .hero-banner {
             width: 100%;
-            height: 220px;
+            height: 240px;
             border-radius: var(--radius-lg);
             overflow: hidden;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -53,8 +52,10 @@
             color: white;
             font-size: 1.6rem;
             font-weight: 900;
+            box-shadow: var(--shadow);
+            position: relative;
         }
-        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
         .container { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
         .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
@@ -95,21 +96,22 @@
             cursor: pointer; 
         }
 
-        .error-log {
-            background: #fef2f2;
-            color: #991b1b;
-            padding: 12px;
-            margin: 15px;
+        .debug-notice {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px 15px;
+            margin: 10px auto;
+            max-width: 1200px;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: none;
-            border: 1px solid #fca5a5;
+            border: 1px solid #ffeeba;
         }
     </style>
 </head>
 <body>
 
-    <div id="error-box" class="error-log"></div>
+    <div id="debug-box" class="debug-notice"></div>
 
     <header>
         <div class="brand">
@@ -119,41 +121,59 @@
     </header>
 
     <div class="banner-container">
-        <div class="hero-banner" id="store-banner">🍃 أهلاً بكم في متجر شاي العندليب 🍃</div>
+        <div class="hero-banner" id="store-banner">
+            <span>🍃 أهلاً بكم في متجر شاي العندليب 🍃</span>
+        </div>
     </div>
 
     <div class="container" id="main-content">
-        <p style="text-align:center; font-weight:bold;">جاري الاتصال بقاعدة البيانات...</p>
+        <p style="text-align:center; font-weight:bold;">جاري التحميل...</p>
     </div>
 
     <script>
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
-        // المفتاح المصحح بدقة
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
         
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function showDebugError(msg) {
-            const box = document.getElementById('error-box');
+        function showDebug(msg) {
+            const box = document.getElementById('debug-box');
             box.style.display = 'block';
-            box.innerHTML += `<div>⚠️ ${msg}</div>`;
+            box.innerHTML += `<div>📌 ${msg}</div>`;
         }
 
-        // جلب البنر
+        // جلب البنر مع دعم كل أسماء الأعمدة المحتملة
         async function loadBanner() {
+            const bannerDiv = document.getElementById('store-banner');
             try {
                 const { data, error } = await _supabase.from('banners').select('*');
-                if (error) { showDebugError("خطأ البنر: " + error.message); return; }
+                if (error) { 
+                    showDebug("خطأ في قراءة جدول البنرات: " + error.message); 
+                    return; 
+                }
                 
-                if (data && data.length > 0) {
-                    const banner = data[data.length - 1];
-                    const url = banner.image_url || banner.image || banner.url;
-                    if (url && url.startsWith('http')) {
-                        document.getElementById('store-banner').innerHTML = `<img src="${url}" alt="بنر المتجر">`;
+                if (!data || data.length === 0) {
+                    showDebug("جدول banners فارغ في قاعدة البيانات. أضف سطلاً جديداً يحتوي على رابط الصورة.");
+                    return;
+                }
+
+                // اختيار أحدث بنر
+                const latest = data[data.length - 1];
+                
+                // البحث عن الرابط بغض النظر عن اسم العمود في الجدول
+                const bannerUrl = latest.image_url || latest.image || latest.url || latest.banner_url || latest.img;
+
+                if (bannerUrl) {
+                    if (typeof bannerUrl === 'string' && bannerUrl.trim().startsWith('http')) {
+                        bannerDiv.innerHTML = `<img src="${bannerUrl.trim()}" alt="البنر الإعلاني" onerror="showDebug('فشل تحميل صورة البنر! تأكد أن الرابط المباشر يعمل عبر المتصفح.');">`;
+                    } else {
+                        showDebug(`قيمة رابط البنر المسجلة هي: "${bannerUrl}". يجب أن يبدأ الرابط بـ http:// أو https://`);
                     }
+                } else {
+                    showDebug("تم العثور على سطر في جدول البنرات لكن لم يتم العثور على رابط في الأعمدة (image_url / image / url).");
                 }
             } catch (e) {
-                showDebugError("استثناء البنر: " + e.message);
+                showDebug("استثناء في البنر: " + e.message);
             }
         }
 
@@ -164,7 +184,7 @@
                 const { data, error } = await _supabase.from('products').select('*');
 
                 if (error) {
-                    showDebugError("خطأ المنتجات: " + error.message);
+                    showDebug("خطأ المنتجات: " + error.message);
                     container.innerHTML = `<p style="text-align:center; color:red;">تعذر جلب البيانات.</p>`;
                     return;
                 }
@@ -178,10 +198,10 @@
                 data.forEach(item => {
                     const name = item.name || item.title || 'منتج';
                     const price = item.price || 0;
-                    const img = item.image || item.image_url;
+                    const img = item.image || item.image_url || item.url;
 
-                    let imgHtml = (img && img.startsWith('http')) 
-                        ? `<img src="${img}" alt="${name}" onerror="this.src='https://via.placeholder.com/240x180?text=صورة+غير+صالحة'">` 
+                    let imgHtml = (img && typeof img === 'string' && img.trim().startsWith('http')) 
+                        ? `<img src="${img.trim()}" alt="${name}" onerror="this.src='https://via.placeholder.com/240x180?text=صورة+غير+صالحة'">` 
                         : `<div style="font-weight:bold; color:#64748b;"><i class="fa-solid fa-leaf" style="font-size:2rem; margin-bottom:5px; display:block; color:var(--primary);"></i>${name}</div>`;
 
                     html += `
@@ -197,7 +217,7 @@
                 container.innerHTML = html;
 
             } catch (e) {
-                showDebugError("استثناء المنتجات: " + e.message);
+                showDebug("استثناء المنتجات: " + e.message);
             }
         }
 
