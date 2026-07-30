@@ -142,9 +142,10 @@
             border: none;
         }
 
-        /* شبكة المنتجات */
+        /* شبكة المنتجات والأقسام */
         .container { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
-        .section-title { font-size: 1.3rem; font-weight: 900; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px; }
+        .section-block { margin-bottom: 2.5rem; }
+        .section-title { font-size: 1.4rem; font-weight: 900; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px; color: #0f172a; }
         .section-title i { color: var(--salla-primary); }
 
         .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
@@ -319,39 +320,16 @@
         </a>
     </header>
 
-    <!-- البنر الرئيسي الأول (يُجلب آلياً من الداتابيز) -->
+    <!-- البنر الرئيسي في القمة -->
     <div class="banners-row">
         <div class="banner-card" id="main-db-banner">
             <span style="color:white; font-weight:900; padding:3rem;">🍃 أهلاً بكم في متجر شاي العندليب 🍃</span>
         </div>
     </div>
 
-    <!-- القسم الأول: المنتجات المتميزة -->
-    <div class="container">
-        <div class="section-title">
-            <i class="fa-solid fa-boxes-stacked"></i>
-            المنتجات المتميزة
-        </div>
-        <div id="main-content">
-            <p style="text-align:center; font-weight:bold; color:#64748b; padding: 2rem;">جاري جلب المنتجات...</p>
-        </div>
-    </div>
-
-    <!-- ================= منطقة البنرات بين الأقسام (يمكن وضع أكثر من بنر هنا) ================= -->
-    <div class="banners-row">
-        <!-- بنر فيديو 1 -->
-        <div class="banner-card">
-            <video autoplay loop muted playsinline>
-                <source src="https://qiqznwfutkwulmnddmec.supabase.co/storage/v1/object/public/media/banners/1785444598866_7mdr2.mp4" type="video/mp4">
-            </video>
-        </div>
-
-        <!-- بنر آخر (مثال صورة أو فيديو ثانٍ) -->
-        <!-- 
-        <div class="banner-card">
-            <img src="رابط_صورة_أخرى.jpg" alt="بنر إعلاني إضافي">
-        </div> 
-        -->
+    <!-- منطقة عرض الأقسام والمنتجات -->
+    <div class="container" id="sections-container">
+        <p style="text-align:center; font-weight:bold; color:#64748b; padding: 2rem;">جاري جلب الأقسام والمنتجات...</p>
     </div>
 
     <!-- نافذة تسجيل الدخول وإنشاء حساب -->
@@ -531,23 +509,22 @@
             }
         }
 
-        // --- جلب بيانات البنر الرئيسي الذكي (فيديو أو صورة) ---
+        // --- جلب البنر الرئيسي في القمة ---
         async function loadMainBanner() {
             const bannerDiv = document.getElementById('main-db-banner');
             try {
                 const { data, error } = await _supabase.from('banners').select('*');
                 if (error || !data || data.length === 0) return;
                 
-                const latest = data[data.length - 1];
+                const latest = data[0]; // البنر الأول للرأسية
                 const mediaUrl = latest.media_url || latest.video_url || latest.image_url || latest.url;
-                const mediaType = latest.media_type || (mediaUrl && mediaUrl.endsWith('.mp4') ? 'video' : 'image');
+                const isVideo = mediaUrl && (mediaUrl.endsWith('.mp4') || latest.media_type === 'video');
 
                 if (mediaUrl) {
-                    if (mediaType === 'video' || mediaUrl.endsWith('.mp4')) {
+                    if (isVideo) {
                         bannerDiv.innerHTML = `
                             <video autoplay loop muted playsinline>
                                 <source src="${mediaUrl}" type="video/mp4">
-                                متصفحك لا يدعم تشغيل الفيديو.
                             </video>
                         `;
                     } else {
@@ -557,59 +534,145 @@
             } catch (e) { console.error(e); }
         }
 
-        // --- جلب المنتجات تلقائياً ---
-        async function loadProducts() {
-            const container = document.getElementById('main-content');
+        // --- جلب الأقسام والمنتجات معاً وعرض البنرات المخصصة لكل قسم ---
+        async function loadStoreStorefront() {
+            const container = document.getElementById('sections-container');
             try {
-                const { data, error } = await _supabase.from('products').select('*');
+                const [productsRes, categoriesRes, bannersRes] = await Promise.all([
+                    _supabase.from('products').select('*'),
+                    _supabase.from('categories').select('*'),
+                    _supabase.from('banners').select('*')
+                ]);
 
-                if (error || !data || data.length === 0) {
+                const products = productsRes.data || [];
+                const categories = categoriesRes.data || [];
+                const banners = bannersRes.data || [];
+
+                if (products.length === 0) {
                     container.innerHTML = '<p style="text-align:center; padding:2rem; font-weight:bold;">لا توجد منتجات مضافة حالياً.</p>';
                     return;
                 }
 
-                let html = '<div class="grid-products">';
-                data.forEach(item => {
-                    const id = item.id || Math.random().toString();
-                    const name = item.name || item.title || 'منتج';
-                    const price = item.price || 0;
-                    
-                    let img = null;
-                    for (let k in item) {
-                        if (item[k] && typeof item[k] === 'string' && (item[k].includes('http://') || item[k].includes('https://'))) {
-                            img = item[k].trim();
-                            break;
+                let fullHtml = '';
+
+                if (categories.length > 0) {
+                    categories.forEach((category, index) => {
+                        // تصفية منتجات هذا القسم فقط
+                        const categoryProducts = products.filter(p => p.category_id === category.id || p.category === category.name);
+                        
+                        if (categoryProducts.length > 0) {
+                            fullHtml += `
+                                <div class="section-block">
+                                    <div class="section-title">
+                                        <i class="fa-solid fa-layer-group"></i>
+                                        ${category.name || category.title || 'قسم'}
+                                    </div>
+                                    ${renderProductsGrid(categoryProducts)}
+                                </div>
+                            `;
+
+                            // إضافة البنر الخاص بهذا القسم فقط
+                            fullHtml += renderSectionSpecificBanner(banners, category, index);
                         }
-                    }
-
-                    let imgHtml = img 
-                        ? `<img src="${img}" alt="${name}">` 
-                        : `<div style="font-weight:bold; color:#64748b;"><i class="fa-solid fa-leaf" style="font-size:2.5rem; margin-bottom:8px; display:block; color:var(--salla-primary);"></i>${name}</div>`;
-
-                    html += `
-                        <div class="product-card">
-                            <div>
-                                <div class="img-box">${imgHtml}</div>
-                                <div class="product-title">${name}</div>
+                    });
+                } else {
+                    fullHtml += `
+                        <div class="section-block">
+                            <div class="section-title">
+                                <i class="fa-solid fa-boxes-stacked"></i>
+                                المنتجات المتميزة
                             </div>
-                            <div>
-                                <div class="product-price">${price} ر.س</div>
-                                <button class="btn-add" onclick="addToCart('${id}', '${name}', ${price})">
-                                    <i class="fa-solid fa-cart-plus"></i> إضافة للسلة
-                                </button>
-                            </div>
+                            ${renderProductsGrid(products)}
                         </div>
                     `;
-                });
-                html += '</div>';
-                container.innerHTML = html;
+                }
 
-            } catch (e) { console.error(e); }
+                container.innerHTML = fullHtml;
+
+            } catch (e) { 
+                console.error(e);
+                container.innerHTML = '<p style="text-align:center; color:red;">حدث خطأ في تحميل البيانات.</p>';
+            }
+        }
+
+        // دالة توليد شبكة المنتجات
+        function renderProductsGrid(productsList) {
+            let html = '<div class="grid-products">';
+            productsList.forEach(item => {
+                const id = item.id || Math.random().toString();
+                const name = item.name || item.title || 'منتج';
+                const price = item.price || 0;
+                
+                let img = null;
+                for (let k in item) {
+                    if (item[k] && typeof item[k] === 'string' && (item[k].includes('http://') || item[k].includes('https://'))) {
+                        img = item[k].trim();
+                        break;
+                    }
+                }
+
+                let imgHtml = img 
+                    ? `<img src="${img}" alt="${name}">` 
+                    : `<div style="font-weight:bold; color:#64748b;"><i class="fa-solid fa-leaf" style="font-size:2.5rem; margin-bottom:8px; display:block; color:var(--salla-primary);"></i>${name}</div>`;
+
+                html += `
+                    <div class="product-card">
+                        <div>
+                            <div class="img-box">${imgHtml}</div>
+                            <div class="product-title">${name}</div>
+                        </div>
+                        <div>
+                            <div class="product-price">${price} ر.س</div>
+                            <button class="btn-add" onclick="addToCart('${id}', '${name}', ${price})">
+                                <i class="fa-solid fa-cart-plus"></i> إضافة للسلة
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            return html;
+        }
+
+        // دالة عرض بنر مخصص لكل قسم بدون تكرار
+        function renderSectionSpecificBanner(banners, category, sectionIndex) {
+            // 1. البحث في Supabase عن بنر خاص بالقسم بواسطة ID القسم أو الترتيب
+            let matchedBanner = banners.find(b => 
+                (b.category_id && b.category_id === category.id) || 
+                (b.section_index !== undefined && Number(b.section_index) === sectionIndex)
+            );
+
+            // 2. أو استعراض البنرات حسب الترتيب (البنر التالي بعد الهيدر)
+            if (!matchedBanner && banners[sectionIndex + 1]) {
+                matchedBanner = banners[sectionIndex + 1];
+            }
+
+            // إذا لم يتوفر بنر مخصص، لا يُعرض أي شيء ولن يتكرر بنر القسم الأول
+            if (!matchedBanner) return '';
+
+            const mediaUrl = matchedBanner.media_url || matchedBanner.video_url || matchedBanner.image_url || matchedBanner.url;
+            if (!mediaUrl) return '';
+
+            const isVideo = mediaUrl.endsWith('.mp4') || matchedBanner.media_type === 'video';
+
+            return `
+                <div class="banners-row">
+                    <div class="banner-card">
+                        ${isVideo ? `
+                            <video autoplay loop muted playsinline>
+                                <source src="${mediaUrl}" type="video/mp4">
+                            </video>
+                        ` : `
+                            <img src="${mediaUrl}" alt="بنر قسم ${category.name || ''}">
+                        `}
+                    </div>
+                </div>
+            `;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             loadMainBanner();
-            loadProducts();
+            loadStoreStorefront();
         });
     </script>
 </body>
