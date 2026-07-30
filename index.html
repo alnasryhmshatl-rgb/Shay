@@ -3,40 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شاي العندليب | المتجر الرسمي</title>
+    <title>متجر شاي العندليب | تجربة تسوق فريدة</title>
+    <!-- الخط المعتمد لمتاجر سلة -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <!-- مكتبة الأيقونات FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- مكتبة Supabase -->
+    <!-- مكتبة Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
-            --primary: #7c3aed;
-            --primary-dark: #5b21b6;
-            --primary-light: #f3e8ff;
-            --bg: #f8fafc;
-            --border: #e2e8f0;
-            --radius-lg: 20px;
-            --radius-md: 12px;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --salla-primary: #00b894;
+            --salla-primary-hover: #00a383;
+            --salla-bg: #f8fafc;
+            --salla-text: #1e293b;
+            --salla-border: #e2e8f0;
+            --salla-card-bg: #ffffff;
+            --salla-radius-lg: 16px;
+            --salla-radius-md: 10px;
+            --salla-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: #0f172a; padding-bottom: 80px; }
+        body { background: var(--salla-bg); color: var(--salla-text); padding-bottom: 80px; }
 
-        .urgency-bar {
-            background: linear-gradient(90deg, #1e1b4b, #311b92);
-            color: #fde047;
+        /* شريط التنبيه العالي (Urgency / Announcement Bar) */
+        .announcement-bar {
+            background: linear-gradient(90deg, #10b981, #059669);
+            color: #ffffff;
             text-align: center;
-            padding: 0.6rem 1rem;
+            padding: 0.5rem 1rem;
             font-size: 0.85rem;
             font-weight: 700;
         }
 
+        /* الهيدر على طريقة سلة */
         header {
-            background: #fff;
-            border-bottom: 1px solid var(--border);
+            background: #ffffff;
+            border-bottom: 1px solid var(--salla-border);
             padding: 1rem 2rem;
             position: sticky;
             top: 0;
@@ -44,34 +49,43 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         }
 
-        .brand { font-size: 1.4rem; font-weight: 900; display: flex; align-items: center; gap: 8px; color: #0f172a; }
-        .brand i { color: var(--primary); }
+        .brand { 
+            font-size: 1.5rem; 
+            font-weight: 900; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            color: var(--salla-text); 
+            text-decoration: none;
+        }
+        .brand i { color: var(--salla-primary); font-size: 1.7rem; }
 
         .header-actions { display: flex; align-items: center; gap: 12px; }
 
         .btn-auth {
-            background: #fff;
-            border: 1px solid var(--border);
-            padding: 0.55rem 1.1rem;
+            background: #ffffff;
+            border: 1px solid var(--salla-border);
+            padding: 0.6rem 1.2rem;
             border-radius: 50px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.85rem;
-            color: #334155;
-            transition: 0.2s;
+            font-size: 0.88rem;
+            color: #475569;
+            transition: 0.2s ease;
         }
-        .btn-auth:hover { background: #f1f5f9; }
+        .btn-auth:hover { background: #f1f5f9; color: var(--salla-primary); }
 
         .cart-btn {
-            background: var(--primary-light);
-            color: var(--primary-dark);
+            background: #e6f7f4;
+            color: var(--salla-primary);
             border: none;
-            padding: 0.55rem 1.1rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 800;
@@ -80,54 +94,66 @@
             gap: 8px;
             font-size: 0.9rem;
             position: relative;
+            transition: 0.2s ease;
         }
+        .cart-btn:hover { background: #d0f2ec; }
 
         .cart-badge {
             background: #ef4444;
             color: white;
             font-size: 0.75rem;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
         }
 
+        /* البنر الإعلاني الرئيسية */
         .banner-container { max-width: 1200px; margin: 1.5rem auto; padding: 0 1.5rem; }
         .hero-banner {
             width: 100%;
-            height: 240px;
-            border-radius: var(--radius-lg);
+            height: 260px;
+            border-radius: var(--salla-radius-lg);
             overflow: hidden;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(135deg, #00b894, #006266);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             font-weight: 900;
-            box-shadow: var(--shadow);
+            box-shadow: var(--salla-shadow);
         }
         .hero-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+        /* شبكة المنتجات */
         .container { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
-        .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
+        .section-title { font-size: 1.3rem; font-weight: 900; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px; }
+        .section-title i { color: var(--salla-primary); }
+
+        .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
         .product-card { 
             background: white; 
-            border: 1px solid var(--border); 
-            border-radius: var(--radius-lg); 
+            border: 1px solid var(--salla-border); 
+            border-radius: var(--salla-radius-lg); 
             padding: 1.2rem; 
-            box-shadow: var(--shadow);
+            box-shadow: var(--salla-shadow);
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 15px 30px -5px rgba(0,0,0,0.08); }
 
         .img-box {
             width: 100%;
-            height: 180px;
-            background: #f1f5f9;
-            border-radius: var(--radius-md);
+            height: 200px;
+            background: #f8fafc;
+            border-radius: var(--salla-radius-md);
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -136,76 +162,85 @@
         }
         .img-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        .product-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 6px; }
-        .product-price { color: var(--primary); font-weight: 900; font-size: 1.2rem; }
+        .product-title { font-weight: 800; font-size: 1.05rem; margin-bottom: 8px; color: #1e293b; }
+        .product-price { color: var(--salla-primary); font-weight: 900; font-size: 1.25rem; margin-bottom: 12px; }
         
         .btn-add { 
             width: 100%; 
-            background: var(--primary); 
+            background: var(--salla-primary); 
             color: white; 
             border: none; 
-            padding: 0.75rem; 
-            border-radius: var(--radius-md); 
+            padding: 0.85rem; 
+            border-radius: var(--salla-radius-md); 
             font-weight: 800; 
-            margin-top: 12px; 
             cursor: pointer; 
-            transition: 0.2s;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        .btn-add:hover { background: var(--primary-dark); }
+        .btn-add:hover { background: var(--salla-primary-hover); }
 
-        /* Modal نافذة الدخول */
+        /* نافذة تسجيل الدخول (Modal) */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            backdrop-filter: blur(4px);
         }
         .modal-box {
             background: white;
             padding: 2rem;
-            border-radius: var(--radius-lg);
-            width: 100%;
-            max-width: 400px;
+            border-radius: var(--salla-radius-lg);
+            width: 90%;
+            max-width: 420px;
             position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
         .modal-close {
             position: absolute;
             top: 15px; left: 15px;
             border: none; background: none;
-            font-size: 1.2rem; cursor: pointer;
+            font-size: 1.3rem; cursor: pointer; color: #94a3b8;
         }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 700; font-size: 0.9rem; }
+        .form-group { margin-bottom: 1.2rem; text-align: right; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 0.88rem; color: #334155; }
         .form-group input {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            font-size: 0.9rem;
+            padding: 0.8rem;
+            border: 1px solid var(--salla-border);
+            border-radius: var(--salla-radius-md);
+            font-size: 0.95rem;
+            outline: none;
         }
+        .form-group input:focus { border-color: var(--salla-primary); }
+
         .btn-submit {
             width: 100%;
-            background: var(--primary);
+            background: var(--salla-primary);
             color: white;
             border: none;
-            padding: 0.8rem;
-            border-radius: var(--radius-md);
+            padding: 0.85rem;
+            border-radius: var(--salla-radius-md);
             font-weight: 800;
             cursor: pointer;
+            font-size: 1rem;
         }
-        .toggle-auth { text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--primary); cursor: pointer; font-weight: 700; }
+        .toggle-auth { text-align: center; margin-top: 1.2rem; font-size: 0.88rem; color: var(--salla-primary); cursor: pointer; font-weight: 700; }
 
-        /* Drawer السلة */
+        /* درج سلة المشتريات (Cart Drawer) */
         .cart-drawer {
             position: fixed;
-            top: 0; left: -400px;
-            width: 100%; max-width: 380px;
+            top: 0; left: -420px;
+            width: 100%; max-width: 400px;
             height: 100%;
             background: white;
-            box-shadow: var(--shadow);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
             z-index: 999;
             transition: left 0.3s ease;
             display: flex;
@@ -213,39 +248,45 @@
         }
         .cart-drawer.open { left: 0; }
         .cart-header {
-            padding: 1.2rem;
-            border-bottom: 1px solid var(--border);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--salla-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: 800;
+            font-weight: 900;
+            font-size: 1.1rem;
         }
-        .cart-items { flex: 1; overflow-y: auto; padding: 1rem; }
+        .cart-items { flex: 1; overflow-y: auto; padding: 1.2rem; }
         .cart-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--salla-border);
         }
         .cart-footer {
-            padding: 1.2rem;
-            border-top: 1px solid var(--border);
-            background: var(--bg);
+            padding: 1.2rem 1.5rem;
+            border-top: 1px solid var(--salla-border);
+            background: var(--salla-bg);
         }
-        .cart-total { display: flex; justify-content: space-between; font-weight: 900; font-size: 1.1rem; margin-bottom: 1rem; }
+        .cart-total { display: flex; justify-content: space-between; font-weight: 900; font-size: 1.2rem; margin-bottom: 1rem; }
 
-        .debug-notice {
-            background: #fff3cd; color: #856404; padding: 10px 15px; margin: 10px auto; max-width: 1200px;
-            border-radius: 8px; font-size: 0.85rem; display: none; border: 1px solid #ffeeba; direction: ltr; text-align: left;
+        .qty-btn {
+            background: #f1f5f9;
+            border: 1px solid var(--salla-border);
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div class="urgency-bar">⚡ عروض حصرية لفترة محدودة!</div>
-
-    <div id="debug-box" class="debug-notice"></div>
+    <div class="announcement-bar">
+        <span>⚡ شحن مجاني للطلبات لأكثر من 199 ريال!</span>
+    </div>
 
     <header>
         <div class="header-actions">
@@ -259,49 +300,57 @@
             </button>
         </div>
 
-        <div class="brand">
+        <a href="#" class="brand">
             <i class="fa-solid fa-mug-hot"></i>
             شاي العندليب
-        </div>
+        </a>
     </header>
 
     <div class="banner-container">
-        <div class="hero-banner" id="store-banner">🍃 أهلاً بكم في متجر شاي العندليب 🍃</div>
+        <div class="hero-banner" id="store-banner">
+            <span>🍃 أهلاً بكم في متجر شاي العندليب 🍃</span>
+        </div>
     </div>
 
-    <div class="container" id="main-content">
-        <p style="text-align:center; font-weight:bold;">جاري التحميل...</p>
+    <div class="container">
+        <div class="section-title">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            المنتجات المتميزة
+        </div>
+        <div id="main-content">
+            <p style="text-align:center; font-weight:bold; color:#64748b; padding: 2rem;">جاري جلب المنتجات...</p>
+        </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول -->
+    <!-- نافذة الدخول وإنشاء حساب -->
     <div class="modal-overlay" id="auth-modal">
         <div class="modal-box">
             <button class="modal-close" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="modal-title" style="margin-bottom: 1.5rem; text-align: center;">تسجيل الدخول</h3>
+            <h3 id="modal-title" style="margin-bottom: 1.5rem; text-align: center; font-weight: 900;">تسجيل الدخول</h3>
             
             <form id="auth-form" onsubmit="handleAuth(event)">
                 <div class="form-group">
                     <label>البريد الإلكتروني</label>
-                    <input type="email" id="auth-email" required placeholder="example@domain.com">
+                    <input type="email" id="auth-email" required placeholder="name@example.com">
                 </div>
                 <div class="form-group">
                     <label>كلمة المرور</label>
                     <input type="password" id="auth-password" required placeholder="******">
                 </div>
-                <button type="submit" class="btn-submit" id="auth-submit-btn">دخول</button>
+                <button type="submit" class="btn-submit" id="auth-submit-btn">تسجيل الدخول</button>
             </form>
-            <div class="toggle-auth" id="toggle-auth-btn" onclick="switchAuthMode()">ليس لديك حساب؟ إنشاء حساب جديد</div>
+            <div class="toggle-auth" id="toggle-auth-btn" onclick="switchAuthMode()">حساب جديد؟ اضغط هنا لإنشاء حساب</div>
         </div>
     </div>
 
-    <!-- نافذة سلة المشتريات الجانبية -->
+    <!-- سلة المشتريات الجانبية -->
     <div class="cart-drawer" id="cart-drawer">
         <div class="cart-header">
-            <span><i class="fa-solid fa-bag-shopping"></i> سلة المشتريات</span>
-            <button style="border:none; background:none; cursor:pointer;" onclick="toggleCart()"><i class="fa-solid fa-xmark"></i></button>
+            <span><i class="fa-solid fa-bag-shopping" style="color:var(--salla-primary);"></i> سلة المشتريات</span>
+            <button style="border:none; background:none; cursor:pointer;" onclick="toggleCart()"><i class="fa-solid fa-xmark" style="font-size:1.2rem;"></i></button>
         </div>
         <div class="cart-items" id="cart-items-container">
-            <p style="text-align:center; color:#64748b; margin-top: 2rem;">السلة فارغة حالياً</p>
+            <p style="text-align:center; color:#64748b; margin-top: 3rem;">السلة فارغة حالياً</p>
         </div>
         <div class="cart-footer">
             <div class="cart-total">
@@ -313,6 +362,7 @@
     </div>
 
     <script>
+        // إعدادات الربط المباشر مع Supabase
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
         
@@ -322,13 +372,7 @@
         let isSignUp = false;
         let currentUser = null;
 
-        function showDebug(msg) {
-            const box = document.getElementById('debug-box');
-            box.style.display = 'block';
-            box.innerHTML += `<div>${msg}</div>`;
-        }
-
-        // ================= إدارة السلة =================
+        // --- إدارة السلة ---
         function toggleCart() {
             document.getElementById('cart-drawer').classList.toggle('open');
         }
@@ -338,7 +382,7 @@
             if (existing) {
                 existing.qty++;
             } else {
-                cart.push({ id, name, price, qty: 1 });
+                cart.push({ id, name, price: Number(price), qty: 1 });
             }
             updateCartUI();
             toggleCart();
@@ -364,7 +408,7 @@
             document.getElementById('cart-total-price').innerText = totalPrice + ' ر.س';
 
             if (cart.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#64748b; margin-top: 2rem;">السلة فارغة حالياً</p>';
+                container.innerHTML = '<p style="text-align:center; color:#64748b; margin-top: 3rem;">السلة فارغة حالياً</p>';
                 return;
             }
 
@@ -373,13 +417,13 @@
                 html += `
                     <div class="cart-item">
                         <div>
-                            <div style="font-weight:700;">${item.name}</div>
-                            <div style="font-size:0.85rem; color:var(--primary);">${item.price} ر.س</div>
+                            <div style="font-weight:800;">${item.name}</div>
+                            <div style="font-size:0.88rem; color:var(--salla-primary); font-weight:700;">${item.price} ر.س</div>
                         </div>
                         <div style="display:flex; align-items:center; gap:8px;">
-                            <button onclick="updateQty('${item.id}', -1)" style="padding:2px 8px;">-</button>
+                            <button class="qty-btn" onclick="updateQty('${item.id}', -1)">-</button>
                             <span style="font-weight:bold;">${item.qty}</span>
-                            <button onclick="updateQty('${item.id}', 1)" style="padding:2px 8px;">+</button>
+                            <button class="qty-btn" onclick="updateQty('${item.id}', 1)">+</button>
                         </div>
                     </div>
                 `;
@@ -392,13 +436,13 @@
                 alert('سلتك فارغة!');
                 return;
             }
-            alert('تم استلام طلبك بنجاح! الإجمالي: ' + document.getElementById('cart-total-price').innerText);
+            alert('تم تسجيل طلبك بنجاح! الإجمالي: ' + document.getElementById('cart-total-price').innerText);
             cart = [];
             updateCartUI();
             toggleCart();
         }
 
-        // ================= إدارة تسجيل الدخول =================
+        // --- إدارة تسجيل الدخول وإنشاء حساب ---
         function openAuthModal() {
             if (currentUser) {
                 if (confirm('هل ترغب في تسجيل الخروج؟')) {
@@ -418,8 +462,8 @@
         function switchAuthMode() {
             isSignUp = !isSignUp;
             document.getElementById('modal-title').innerText = isSignUp ? "إنشاء حساب جديد" : "تسجيل الدخول";
-            document.getElementById('auth-submit-btn').innerText = isSignUp ? "إنشاء حساب" : "دخول";
-            document.getElementById('toggle-auth-btn').innerText = isSignUp ? "لديك حساب بالفعل؟ تسجيل الدخول" : "ليس لديك حساب؟ إنشاء حساب جديد";
+            document.getElementById('auth-submit-btn').innerText = isSignUp ? "إنشاء حساب" : "تسجيل الدخول";
+            document.getElementById('toggle-auth-btn').innerText = isSignUp ? "لديك حساب بالفعل؟ تسجيل الدخول" : "حساب جديد؟ اضغط هنا لإنشاء حساب";
         }
 
         async function handleAuth(e) {
@@ -448,28 +492,26 @@
             }
         }
 
-        // ================= جلب بيانات المتجر =================
+        // --- جلب بيانات المتجر الذكي ---
         async function loadBanner() {
             const bannerDiv = document.getElementById('store-banner');
             try {
                 const { data, error } = await _supabase.from('banners').select('*');
-                if (error) return;
+                if (error || !data || data.length === 0) return;
                 
-                if (data && data.length > 0) {
-                    const latest = data[data.length - 1];
-                    showDebug("<b>[Banners Row Data]:</b> " + JSON.stringify(latest));
+                const latest = data[data.length - 1];
+                let bannerUrl = null;
 
-                    let bannerUrl = null;
-                    for (let key in latest) {
-                        if (latest[key] && typeof latest[key] === 'string' && (latest[key].includes('http://') || latest[key].includes('https://'))) {
-                            bannerUrl = latest[key].trim();
-                            break;
-                        }
+                // البحث التلقائي عن أي عمود يحوي رابط صورة
+                for (let key in latest) {
+                    if (latest[key] && typeof latest[key] === 'string' && (latest[key].includes('http://') || latest[key].includes('https://'))) {
+                        bannerUrl = latest[key].trim();
+                        break;
                     }
+                }
 
-                    if (bannerUrl) {
-                        bannerDiv.innerHTML = `<img src="${bannerUrl}" alt="البنر الإعلاني">`;
-                    }
+                if (bannerUrl) {
+                    bannerDiv.innerHTML = `<img src="${bannerUrl}" alt="البنر الإعلاني">`;
                 }
             } catch (e) { console.error(e); }
         }
@@ -480,7 +522,7 @@
                 const { data, error } = await _supabase.from('products').select('*');
 
                 if (error || !data || data.length === 0) {
-                    container.innerHTML = '<p style="text-align:center;">لا توجد منتجات مضافة حالياً.</p>';
+                    container.innerHTML = '<p style="text-align:center; padding:2rem; font-weight:bold;">لا توجد منتجات مضافة حالياً.</p>';
                     return;
                 }
 
@@ -500,14 +542,20 @@
 
                     let imgHtml = img 
                         ? `<img src="${img}" alt="${name}">` 
-                        : `<div style="font-weight:bold; color:#64748b;"><i class="fa-solid fa-leaf" style="font-size:2rem; margin-bottom:5px; display:block; color:var(--primary);"></i>${name}</div>`;
+                        : `<div style="font-weight:bold; color:#64748b;"><i class="fa-solid fa-leaf" style="font-size:2.5rem; margin-bottom:8px; display:block; color:var(--salla-primary);"></i>${name}</div>`;
 
                     html += `
                         <div class="product-card">
-                            <div class="img-box">${imgHtml}</div>
-                            <div class="product-title">${name}</div>
-                            <div class="product-price">${price} ر.س</div>
-                            <button class="btn-add" onclick="addToCart('${id}', '${name}', ${price})">إضافة للسلة</button>
+                            <div>
+                                <div class="img-box">${imgHtml}</div>
+                                <div class="product-title">${name}</div>
+                            </div>
+                            <div>
+                                <div class="product-price">${price} ر.س</div>
+                                <button class="btn-add" onclick="addToCart('${id}', '${name}', ${price})">
+                                    <i class="fa-solid fa-cart-plus"></i> إضافة للسلة
+                                </button>
+                            </div>
                         </div>
                     `;
                 });
