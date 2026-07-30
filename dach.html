@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | إدارة متجر شتلة</title>
+    <title>لوحة التحكم | إدارة متجر العندلية</title>
     <!-- الخطوط والأيقونات -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -270,8 +270,8 @@
         <sidebar>
             <div>
                 <div class="brand">
-                    <i class="fa-solid fa-leaf" style="color:var(--primary);"></i>
-                    إدارة متجر شتلة
+                    <i class="fa-solid fa-store" style="color:var(--primary);"></i>
+                    متجر العندلية
                 </div>
                 <div class="db-status-badge">
                     <span class="dot"></span>
@@ -282,12 +282,12 @@
                     <li class="nav-item active"><a href="#"><i class="fa-solid fa-chart-pie"></i> لوحة التحكم</a></li>
                     <li class="nav-item"><a href="#categories-section"><i class="fa-solid fa-layer-group"></i> الأقسام</a></li>
                     <li class="nav-item"><a href="#banners-section"><i class="fa-solid fa-rectangle-ad"></i> الإعلانات والبنرات</a></li>
-                    <li class="nav-item"><a href="#products-section"><i class="fa-solid fa-seedling"></i> الشتلات</a></li>
+                    <li class="nav-item"><a href="#products-section"><i class="fa-solid fa-box-open"></i> المنتجات</a></li>
                 </ul>
             </div>
             
             <div style="font-size: 0.75rem; color: #64748b; text-align: center;">
-                &copy; 2026 جميع الحقوق محفوظة لمتجر شتلة
+                &copy; 2026 جميع الحقوق محفوظة لمتجر العندلية
             </div>
         </sidebar>
 
@@ -296,7 +296,7 @@
             <div class="top-bar">
                 <div class="page-title">
                     <h1>إدارة المحتوى والمنتجات</h1>
-                    <p>قم بإدارة أقسام المتجر، البنرات الإعلانية، والشتلات المعروضة بسهولة.</p>
+                    <p>قم بإدارة أقسام متجر العندلية، البنرات الإعلانية، والمنتجات المعروضة بسهولة.</p>
                 </div>
             </div>
 
@@ -311,7 +311,7 @@
                     <form onsubmit="handleAddCategory(event)">
                         <div class="form-group">
                             <label>اسم القسم الجديد</label>
-                            <input type="text" id="cat-name" placeholder="مثال: نباتات داخلية" required>
+                            <input type="text" id="cat-name" placeholder="مثال: أزياء، عطور، هدايا..." required>
                         </div>
                         <button type="submit" class="btn btn-primary" id="btn-add-cat">
                             <i class="fa-solid fa-plus"></i> إضافة قسم
@@ -379,16 +379,16 @@
                     </div>
                 </div>
 
-                <!-- 3️⃣ إدارة الشتلات (المنتجات) -->
+                <!-- 3️⃣ إدارة المنتجات -->
                 <div class="dashboard-box full-width" id="products-section">
                     <div class="box-title">
-                        <i class="fa-solid fa-seedling" style="color: var(--primary);"></i> 
-                        3. الشتلات (المنتجات)
+                        <i class="fa-solid fa-box-open" style="color: var(--primary);"></i> 
+                        3. المنتجات
                     </div>
                     <form onsubmit="handleAddProduct(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
                         <div class="form-group" style="margin:0;">
-                            <label>اسم الشتلة</label>
-                            <input type="text" id="prod-name" required placeholder="مثال: مونستيرا">
+                            <label>اسم المنتج</label>
+                            <input type="text" id="prod-name" required placeholder="مثال: عطر العندلية الفاخر">
                         </div>
                         <div class="form-group" style="margin:0;">
                             <label>القسم</label>
@@ -398,10 +398,10 @@
                         </div>
                         <div class="form-group" style="margin:0;">
                             <label>السعر (ر.س)</label>
-                            <input type="number" id="prod-price" required placeholder="50" step="any">
+                            <input type="number" id="prod-price" required placeholder="150" step="any">
                         </div>
                         <div class="form-group" style="margin:0;">
-                            <label>صورة الشتلة (من المعرض)</label>
+                            <label>صورة المنتج (من المعرض)</label>
                             <input type="file" id="prod-file" accept="image/*" required>
                         </div>
                         <div class="form-group" style="margin:0;">
@@ -412,12 +412,12 @@
                             </select>
                         </div>
                         <div class="form-group" style="margin:0; grid-column: 1 / -1;">
-                            <label>وصف الشتلة</label>
-                            <textarea id="prod-desc" rows="2" placeholder="أدخل تفاصيل عن النبات وطريقة العناية به..."></textarea>
+                            <label>وصف المنتج</label>
+                            <textarea id="prod-desc" rows="2" placeholder="أدخل تفاصيل ومميزات المنتج..."></textarea>
                         </div>
                         <div style="grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; margin-top: 0.5rem;">
                             <button type="submit" class="btn btn-primary" id="btn-add-prod" style="max-width: 200px;">
-                                <i class="fa-solid fa-upload"></i> رفع وإضافة الشتلة
+                                <i class="fa-solid fa-upload"></i> رفع وإضافة المنتج
                             </button>
                             <div class="status-msg" id="msg-prod" style="margin:0;">جاري الإضافة...</div>
                         </div>
@@ -425,7 +425,7 @@
 
                     <div class="table-responsive">
                         <table>
-                            <thead><tr><th>ID</th><th>اسم الشتلة</th><th>القسم</th><th>السعر</th><th>الحالة</th><th>إجراء</th></tr></thead>
+                            <thead><tr><th>ID</th><th>اسم المنتج</th><th>القسم</th><th>السعر</th><th>الحالة</th><th>إجراء</th></tr></thead>
                             <tbody id="products-table"><tr><td colspan="6" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
                         </table>
                     </div>
@@ -453,13 +453,11 @@
             if(type === 'success') setTimeout(() => el.style.display = 'none', 4000);
         }
 
-        // دالة مساعدة لرفع الملفات إلى Supabase Storage
         async function uploadFileToSupabase(file, folderName = 'media') {
             const fileExt = file.name.split('.').pop();
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
             const filePath = `${folderName}/${fileName}`;
 
-            // رفع الملف إلى الـ bucket المسسمى "media"
             const { data, error } = await _supabase.storage
                 .from('media')
                 .upload(filePath, file, {
@@ -471,7 +469,6 @@
                 throw new Error("فشل رفع الملف إلى الخادم. تأكد من وجود Bucket باسم 'media' وإتاحة الصلاحيات: " + error.message);
             }
 
-            // الحصول على رابط الملف المباشر
             const { data: publicUrlData } = _supabase.storage
                 .from('media')
                 .getPublicUrl(filePath);
@@ -634,12 +631,10 @@
             showStatus('msg-banner', 'جاري رفع الملف إلى الخادم...');
 
             try {
-                // 1. رفع الملف وتوليد الرابط
                 const uploadedUrl = await uploadFileToSupabase(file, 'banners');
 
                 showStatus('msg-banner', 'جاري حفظ البيانات...');
 
-                // 2. إدخال البيانات في الجدول
                 const payload = {
                     position: pos,
                     media_type: mediaType,
@@ -688,7 +683,7 @@
         function renderProductsTable(data) {
             const tbody = document.getElementById('products-table');
             if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد شتلات حالياً.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد منتجات حالياً.</td></tr>';
                 return;
             }
             tbody.innerHTML = data.map(p => {
@@ -726,15 +721,13 @@
             }
 
             btn.disabled = true;
-            showStatus('msg-prod', 'جاري رفع صورة الشتلة...');
+            showStatus('msg-prod', 'جاري رفع صورة المنتج...');
 
             try {
-                // 1. رفع الصورة وتوليد الرابط
                 const imgUrl = await uploadFileToSupabase(file, 'products');
 
-                showStatus('msg-prod', 'جاري حفظ الشتلة...');
+                showStatus('msg-prod', 'جاري حفظ المنتج...');
 
-                // 2. إدخال البيانات في قاعدة البيانات
                 const { error } = await _supabase.from('products').insert([{
                     name: name,
                     category_id: parseInt(catId),
@@ -746,7 +739,7 @@
                 if (error) throw error;
                 
                 e.target.reset();
-                showStatus('msg-prod', 'تمت إضافة الشتلة ورفع صورتها بنجاح!', 'success');
+                showStatus('msg-prod', 'تمت إضافة المنتج ورفع صورته بنجاح!', 'success');
                 loadProducts();
             } catch (err) {
                 showStatus('msg-prod', 'خطأ: ' + err.message, 'error');
@@ -756,7 +749,7 @@
         }
 
         async function handleDeleteProduct(id) {
-            if(!confirm("حذف هذه الشتلة؟")) return;
+            if(!confirm("هل أنت متأكد من حذف هذا المنتج؟")) return;
             try {
                 const { error } = await _supabase.from('products').delete().eq('id', id);
                 if (error) throw error;
@@ -766,13 +759,12 @@
             }
         }
 
-        async function initDashboard() {
-            await loadCategories();
+        // تشغيل الدوال عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
             loadBanners();
             loadProducts();
-        }
-
-        initDashboard();
+        });
     </script>
 </body>
 </html>
