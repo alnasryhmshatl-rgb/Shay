@@ -69,7 +69,6 @@
             color: #334155;
             transition: 0.2s;
         }
-        .btn-auth:hover { background: #f1f5f9; }
 
         .cart-btn {
             background: var(--primary-light);
@@ -83,7 +82,6 @@
             align-items: center;
             gap: 8px;
             font-size: 0.9rem;
-            position: relative;
         }
 
         .cart-badge {
@@ -154,20 +152,21 @@
             font-weight: 800; 
             margin-top: 12px; 
             cursor: pointer; 
-            transition: 0.2s;
         }
-        .btn-add:hover { background: var(--primary-dark); }
 
         .debug-notice {
             background: #fff3cd;
             color: #856404;
-            padding: 10px 15px;
+            padding: 12px 18px;
             margin: 10px auto;
             max-width: 1200px;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             display: none;
             border: 1px solid #ffeeba;
+            direction: ltr;
+            text-align: left;
+            word-break: break-all;
         }
     </style>
 </head>
@@ -216,40 +215,50 @@
         function showDebug(msg) {
             const box = document.getElementById('debug-box');
             box.style.display = 'block';
-            box.innerHTML += `<div>📌 ${msg}</div>`;
+            box.innerHTML += `<div>${msg}</div>`;
         }
 
-        // جلب البنر
         async function loadBanner() {
             const bannerDiv = document.getElementById('store-banner');
             try {
                 const { data, error } = await _supabase.from('banners').select('*');
                 if (error) { 
-                    showDebug("خطأ البنر: " + error.message); 
+                    showDebug("<b>Error:</b> " + error.message); 
                     return; 
                 }
                 
                 if (data && data.length > 0) {
                     const latest = data[data.length - 1];
-                    const bannerUrl = latest.image_url || latest.image || latest.url || latest.banner_url || latest.img;
 
-                    if (bannerUrl && typeof bannerUrl === 'string' && bannerUrl.trim().startsWith('http')) {
-                        bannerDiv.innerHTML = `<img src="${bannerUrl.trim()}" alt="البنر الإعلاني" onerror="showDebug('فشل تحميل صورة البنر! تأكد أن رابط الصورة مباشر ومعروض للعامة.');">`;
+                    // طباعة محتويات الجدول للتشخيص في التنبيه الأصفر
+                    showDebug("<b>[Banners Row Data]:</b> " + JSON.stringify(latest));
+
+                    // البحث عن أي رابط صورة
+                    let bannerUrl = null;
+                    for (let key in latest) {
+                        if (latest[key] && typeof latest[key] === 'string' && (latest[key].includes('http://') || latest[key].includes('https://'))) {
+                            bannerUrl = latest[key].trim();
+                            break;
+                        }
                     }
+
+                    if (bannerUrl) {
+                        bannerDiv.innerHTML = `<img src="${bannerUrl}" alt="البنر الإعلاني">`;
+                    }
+                } else {
+                    showDebug("<b>Notice:</b> جدول البنرات (banners) لا يحتوي على أي أسطر/بيانات.");
                 }
             } catch (e) {
-                showDebug("استثناء البنر: " + e.message);
+                showDebug("<b>Exception:</b> " + e.message);
             }
         }
 
-        // جلب المنتجات
         async function loadProducts() {
             const container = document.getElementById('main-content');
             try {
                 const { data, error } = await _supabase.from('products').select('*');
 
                 if (error) {
-                    showDebug("خطأ المنتجات: " + error.message);
                     container.innerHTML = `<p style="text-align:center; color:red;">تعذر جلب البيانات.</p>`;
                     return;
                 }
@@ -263,10 +272,17 @@
                 data.forEach(item => {
                     const name = item.name || item.title || 'منتج';
                     const price = item.price || 0;
-                    const img = item.image || item.image_url || item.url;
+                    
+                    let img = null;
+                    for (let k in item) {
+                        if (item[k] && typeof item[k] === 'string' && (item[k].includes('http://') || item[k].includes('https://'))) {
+                            img = item[k].trim();
+                            break;
+                        }
+                    }
 
-                    let imgHtml = (img && typeof img === 'string' && img.trim().startsWith('http')) 
-                        ? `<img src="${img.trim()}" alt="${name}" onerror="this.src='https://via.placeholder.com/240x180?text=صورة+غير+صالحة'">` 
+                    let imgHtml = img 
+                        ? `<img src="${img}" alt="${name}" onerror="this.src='https://via.placeholder.com/240x180?text=صورة+غير+صالحة'">` 
                         : `<div style="font-weight:bold; color:#64748b;"><i class="fa-solid fa-leaf" style="font-size:2rem; margin-bottom:5px; display:block; color:var(--primary);"></i>${name}</div>`;
 
                     html += `
@@ -282,7 +298,7 @@
                 container.innerHTML = html;
 
             } catch (e) {
-                showDebug("استثناء المنتجات: " + e.message);
+                console.error(e);
             }
         }
 
