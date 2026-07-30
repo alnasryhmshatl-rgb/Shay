@@ -134,7 +134,7 @@
             .full-width { grid-column: span 2; }
         }
 
-        /* البطاقات / الصناديق */
+        /* البطاقات */
         .dashboard-box {
             background: white;
             border-radius: var(--radius);
@@ -162,7 +162,7 @@
             border-radius: 8px;
         }
 
-        /* النماذج المدخلة */
+        /* النماذج */
         .form-group { margin-bottom: 1rem; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-dark); }
         .form-group input, .form-group select, .form-group textarea {
@@ -293,11 +293,10 @@
         </sidebar>
 
         <main>
-            <!-- الشريط العلوي -->
             <div class="top-bar">
                 <div class="page-title">
                     <h1>إدارة المحتوى والمنتجات</h1>
-                    <p>قم بإدارة أقسام المتجر، البنرات الإعلانية، الشتلات، الهدايا والأكواد بسهولة.</p>
+                    <p>إدارة الأقسام، الشتلات، الهدايا، وتحديد الأكواد والأرقام الرسمية المقبولة فقط.</p>
                 </div>
             </div>
 
@@ -328,7 +327,7 @@
                     </div>
                 </div>
 
-                <!-- 2️⃣ إدارة اللوحات الإعلانية -->
+                <!-- 2️⃣ إدارة البنرات الإعلانية -->
                 <div class="dashboard-box" id="banners-section">
                     <div class="box-title">
                         <i class="fa-solid fa-rectangle-ad" style="color: #3b82f6;"></i> 
@@ -344,17 +343,17 @@
                         <div class="form-group">
                             <label>نوع الوسيط</label>
                             <select id="banner-type" onchange="updateBannerAcceptAttribute()" required>
-                                <option value="image">صورة (Image)</option>
-                                <option value="video">فيديو (Video)</option>
+                                <option value="image">صورة</option>
+                                <option value="video">فيديو</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>اختيار الملف من المعرض / الجهاز</label>
+                            <label>اختيار الملف</label>
                             <input type="file" id="banner-file" accept="image/*" required>
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                             <div class="form-group">
-                                <label>الترتيب / الأولوية</label>
+                                <label>الترتيب</label>
                                 <input type="number" id="banner-order" value="0" min="0">
                             </div>
                             <div class="form-group">
@@ -380,7 +379,7 @@
                     </div>
                 </div>
 
-                <!-- 3️⃣ إدارة الشتلات (المنتجات) -->
+                <!-- 3️⃣ إدارة الشتلات -->
                 <div class="dashboard-box full-width" id="products-section">
                     <div class="box-title">
                         <i class="fa-solid fa-seedling" style="color: var(--primary);"></i> 
@@ -402,7 +401,7 @@
                             <input type="number" id="prod-price" required placeholder="50" step="any">
                         </div>
                         <div class="form-group" style="margin:0;">
-                            <label>صورة الشتلة (من المعرض)</label>
+                            <label>صورة الشتلة</label>
                             <input type="file" id="prod-file" accept="image/*" required>
                         </div>
                         <div class="form-group" style="margin:0;">
@@ -414,7 +413,7 @@
                         </div>
                         <div class="form-group" style="margin:0; grid-column: 1 / -1;">
                             <label>وصف الشتلة</label>
-                            <textarea id="prod-desc" rows="2" placeholder="أدخل تفاصيل عن النبات وطريقة العناية به..."></textarea>
+                            <textarea id="prod-desc" rows="2" placeholder="أدخل تفاصيل عن النبات..."></textarea>
                         </div>
                         <div style="grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; margin-top: 0.5rem;">
                             <button type="submit" class="btn btn-primary" id="btn-add-prod" style="max-width: 200px;">
@@ -432,52 +431,89 @@
                     </div>
                 </div>
 
-                <!-- 4️⃣ إدارة الهدايا والأكواد -->
-                <div class="dashboard-box full-width" id="gifts-section">
+                <!-- 4️⃣ إدارة الهدايا -->
+                <div class="dashboard-box" id="gifts-section">
                     <div class="box-title">
                         <i class="fa-solid fa-gift" style="color: #ec4899;"></i> 
-                        4. الهدايا وتوليد الأكواد
+                        4. الهدايا (الصور)
                     </div>
-                    <form onsubmit="handleAddGiftWithCodes(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; align-items: end;">
-                        <div class="form-group" style="margin:0;">
+                    <form onsubmit="handleAddGift(event)">
+                        <div class="form-group">
                             <label>اسم الهدية</label>
                             <input type="text" id="gift-name" required placeholder="مثال: كرت إهداء خاص">
                         </div>
-                        <div class="form-group" style="margin:0;">
+                        <div class="form-group">
                             <label>السعر (ر.س)</label>
                             <input type="number" id="gift-price" required placeholder="100" step="any">
                         </div>
-                        <div class="form-group" style="margin:0;">
-                            <label>عدد الأكواد المطلوبة</label>
-                            <input type="number" id="gift-code-count" value="100" min="1" max="1000" required>
-                        </div>
-                        <div class="form-group" style="margin:0;">
+                        <div class="form-group">
                             <label>صورة الهدية</label>
                             <input type="file" id="gift-file" accept="image/*" required>
                         </div>
-                        <div class="form-group" style="margin:0;">
+                        <div class="form-group">
                             <label>حالة التوفر</label>
                             <select id="gift-available">
                                 <option value="true">متوفر</option>
                                 <option value="false">غير متوفر</option>
                             </select>
                         </div>
-                        <div class="form-group" style="margin:0; grid-column: 1 / -1;">
+                        <div class="form-group">
                             <label>وصف الهدية</label>
                             <textarea id="gift-desc" rows="2" placeholder="أدخل تفاصيل عن الهدية..."></textarea>
                         </div>
-                        <div style="grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; margin-top: 0.5rem;">
-                            <button type="submit" class="btn btn-primary" id="btn-add-gift" style="max-width: 250px; background: #ec4899;">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> رفع وإضافة مع الأكواد
-                            </button>
-                            <div class="status-msg" id="msg-gift" style="margin:0;">جاري الإضافة...</div>
-                        </div>
+                        <button type="submit" class="btn btn-primary" id="btn-add-gift" style="background: #ec4899;">
+                            <i class="fa-solid fa-upload"></i> رفع وإضافة الهدية
+                        </button>
                     </form>
+                    <div class="status-msg" id="msg-gift">جاري الحفظ...</div>
 
                     <div class="table-responsive">
                         <table>
-                            <thead><tr><th>ID</th><th>المعاينة</th><th>اسم الهدية</th><th>السعر</th><th>الحالة</th><th>إجراء</th></tr></thead>
-                            <tbody id="gifts-table"><tr><td colspan="6" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                            <thead><tr><th>ID</th><th>المعاينة</th><th>اسم الهدية</th><th>السعر</th><th>إجراء</th></tr></thead>
+                            <tbody id="gifts-table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 5️⃣ تحديد الأكواد المقبولة ورابط التحقق -->
+                <div class="dashboard-box" id="gift-codes-section">
+                    <div class="box-title">
+                        <i class="fa-solid fa-key" style="color: #8b5cf6;"></i> 
+                        5. الأكواد والأرقام المعتمدة (أي رقم غيره يظهر خطأ)
+                    </div>
+                    
+                    <!-- نموذج إضافة كود مخصص -->
+                    <form onsubmit="handleAddCustomGiftCode(event)" style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px dashed var(--border);">
+                        <div class="form-group">
+                            <label>اختر الهدية المراد ربط الكود بها</label>
+                            <select id="code-gift-id" required>
+                                <option value="" disabled selected>اختر الهدية...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>أدخل الكود أو الرقم المطلوب (مثال: 50, 48, 567)</label>
+                            <input type="text" id="code-value" required placeholder="أدخل الرقم هنا...">
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btn-add-code" style="background: #8b5cf6;">
+                            <i class="fa-solid fa-plus"></i> اعتماد وحفظ الكود
+                        </button>
+                    </form>
+                    <div class="status-msg" id="msg-code">جاري الحفظ...</div>
+
+                    <!-- أداة اختبار أو التحقق من الكود (لتجربة منع الأرقام غير الموجودة) -->
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 1rem;">
+                        <label style="font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5px; display:block;">اختبار التحقق من الكود (محاكاة العميل):</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="test-input-code" placeholder="اكتب كود لتجربته..." style="padding: 0.6rem; border: 1px solid var(--border); border-radius: 8px; flex: 1; font-size: 0.9rem;">
+                            <button type="button" class="btn" onclick="verifyCustomerCode()" style="background: #0f172a; color: white; width: auto; padding: 0.6rem 1rem; font-size: 0.85rem;">تحقق</button>
+                        </div>
+                        <div id="verify-result-msg" style="margin-top: 6px; font-size: 0.85rem; font-weight: 700;"></div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>ID</th><th>الهدية التابعة</th><th>الكود المعتمد</th><th>الحالة</th><th>إجراء</th></tr></thead>
+                            <tbody id="gift-codes-table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -493,6 +529,8 @@
         
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let _categories = [];
+        let _giftsList = [];
+        let _allValidCodes = []; // تخزين الأكواد المتاحة محلياً للتحقق السريع
 
         function showStatus(id, msg, type = 'load') {
             const el = document.getElementById(id);
@@ -504,10 +542,14 @@
             if(type === 'success') setTimeout(() => el.style.display = 'none', 4000);
         }
 
-        // دالة مساعدة لرفع الملفات إلى Supabase Storage
+        function cleanFileName(fileName) {
+            const ext = fileName.split('.').pop();
+            const cleanName = fileName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 10);
+            return `${Date.now()}_${cleanName}.${ext}`;
+        }
+
         async function uploadFileToSupabase(file, folderName = 'media') {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+            const fileName = cleanFileName(file.name);
             const filePath = `${folderName}/${fileName}`;
 
             const { data, error } = await _supabase.storage
@@ -518,7 +560,7 @@
                 });
 
             if (error) {
-                throw new Error("فشل رفع الملف. تأكد من وجود Bucket باسم 'media': " + error.message);
+                throw new Error("فشل رفع الملف: " + error.message);
             }
 
             const { data: publicUrlData } = _supabase.storage
@@ -539,12 +581,10 @@
             try {
                 const { data, error } = await _supabase.from('categories').select('*').order('id', { ascending: true });
                 if (error) throw error;
-                
                 _categories = data;
                 renderCategoriesTable(data);
                 populateDropdowns(data);
             } catch (err) {
-                console.error("خطأ الأقسام:", err.message);
                 showStatus('msg-cat', 'خطأ: ' + err.message, 'error');
             }
         }
@@ -592,7 +632,6 @@
             try {
                 const { error } = await _supabase.from('categories').insert([{ name: name }]);
                 if (error) throw error;
-                
                 input.value = '';
                 showStatus('msg-cat', 'تمت الإضافة بنجاح!', 'success');
                 loadCategories();
@@ -638,17 +677,13 @@
                     ? `<img src="${mediaUrl}" style="height:40px; width:60px; object-fit:cover; border-radius:6px;">`
                     : `<video src="${mediaUrl}" style="height:40px; width:60px; object-fit:cover; border-radius:6px; background:#000;" muted></video>`;
                 
-                let activeBadge = (b.is_active !== false) 
-                    ? `<span class="badge badge-success">مفعل</span>`
-                    : `<span class="badge badge-danger">معطل</span>`;
-
                 return `
                     <tr>
                         <td><code>${b.id}</code></td>
                         <td>${posText}</td>
                         <td>${b.media_type === 'image' ? 'صورة' : 'فيديو'}</td>
                         <td>${mediaPreview}</td>
-                        <td>${activeBadge}</td>
+                        <td>${b.is_active !== false ? '<span class="badge badge-success">مفعل</span>' : '<span class="badge badge-danger">معطل</span>'}</td>
                         <td><button class="btn btn-danger btn-sm" onclick="handleDeleteBanner(${b.id})"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>
                 `;
@@ -706,7 +741,7 @@
             }
         }
 
-        // 3️⃣ المنتجات
+        // 3️⃣ المنتجات (الشتلات)
         async function loadProducts() {
             try {
                 const { data, error } = await _supabase.from('products').select('*, categories(name)').order('id', { ascending: false });
@@ -784,21 +819,14 @@
             }
         }
 
-        // 4️⃣ الهدايا والأكواد
-        function generateRandomCode(prefix = 'GIFT') {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let randomStr = '';
-            for (let i = 0; i < 6; i++) {
-                randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return `${prefix}-${randomStr}`;
-        }
-
+        // 4️⃣ الهدايا
         async function loadGifts() {
             try {
                 const { data, error } = await _supabase.from('gifts').select('*').order('id', { ascending: false });
                 if (error) throw error;
+                _giftsList = data;
                 renderGiftsTable(data);
+                populateGiftsDropdown(data);
             } catch (err) {
                 console.error("خطأ الهدايا:", err.message);
             }
@@ -807,44 +835,33 @@
         function renderGiftsTable(data) {
             const tbody = document.getElementById('gifts-table');
             if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد هدايا حالياً.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">لا توجد هدايا حالياً.</td></tr>';
                 return;
             }
-            tbody.innerHTML = data.map(g => {
-                let availBadge = (g.is_available !== false)
-                    ? `<span class="badge badge-success">متوفر</span>`
-                    : `<span class="badge badge-danger">غير متوفر</span>`;
-
-                let imgPreview = g.image_url 
-                    ? `<img src="${g.image_url}" style="height:40px; width:40px; object-fit:cover; border-radius:6px;">`
-                    : '-';
-
-                return `
-                    <tr>
-                        <td><code>${g.id}</code></td>
-                        <td>${imgPreview}</td>
-                        <td><strong>${g.name}</strong></td>
-                        <td><strong style="color:#ec4899">${g.price} ر.س</strong></td>
-                        <td>${availBadge}</td>
-                        <td style="display: flex; gap: 6px;">
-                            <button class="btn btn-primary btn-sm" style="background:#8b5cf6; width:auto; padding:0.4rem 0.8rem; font-size:0.8rem;" onclick="showGiftCodes(${g.id}, '${g.name}')">
-                                <i class="fa-solid fa-key"></i> الأكواد
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="handleDeleteGift(${g.id})">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            tbody.innerHTML = data.map(g => `
+                <tr>
+                    <td><code>${g.id}</code></td>
+                    <td>${g.image_url ? `<img src="${g.image_url}" style="height:40px; width:40px; object-fit:cover; border-radius:6px;">` : '-'}</td>
+                    <td><strong>${g.name}</strong></td>
+                    <td><strong style="color:#ec4899">${g.price} ر.س</strong></td>
+                    <td><button class="btn btn-danger btn-sm" onclick="handleDeleteGift(${g.id})"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
         }
 
-        async function handleAddGiftWithCodes(e) {
+        function populateGiftsDropdown(data) {
+            const select = document.getElementById('code-gift-id');
+            select.innerHTML = '<option value="" disabled selected>اختر الهدية...</option>';
+            data.forEach(g => {
+                select.innerHTML += `<option value="${g.id}">${g.name} (ID: ${g.id})</option>`;
+            });
+        }
+
+        async function handleAddGift(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-add-gift');
             const name = document.getElementById('gift-name').value.trim();
             const price = document.getElementById('gift-price').value;
-            const count = parseInt(document.getElementById('gift-code-count').value) || 100;
             const file = document.getElementById('gift-file').files[0];
             const isAvailable = document.getElementById('gift-available').value === 'true';
             const description = document.getElementById('gift-desc').value.trim();
@@ -855,46 +872,20 @@
             showStatus('msg-gift', 'جاري رفع صورة الهدية...');
 
             try {
-                // 1. رفع صورة الهدية
                 const imgUrl = await uploadFileToSupabase(file, 'gifts');
 
-                showStatus('msg-gift', 'جاري إنشاء الهدية وتوليد الأكواد...');
-
-                // 2. إدخال الهدية
-                const { data: giftData, error: giftError } = await _supabase.from('gifts').insert([{
+                const { error } = await _supabase.from('gifts').insert([{
                     name: name,
                     price: parseFloat(price),
                     image_url: imgUrl,
                     description: description,
                     is_available: isAvailable
-                }]).select().single();
+                }]);
 
-                if (giftError) throw giftError;
-
-                const giftId = giftData.id;
-
-                // 3. توليد الأكواد بالمغلف المحدد
-                const codesToInsert = [];
-                const usedCodesSet = new Set();
-
-                while (codesToInsert.length < count) {
-                    const newCode = generateRandomCode('GIFT');
-                    if (!usedCodesSet.has(newCode)) {
-                        usedCodesSet.add(newCode);
-                        codesToInsert.push({
-                            gift_id: giftId,
-                            code: newCode,
-                            is_used: false
-                        });
-                    }
-                }
-
-                // 4. حفظ الأكواد في جدول gift_codes
-                const { error: codesError } = await _supabase.from('gift_codes').insert(codesToInsert);
-                if (codesError) throw codesError;
+                if (error) throw error;
 
                 e.target.reset();
-                showStatus('msg-gift', `تمت إضافة الهدية وتوليد ${count} كود بنجاح!`, 'success');
+                showStatus('msg-gift', 'تمت إضافة الهدية بنجاح!', 'success');
                 loadGifts();
             } catch (err) {
                 showStatus('msg-gift', 'خطأ: ' + err.message, 'error');
@@ -903,51 +894,122 @@
             }
         }
 
-        // دالة عرض نسخ الأكواد لنسخها ونشرها
-        async function showGiftCodes(giftId, giftName) {
-            try {
-                const { data: codes, error } = await _supabase
-                    .from('gift_codes')
-                    .select('*')
-                    .eq('gift_id', giftId)
-                    .order('id', { ascending: true });
-
-                if (error) throw error;
-
-                if (!codes || codes.length === 0) {
-                    alert(`لا توجد أكواد مسجلة لهدية: ${giftName}`);
-                    return;
-                }
-
-                let unusedCodes = codes.filter(c => !c.is_used).map(c => c.code).join('\n');
-                
-                prompt(
-                    `أكواد الهدية: (${giftName})\nالإجمالي: ${codes.length} | المتبقي غير المستخدم: ${codes.filter(c => !c.is_used).length}\n\nنسخ الأكواد أدناه للبدء بنشرها:`,
-                    unusedCodes
-                );
-
-            } catch (err) {
-                alert("خطأ أثناء جلب الأكواد: " + err.message);
-            }
-        }
-
         async function handleDeleteGift(id) {
-            if(!confirm("هل أنت متأكد من حذف هذه الهدية وكافة الأكواد المربوطة بها؟")) return;
+            if(!confirm("هل أنت متأكد من حذف هذه الهدية؟")) return;
             try {
                 const { error } = await _supabase.from('gifts').delete().eq('id', id);
                 if (error) throw error;
                 loadGifts();
+                loadGiftCodes();
             } catch (err) {
                 alert("خطأ أثناء الحذف: " + err.message);
             }
         }
 
-        // التشغيل المباشر عند بدء الصفحة
+        // 5️⃣ إدارة الأكواد المقبولة والتحقق منها
+        async function loadGiftCodes() {
+            try {
+                const { data, error } = await _supabase.from('gift_codes').select('*, gifts(name)').order('id', { ascending: false });
+                if (error) throw error;
+                _allValidCodes = data || []; // حفظ الأكواد للتحقق الفوري
+                renderGiftCodesTable(data);
+            } catch (err) {
+                console.error("خطأ أكواد الهدايا:", err.message);
+            }
+        }
+
+        function renderGiftCodesTable(data) {
+            const tbody = document.getElementById('gift-codes-table');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">لا توجد أكواد مضافة حالياً.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(c => `
+                <tr>
+                    <td><code>${c.id}</code></td>
+                    <td>${c.gifts ? c.gifts.name : 'هدية محذوفة'}</td>
+                    <td><code>${c.code}</code></td>
+                    <td>${c.is_used ? '<span class="badge badge-danger">مستخدم</span>' : '<span class="badge badge-success">متاح</span>'}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="handleDeleteGiftCode(${c.id})"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        async function handleAddCustomGiftCode(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-add-code');
+            const giftId = document.getElementById('code-gift-id').value;
+            const codeVal = document.getElementById('code-value').value.trim();
+
+            if(!giftId || !codeVal) return;
+
+            btn.disabled = true;
+            showStatus('msg-code', 'جاري حفظ الكود...');
+
+            try {
+                const { error } = await _supabase.from('gift_codes').insert([{
+                    gift_id: parseInt(giftId),
+                    code: codeVal,
+                    is_used: false
+                }]);
+
+                if (error) throw error;
+
+                document.getElementById('code-value').value = '';
+                showStatus('msg-code', 'تم اعتماد الكود بنجاح!', 'success');
+                loadGiftCodes();
+            } catch (err) {
+                showStatus('msg-code', 'خطأ: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function handleDeleteGiftCode(id) {
+            if(!confirm("هل أنت متأكد من حذف هذا الكود؟")) return;
+            try {
+                const { error } = await _supabase.from('gift_codes').delete().eq('id', id);
+                if (error) throw error;
+                loadGiftCodes();
+            } catch (err) {
+                alert("خطأ أثناء الحذف: " + err.message);
+            }
+        }
+
+        // دالة التحقق من الكود المدخل (إذا لم يكن موجوداً يظهر خطأ)
+        function verifyCustomerCode() {
+            const inputVal = document.getElementById('test-input-code').value.trim();
+            const resEl = document.getElementById('verify-result-msg');
+
+            if (!inputVal) {
+                resEl.style.color = '#ef4444';
+                resEl.textContent = 'الرجاء إدخال كود أولاً!';
+                return;
+            }
+
+            // البحث عن الكود في قائمة الأكواد المخزنة المعتمدة
+            const found = _allValidCodes.find(item => item.code === inputVal);
+
+            if (found) {
+                resEl.style.color = '#10b981';
+                if (found.is_used) {
+                    resEl.textContent = `خطأ: الكود "${inputVal}" تم استخدامه من قبل!`;
+                } else {
+                    resEl.textContent = `✅ صحيح! الكود متاح للهدية: ${found.gifts ? found.gifts.name : 'غير معروف'}`;
+                }
+            } else {
+                resEl.style.color = '#ef4444';
+                resEl.textContent = `❌ خطأ: الكود "${inputVal}" غير موجود أو غير مسموح به!`;
+            }
+        }
+
+        // البدء عند فتح الصفحة
         window.addEventListener('DOMContentLoaded', () => {
             loadCategories();
             loadBanners();
             loadProducts();
             loadGifts();
+            loadGiftCodes();
         });
     </script>
 </body>
