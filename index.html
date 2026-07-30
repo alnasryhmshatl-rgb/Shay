@@ -87,6 +87,35 @@
         }
         .cart-badge { background: #ef4444; color: white; font-size: 0.75rem; border-radius: 50%; padding: 2px 7px; }
 
+        /* تصميم قسم البنر الإعلاني المربوط بالداشبورد */
+        .banner-container {
+            max-width: 1200px;
+            margin: 1.5rem auto 0.5rem auto;
+            padding: 0 1.5rem;
+        }
+        .hero-banner {
+            width: 100%;
+            height: 220px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            position: relative;
+            box-shadow: var(--shadow);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .banner-placeholder-text { color: white; font-size: 1.8rem; font-weight: 900; text-align: center; }
+
+        .container { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
+        .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
+        .product-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; box-shadow: var(--shadow); }
+        .product-img { width: 100%; height: 180px; object-fit: cover; border-radius: var(--radius-md); background: #f1f5f9; }
+        .product-title { font-weight: 800; margin-top: 10px; font-size: 1.1rem; }
+        .product-price { color: var(--primary); font-weight: 900; margin-top: 5px; font-size: 1rem; }
+        .btn-add { width: 100%; background: var(--primary); color: white; border: none; padding: 0.7rem; border-radius: 8px; font-weight: 800; margin-top: 10px; cursor: pointer; }
+
         .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -119,14 +148,6 @@
         .form-group label { display: block; font-size: 0.85rem; font-weight: 800; margin-bottom: 0.4rem; }
         .form-group input { width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: var(--radius-md); outline: none; font-weight: 600; }
         .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 0.9rem; border-radius: var(--radius-md); font-weight: 800; cursor: pointer; }
-
-        .container { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
-        .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
-        .product-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; box-shadow: var(--shadow); }
-        .product-img { width: 100%; height: 180px; object-fit: cover; border-radius: var(--radius-md); }
-        .product-title { font-weight: 800; margin-top: 10px; font-size: 1.1rem; }
-        .product-price { color: var(--primary); font-weight: 900; margin-top: 5px; font-size: 1rem; }
-        .btn-add { width: 100%; background: var(--primary); color: white; border: none; padding: 0.7rem; border-radius: 8px; font-weight: 800; margin-top: 10px; cursor: pointer; }
 
         .invoice-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; }
         .invoice-header { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 0.8rem; margin-bottom: 0.8rem; }
@@ -169,6 +190,13 @@
             </button>
         </div>
     </header>
+
+    <!-- قسم البنر المربوط بالداشبورد -->
+    <div class="banner-container">
+        <div class="hero-banner" id="store-banner">
+            <div class="banner-placeholder-text">🍃 أهلاً بكم في متجر شاي العندليب 🍃</div>
+        </div>
+    </div>
 
     <div class="container" id="main-store-content">
         <p style="text-align:center; font-weight:bold;">جاري تحميل المنتجات...</p>
@@ -246,7 +274,17 @@
         let discountApplied = false;
         let products = [];
 
-        // جلب المنتجات من قاعدة البيانات Supabase
+        // 1. جلب البنر الإعلاني من الداشبورد / Supabase
+        async function fetchBannerFromDatabase() {
+            const bannerDiv = document.getElementById('store-banner');
+            const { data, error } = await _supabase.from('banners').select('image_url').limit(1).maybeSingle();
+
+            if (data && data.image_url) {
+                bannerDiv.innerHTML = `<img src="${data.image_url}" alt="البنر الإعلاني">`;
+            }
+        }
+
+        // 2. جلب المنتجات من قاعدة البيانات Supabase
         async function fetchProductsFromDatabase() {
             const container = document.getElementById('main-store-content');
             
@@ -266,14 +304,21 @@
             renderProducts();
         }
 
-        // عرض المنتجات في الصفحة
+        // عرض المنتجات في الصفحة مع التعامل مع الصور المكسورة
         function renderProducts() {
             const container = document.getElementById('main-store-content');
             let html = '<div class="grid-products">';
+            const fallbackImage = 'https://via.placeholder.com/260x180?text=لا+توجد+صورة';
+
             products.forEach(p => {
+                let imgUrl = (p.image && p.image.startsWith('http')) ? p.image : fallbackImage;
+
                 html += `
                     <div class="product-card">
-                        <img src="${p.image || 'https://via.placeholder.com/260x180'}" class="product-img" alt="${p.name}">
+                        <img src="${imgUrl}" 
+                             onerror="this.onerror=null; this.src='${fallbackImage}';" 
+                             class="product-img" 
+                             alt="${p.name}">
                         <div class="product-title">${p.name}</div>
                         <div class="product-price">${p.price} ر.س</div>
                         <button class="btn-add" onclick="addToCart('${p.id}')">إضافة للسلة</button>
@@ -426,24 +471,42 @@
             document.getElementById('grandtotal-val').textContent = `${subtotal + delivery} ر.س`;
         }
 
-        function sendOrderToWhatsApp() {
+        // 3. تأكيد الطلب وحفظه في الداشبورد قبل التوجيه للواتساب
+        async function sendOrderToWhatsApp() {
             if (cart.length === 0) {
                 alert("السلة فارغة!");
                 return;
             }
+
+            const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            const delivery = discountApplied ? 0 : baseDelivery;
+            const grandTotal = subtotal + delivery;
+
+            // تسجيل الطلب في Supabase لكي يظهر في الداشبورد
+            try {
+                await _supabase.from('orders').insert([{
+                    customer_name: currentUser ? currentUser.name : 'زائر',
+                    customer_phone: currentUser ? currentUser.phone : 'غير محدد',
+                    items: cart,
+                    total_amount: grandTotal,
+                    status: 'جديد'
+                }]);
+            } catch (err) {
+                console.log("تعذر حفظ الطلب في الداشبورد، جاري تحويل إلى الواتساب مباشرة.");
+            }
+
             let msg = "طلب جديد من متجر شاي العندليب:\n";
             cart.forEach(i => {
                 msg += `- ${i.name} x${i.qty} (${i.price * i.qty} ر.س)\n`;
             });
-            const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            const delivery = discountApplied ? 0 : baseDelivery;
-            msg += `\nالمجموع: ${subtotal} ر.س\nالتوصيل: ${delivery} ر.س\nالإجمالي: ${subtotal + delivery} ر.س`;
+            msg += `\nالمجموع: ${subtotal} ر.س\nالتوصيل: ${delivery} ر.س\nالإجمالي: ${grandTotal} ر.س`;
             
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             updateAuthUI();
+            fetchBannerFromDatabase();
             fetchProductsFromDatabase();
             updateCartUI();
         });
