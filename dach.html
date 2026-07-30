@@ -283,6 +283,7 @@
                     <li class="nav-item"><a href="#categories-section"><i class="fa-solid fa-layer-group"></i> الأقسام</a></li>
                     <li class="nav-item"><a href="#banners-section"><i class="fa-solid fa-rectangle-ad"></i> الإعلانات والبنرات</a></li>
                     <li class="nav-item"><a href="#products-section"><i class="fa-solid fa-seedling"></i> الشتلات</a></li>
+                    <li class="nav-item"><a href="#gifts-section"><i class="fa-solid fa-gift"></i> الهدايا والأكواد</a></li>
                 </ul>
             </div>
             
@@ -296,7 +297,7 @@
             <div class="top-bar">
                 <div class="page-title">
                     <h1>إدارة المحتوى والمنتجات</h1>
-                    <p>قم بإدارة أقسام المتجر، البنرات الإعلانية، والشتلات المعروضة بسهولة.</p>
+                    <p>قم بإدارة أقسام المتجر، البنرات الإعلانية، الشتلات، الهدايا والأكواد بسهولة.</p>
                 </div>
             </div>
 
@@ -431,6 +432,56 @@
                     </div>
                 </div>
 
+                <!-- 4️⃣ إدارة الهدايا والأكواد -->
+                <div class="dashboard-box full-width" id="gifts-section">
+                    <div class="box-title">
+                        <i class="fa-solid fa-gift" style="color: #ec4899;"></i> 
+                        4. الهدايا وتوليد الأكواد
+                    </div>
+                    <form onsubmit="handleAddGiftWithCodes(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; align-items: end;">
+                        <div class="form-group" style="margin:0;">
+                            <label>اسم الهدية</label>
+                            <input type="text" id="gift-name" required placeholder="مثال: كرت إهداء خاص">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>السعر (ر.س)</label>
+                            <input type="number" id="gift-price" required placeholder="100" step="any">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>عدد الأكواد المطلوبة</label>
+                            <input type="number" id="gift-code-count" value="100" min="1" max="1000" required>
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>صورة الهدية</label>
+                            <input type="file" id="gift-file" accept="image/*" required>
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>حالة التوفر</label>
+                            <select id="gift-available">
+                                <option value="true">متوفر</option>
+                                <option value="false">غير متوفر</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin:0; grid-column: 1 / -1;">
+                            <label>وصف الهدية</label>
+                            <textarea id="gift-desc" rows="2" placeholder="أدخل تفاصيل عن الهدية..."></textarea>
+                        </div>
+                        <div style="grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; margin-top: 0.5rem;">
+                            <button type="submit" class="btn btn-primary" id="btn-add-gift" style="max-width: 250px; background: #ec4899;">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> رفع وإضافة مع الأكواد
+                            </button>
+                            <div class="status-msg" id="msg-gift" style="margin:0;">جاري الإضافة...</div>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>ID</th><th>المعاينة</th><th>اسم الهدية</th><th>السعر</th><th>الحالة</th><th>إجراء</th></tr></thead>
+                            <tbody id="gifts-table"><tr><td colspan="6" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -459,7 +510,6 @@
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
             const filePath = `${folderName}/${fileName}`;
 
-            // رفع الملف إلى الـ bucket المسسمى "media"
             const { data, error } = await _supabase.storage
                 .from('media')
                 .upload(filePath, file, {
@@ -468,10 +518,9 @@
                 });
 
             if (error) {
-                throw new Error("فشل رفع الملف إلى الخادم. تأكد من وجود Bucket باسم 'media' وإتاحة الصلاحيات: " + error.message);
+                throw new Error("فشل رفع الملف. تأكد من وجود Bucket باسم 'media': " + error.message);
             }
 
-            // الحصول على رابط الملف المباشر
             const { data: publicUrlData } = _supabase.storage
                 .from('media')
                 .getPublicUrl(filePath);
@@ -482,13 +531,10 @@
         function updateBannerAcceptAttribute() {
             const mediaType = document.getElementById('banner-type').value;
             const fileInput = document.getElementById('banner-file');
-            if (mediaType === 'image') {
-                fileInput.accept = 'image/*';
-            } else {
-                fileInput.accept = 'video/*';
-            }
+            fileInput.accept = mediaType === 'image' ? 'image/*' : 'video/*';
         }
 
+        // 1️⃣ الأقسام
         async function loadCategories() {
             try {
                 const { data, error } = await _supabase.from('categories').select('*').order('id', { ascending: true });
@@ -558,18 +604,17 @@
         }
 
         async function handleDeleteCategory(id) {
-            if(!confirm("هل أنت متأكد من حذف هذا القسم؟ قد تتأثر المنتجات المرتبطة به.")) return;
+            if(!confirm("هل أنت متأكد من حذف هذا القسم؟")) return;
             try {
                 const { error } = await _supabase.from('categories').delete().eq('id', id);
                 if (error) throw error;
                 loadCategories();
-                loadBanners();
-                loadProducts();
             } catch (err) {
                 alert("خطأ أثناء الحذف: " + err.message);
             }
         }
 
+        // 2️⃣ البنرات
         async function loadBanners() {
             try {
                 const { data, error } = await _supabase.from('banners').select('*').order('sort_order', { ascending: true });
@@ -618,47 +663,33 @@
             const orderInput = document.getElementById('banner-order');
             const activeSel = document.getElementById('banner-active');
             const btn = document.getElementById('btn-add-banner');
-            
-            const pos = posSel.value;
-            const mediaType = typeSel.value;
-            const file = fileInput.files[0];
-            const sortOrder = parseInt(orderInput.value) || 0;
-            const isActive = activeSel.value === 'true';
 
-            if(!pos || !file) {
-                showStatus('msg-banner', 'يرجى اختيار المكان وتحديد الملف', 'error');
-                return;
-            }
+            const file = fileInput.files[0];
+            if(!posSel.value || !file) return;
 
             btn.disabled = true;
-            showStatus('msg-banner', 'جاري رفع الملف إلى الخادم...');
+            showStatus('msg-banner', 'جاري رفع الملف...');
 
             try {
-                // 1. رفع الملف وتوليد الرابط
                 const uploadedUrl = await uploadFileToSupabase(file, 'banners');
 
-                showStatus('msg-banner', 'جاري حفظ البيانات...');
-
-                // 2. إدخال البيانات في الجدول
                 const payload = {
-                    position: pos,
-                    media_type: mediaType,
+                    position: posSel.value,
+                    media_type: typeSel.value,
                     media_url: uploadedUrl,
                     video_url: uploadedUrl,
-                    sort_order: sortOrder,
-                    is_active: isActive
+                    sort_order: parseInt(orderInput.value) || 0,
+                    is_active: activeSel.value === 'true'
                 };
 
                 const { error } = await _supabase.from('banners').insert([payload]);
                 if (error) throw error;
                 
                 fileInput.value = '';
-                posSel.selectedIndex = 0;
-                showStatus('msg-banner', 'تم رفع البنر وحفظه بنجاح!', 'success');
+                showStatus('msg-banner', 'تم رفع البنر بنجاح!', 'success');
                 loadBanners();
             } catch (err) {
-                console.error("تفاصيل الخطأ كاملة:", err);
-                showStatus('msg-banner', 'سبب الخطأ: ' + (err.message || JSON.stringify(err)), 'error');
+                showStatus('msg-banner', 'خطأ: ' + err.message, 'error');
             } finally {
                 btn.disabled = false;
             }
@@ -675,6 +706,7 @@
             }
         }
 
+        // 3️⃣ المنتجات
         async function loadProducts() {
             try {
                 const { data, error } = await _supabase.from('products').select('*, categories(name)').order('id', { ascending: false });
@@ -691,22 +723,16 @@
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد شتلات حالياً.</td></tr>';
                 return;
             }
-            tbody.innerHTML = data.map(p => {
-                let availBadge = (p.is_available !== false)
-                    ? `<span class="badge badge-success">متوفر</span>`
-                    : `<span class="badge badge-danger">غير متوفر</span>`;
-
-                return `
-                    <tr>
-                        <td><code>${p.id}</code></td>
-                        <td><strong>${p.name}</strong></td>
-                        <td>${p.categories ? p.categories.name : '-'}</td>
-                        <td><strong style="color:var(--primary-dark)">${p.price} ر.س</strong></td>
-                        <td>${availBadge}</td>
-                        <td><button class="btn btn-danger btn-sm" onclick="handleDeleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-                `;
-            }).join('');
+            tbody.innerHTML = data.map(p => `
+                <tr>
+                    <td><code>${p.id}</code></td>
+                    <td><strong>${p.name}</strong></td>
+                    <td>${p.categories ? p.categories.name : '-'}</td>
+                    <td><strong style="color:var(--primary-dark)">${p.price} ر.س</strong></td>
+                    <td>${p.is_available !== false ? '<span class="badge badge-success">متوفر</span>' : '<span class="badge badge-danger">غير متوفر</span>'}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="handleDeleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
         }
 
         async function handleAddProduct(e) {
@@ -715,26 +741,18 @@
             const name = document.getElementById('prod-name').value.trim();
             const catId = document.getElementById('prod-cat').value;
             const price = document.getElementById('prod-price').value;
-            const fileInput = document.getElementById('prod-file');
+            const file = document.getElementById('prod-file').files[0];
             const isAvailable = document.getElementById('prod-available').value === 'true';
             const description = document.getElementById('prod-desc').value.trim();
-            const file = fileInput.files[0];
 
-            if(!name || !catId || !price || !file) {
-                showStatus('msg-prod', 'يرجى ملء كافة الحقول واختيار الصورة', 'error');
-                return;
-            }
+            if(!name || !catId || !price || !file) return;
 
             btn.disabled = true;
             showStatus('msg-prod', 'جاري رفع صورة الشتلة...');
 
             try {
-                // 1. رفع الصورة وتوليد الرابط
                 const imgUrl = await uploadFileToSupabase(file, 'products');
 
-                showStatus('msg-prod', 'جاري حفظ الشتلة...');
-
-                // 2. إدخال البيانات في قاعدة البيانات
                 const { error } = await _supabase.from('products').insert([{
                     name: name,
                     category_id: parseInt(catId),
@@ -746,7 +764,7 @@
                 if (error) throw error;
                 
                 e.target.reset();
-                showStatus('msg-prod', 'تمت إضافة الشتلة ورفع صورتها بنجاح!', 'success');
+                showStatus('msg-prod', 'تمت إضافة الشتلة بنجاح!', 'success');
                 loadProducts();
             } catch (err) {
                 showStatus('msg-prod', 'خطأ: ' + err.message, 'error');
@@ -756,7 +774,7 @@
         }
 
         async function handleDeleteProduct(id) {
-            if(!confirm("حذف هذه الشتلة؟")) return;
+            if(!confirm("هل أنت متأكد من حذف هذه الشتلة؟")) return;
             try {
                 const { error } = await _supabase.from('products').delete().eq('id', id);
                 if (error) throw error;
@@ -766,13 +784,171 @@
             }
         }
 
-        async function initDashboard() {
-            await loadCategories();
-            loadBanners();
-            loadProducts();
+        // 4️⃣ الهدايا والأكواد
+        function generateRandomCode(prefix = 'GIFT') {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let randomStr = '';
+            for (let i = 0; i < 6; i++) {
+                randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return `${prefix}-${randomStr}`;
         }
 
-        initDashboard();
+        async function loadGifts() {
+            try {
+                const { data, error } = await _supabase.from('gifts').select('*').order('id', { ascending: false });
+                if (error) throw error;
+                renderGiftsTable(data);
+            } catch (err) {
+                console.error("خطأ الهدايا:", err.message);
+            }
+        }
+
+        function renderGiftsTable(data) {
+            const tbody = document.getElementById('gifts-table');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد هدايا حالياً.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(g => {
+                let availBadge = (g.is_available !== false)
+                    ? `<span class="badge badge-success">متوفر</span>`
+                    : `<span class="badge badge-danger">غير متوفر</span>`;
+
+                let imgPreview = g.image_url 
+                    ? `<img src="${g.image_url}" style="height:40px; width:40px; object-fit:cover; border-radius:6px;">`
+                    : '-';
+
+                return `
+                    <tr>
+                        <td><code>${g.id}</code></td>
+                        <td>${imgPreview}</td>
+                        <td><strong>${g.name}</strong></td>
+                        <td><strong style="color:#ec4899">${g.price} ر.س</strong></td>
+                        <td>${availBadge}</td>
+                        <td style="display: flex; gap: 6px;">
+                            <button class="btn btn-primary btn-sm" style="background:#8b5cf6; width:auto; padding:0.4rem 0.8rem; font-size:0.8rem;" onclick="showGiftCodes(${g.id}, '${g.name}')">
+                                <i class="fa-solid fa-key"></i> الأكواد
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="handleDeleteGift(${g.id})">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function handleAddGiftWithCodes(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-add-gift');
+            const name = document.getElementById('gift-name').value.trim();
+            const price = document.getElementById('gift-price').value;
+            const count = parseInt(document.getElementById('gift-code-count').value) || 100;
+            const file = document.getElementById('gift-file').files[0];
+            const isAvailable = document.getElementById('gift-available').value === 'true';
+            const description = document.getElementById('gift-desc').value.trim();
+
+            if(!name || !price || !file) return;
+
+            btn.disabled = true;
+            showStatus('msg-gift', 'جاري رفع صورة الهدية...');
+
+            try {
+                // 1. رفع صورة الهدية
+                const imgUrl = await uploadFileToSupabase(file, 'gifts');
+
+                showStatus('msg-gift', 'جاري إنشاء الهدية وتوليد الأكواد...');
+
+                // 2. إدخال الهدية
+                const { data: giftData, error: giftError } = await _supabase.from('gifts').insert([{
+                    name: name,
+                    price: parseFloat(price),
+                    image_url: imgUrl,
+                    description: description,
+                    is_available: isAvailable
+                }]).select().single();
+
+                if (giftError) throw giftError;
+
+                const giftId = giftData.id;
+
+                // 3. توليد الأكواد بالمغلف المحدد
+                const codesToInsert = [];
+                const usedCodesSet = new Set();
+
+                while (codesToInsert.length < count) {
+                    const newCode = generateRandomCode('GIFT');
+                    if (!usedCodesSet.has(newCode)) {
+                        usedCodesSet.add(newCode);
+                        codesToInsert.push({
+                            gift_id: giftId,
+                            code: newCode,
+                            is_used: false
+                        });
+                    }
+                }
+
+                // 4. حفظ الأكواد في جدول gift_codes
+                const { error: codesError } = await _supabase.from('gift_codes').insert(codesToInsert);
+                if (codesError) throw codesError;
+
+                e.target.reset();
+                showStatus('msg-gift', `تمت إضافة الهدية وتوليد ${count} كود بنجاح!`, 'success');
+                loadGifts();
+            } catch (err) {
+                showStatus('msg-gift', 'خطأ: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // دالة عرض نسخ الأكواد لنسخها ونشرها
+        async function showGiftCodes(giftId, giftName) {
+            try {
+                const { data: codes, error } = await _supabase
+                    .from('gift_codes')
+                    .select('*')
+                    .eq('gift_id', giftId)
+                    .order('id', { ascending: true });
+
+                if (error) throw error;
+
+                if (!codes || codes.length === 0) {
+                    alert(`لا توجد أكواد مسجلة لهدية: ${giftName}`);
+                    return;
+                }
+
+                let unusedCodes = codes.filter(c => !c.is_used).map(c => c.code).join('\n');
+                
+                prompt(
+                    `أكواد الهدية: (${giftName})\nالإجمالي: ${codes.length} | المتبقي غير المستخدم: ${codes.filter(c => !c.is_used).length}\n\nنسخ الأكواد أدناه للبدء بنشرها:`,
+                    unusedCodes
+                );
+
+            } catch (err) {
+                alert("خطأ أثناء جلب الأكواد: " + err.message);
+            }
+        }
+
+        async function handleDeleteGift(id) {
+            if(!confirm("هل أنت متأكد من حذف هذه الهدية وكافة الأكواد المربوطة بها؟")) return;
+            try {
+                const { error } = await _supabase.from('gifts').delete().eq('id', id);
+                if (error) throw error;
+                loadGifts();
+            } catch (err) {
+                alert("خطأ أثناء الحذف: " + err.message);
+            }
+        }
+
+        // التشغيل المباشر عند بدء الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            loadBanners();
+            loadProducts();
+            loadGifts();
+        });
     </script>
 </body>
 </html>
