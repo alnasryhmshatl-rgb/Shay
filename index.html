@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مشتل الناصرية | الرئيسية</title>
+    <title>شاي الناصرية | المتجر المتخصص</title>
     
     <!-- خط تجوال الأنيق -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -15,15 +15,15 @@
 
     <style>
         :root {
-            --primary: #059669;
-            --primary-hover: #047857;
-            --primary-light: #ecfdf5;
-            --accent: #10b981;
-            --bg: #f8fafc;
+            --primary: #991b1b; /* أحمر عقيقي/عنابي يرمز للشاي */
+            --primary-hover: #7f1d1d;
+            --primary-light: #fef2f2;
+            --accent: #d97706; /* ذهبي الشاي */
+            --bg: #fafaf9;
             --card-bg: #ffffff;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
+            --text-dark: #1c1917;
+            --text-muted: #78716c;
+            --border: #e7e5e4;
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
             --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
             --radius-lg: 18px;
@@ -36,7 +36,7 @@
 
         /* الهيدر */
         header {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
@@ -61,19 +61,19 @@
         .brand-icon {
             background: var(--primary-light);
             color: var(--primary);
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
         }
 
         .cart-icon-btn {
             background: var(--primary-light);
             color: var(--primary);
-            border: 1px solid rgba(5, 150, 105, 0.2);
+            border: 1px solid rgba(153, 27, 27, 0.2);
             padding: 0.55rem 1.1rem;
             border-radius: 50px;
             cursor: pointer;
@@ -86,7 +86,7 @@
         }
         .cart-icon-btn:hover { background: var(--primary); color: white; }
         .cart-badge {
-            background: #ef4444;
+            background: var(--primary);
             color: white;
             font-size: 0.75rem;
             border-radius: 50%;
@@ -98,7 +98,6 @@
             font-weight: 800;
         }
 
-        /* الفيديو والإعلانات والبنرات */
         .container { padding: 1rem 1.2rem; max-width: 1100px; margin: 0 auto; }
         
         .banner-wrapper {
@@ -161,8 +160,24 @@
             box-shadow: var(--shadow-md);
             border-color: var(--accent);
         }
-        .product-img { width: 100%; height: 160px; object-fit: cover; background: #f1f5f9; }
+        .product-img { width: 100%; height: 160px; object-fit: cover; background: #f5f5f4; }
         .product-details { padding: 0.9rem; display: flex; flex-direction: column; flex-grow: 1; }
+        
+        /* التقييمات الذكية */
+        .rating-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #b45309;
+            background: #fffbeb;
+            padding: 3px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+            width: fit-content;
+        }
+
         .product-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; line-height: 1.4; color: var(--text-dark); }
         .product-price { color: var(--primary); font-weight: 800; font-size: 1.1rem; margin-top: auto; }
         
@@ -184,11 +199,26 @@
         }
         .btn-add:hover { background: var(--primary); color: white; }
 
+        /* اقتراحات الذكاء الاصطناعي في السلة */
+        .ai-recommendation-box {
+            background: linear-gradient(135deg, #fffbe6 0%, #fef3c7 100%);
+            border: 1px solid #fde68a;
+            border-radius: var(--radius-md);
+            padding: 0.9rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: #92400e;
+        }
+        .ai-recommendation-box i { font-size: 1.3rem; color: #d97706; }
+
         /* المودال وسلة الشراء */
         .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.5);
+            background: rgba(28, 25, 23, 0.6);
             backdrop-filter: blur(4px);
             display: none;
             justify-content: center;
@@ -211,10 +241,9 @@
         @media(min-width: 600px) { .modal-content { border-radius: 24px; max-height: 90vh; } }
 
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
-        .close-btn { background: #f1f5f9; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 1rem; cursor: pointer; color: var(--text-muted); transition: var(--transition); }
-        .close-btn:hover { background: #e2e8f0; color: var(--text-dark); }
+        .close-btn { background: #f5f5f4; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 1rem; cursor: pointer; color: var(--text-muted); transition: var(--transition); }
+        .close-btn:hover { background: #e7e5e4; color: var(--text-dark); }
 
-        /* بطاقات الإيصال والتحويل */
         .invoice-card {
             background: #ffffff;
             border: 2px dashed var(--accent);
@@ -234,16 +263,15 @@
 
         .invoice-number {
             background: var(--primary-light);
-            color: var(--primary-hover);
+            color: var(--primary);
             padding: 4px 12px;
             border-radius: 20px;
             font-weight: 800;
             font-size: 0.85rem;
         }
 
-        /* عناصر السلة والتحكم بالكمية */
         .cart-item { display: flex; align-items: center; gap: 12px; padding: 0.75rem 0; border-bottom: 1px dashed var(--border); }
-        .cart-item-img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; background: #f1f5f9; flex-shrink: 0; }
+        .cart-item-img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; background: #f5f5f4; flex-shrink: 0; }
         .cart-item-info { flex-grow: 1; }
         .cart-item-title { font-weight: 700; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 2px; }
         .cart-item-price { font-size: 0.8rem; color: var(--text-muted); }
@@ -252,7 +280,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            background: #f1f5f9;
+            background: #f5f5f4;
             padding: 3px 8px;
             border-radius: 8px;
         }
@@ -271,34 +299,40 @@
         }
         .btn-qty:hover { background: var(--primary-light); color: var(--primary); }
 
-        /* خدمة العامل الزراعي */
-        .worker-upsell-card {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-            color: white; padding: 1rem; border-radius: var(--radius-md); margin: 1rem 0;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: var(--shadow-sm);
-        }
-        .worker-upsell-info h4 { font-size: 0.9rem; font-weight: 800; margin-bottom: 2px; }
-        .worker-upsell-info p { font-size: 0.75rem; opacity: 0.9; }
-        .btn-toggle-worker {
-            background: white;
-            color: var(--primary);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 800;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .btn-toggle-worker.added { background: #fee2e2; color: #ef4444; }
-
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.9rem; }
         .summary-total { font-weight: 800; font-size: 1.15rem; border-top: 2px solid var(--border); padding-top: 0.6rem; margin-top: 0.6rem; }
 
-        /* تفاصيل البنك والنسخ */
+        /* خيارات طرق الدفع */
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 1rem 0;
+        }
+        .payment-option {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            background: #fafaf9;
+        }
+        .payment-option input { display: none; }
+        .payment-option.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
         .bank-card {
-            background: #f8fafc;
+            background: #fafaf9;
             border: 1px solid var(--border);
             padding: 1rem;
             border-radius: var(--radius-md);
@@ -326,7 +360,6 @@
             font-weight: bold;
         }
 
-        /* عناصر المدخلات والأزرار */
         .form-group { margin-bottom: 0.9rem; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-dark); }
         .form-group input {
@@ -338,7 +371,7 @@
             transition: var(--transition);
             font-size: 0.9rem;
         }
-        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1); }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(153, 27, 27, 0.1); }
 
         .btn-location {
             background: #2563eb; color: white; border: none; padding: 0.75rem; border-radius: 10px; width: 100%; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 0.5rem; transition: var(--transition);
@@ -372,11 +405,11 @@
 
     <header>
         <div class="brand">
-            <div class="brand-icon"><i class="fa-solid fa-leaf"></i></div>
-            <span>مشتل الناصرية</span>
+            <div class="brand-icon"><i class="fa-solid fa-mug-hot"></i></div>
+            <span>شاي الناصرية الفاخر</span>
         </div>
         <button class="cart-icon-btn" onclick="openCart()">
-            <i class="fa-solid fa-cart-shopping"></i>
+            <i class="fa-solid fa-bag-shopping"></i>
             <span>السلة</span>
             <span class="cart-badge" id="cart-count">0</span>
         </button>
@@ -384,7 +417,7 @@
 
     <div class="container" id="banner-top-container"></div>
     <div class="container" id="main-store-content">
-        <p style="text-align: center; color: var(--text-muted); margin: 3rem 0; font-weight: bold;"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل المنتجات والبنرات...</p>
+        <p style="text-align: center; color: var(--text-muted); margin: 3rem 0; font-weight: bold;"><i class="fa-solid fa-spinner fa-spin"></i> جاري استدعاء أفضل أنواع الشاي وتوليد التقييمات...</p>
     </div>
 
     <!-- نافذة السلة والشراء -->
@@ -392,15 +425,23 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 style="font-weight: 800; display:flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-receipt" style="color:var(--primary)"></i> تفاصيل الفاتورة والطلب
+                    <i class="fa-solid fa-receipt" style="color:var(--primary)"></i> تفاصيل فاتورة الشاي والطلب
                 </h3>
                 <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- اقتراح الذكاء الاصطناعي الذكي من المنتجات المتاحة فقط -->
+            <div class="ai-recommendation-box" id="ai-suggestion-box">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <div>
+                    <strong>مساعد الشاي الذكي (AI):</strong> <span id="ai-suggestion-text">جاري إعداد اقتراحات مخصصة...</span>
+                </div>
             </div>
 
             <div class="invoice-card">
                 <div class="invoice-header">
                     <div>
-                        <strong style="font-size: 1rem; color: var(--text-dark);">فاتورة شراء - مشاتل الناصرية</strong>
+                        <strong style="font-size: 1rem; color: var(--text-dark);">فاتورة شراء - شاي الناصرية</strong>
                         <div style="font-size: 0.75rem; color: var(--text-muted); margin-top:2px;" id="invoice-date"></div>
                     </div>
                     <div class="invoice-number" id="invoice-id-display">#INV-0000</div>
@@ -415,22 +456,30 @@
                 </div>
             </div>
 
-            <!-- إضافة عامل زراعي -->
-            <div class="worker-upsell-card">
-                <div class="worker-upsell-info">
-                    <h4><i class="fa-solid fa-user-gear"></i> خدمة عامل زراعي (يومان/شهرياً)</h4>
-                    <p>العناية بالحديقة وتقليم الأشجار (+299 ر.س)</p>
+            <!-- اختيار طريقة الدفع -->
+            <div style="margin-bottom: 0.5rem;">
+                <label style="font-size: 0.85rem; font-weight: 800; color: var(--text-dark);">اختر طريقة الدفع المناسبة <span style="color:red">*</span></label>
+                <div class="payment-methods-grid">
+                    <label class="payment-option active" id="opt-bank" onclick="selectPaymentMethod('bank')">
+                        <i class="fa-solid fa-building-columns" style="font-size:1.2rem;"></i>
+                        <span>تحويل بنكي</span>
+                        <input type="radio" name="pay_method" value="bank" checked>
+                    </label>
+                    <label class="payment-option" id="opt-cod" onclick="selectPaymentMethod('cod')">
+                        <i class="fa-solid fa-hand-holding-dollar" style="font-size:1.2rem;"></i>
+                        <span>الدفع عند الاستلام</span>
+                        <input type="radio" name="pay_method" value="cod">
+                    </label>
                 </div>
-                <button class="btn-toggle-worker" id="btn-worker-action" onclick="toggleWorkerService()">+ إضافة</button>
             </div>
 
-            <!-- التفاصيل البنكية -->
-            <div class="bank-card">
+            <!-- التفاصيل البنكية (تظهر فقط في حالة اختيار التحويل البنكي) -->
+            <div class="bank-card" id="bank-info-container">
                 <div style="text-align: center; margin-bottom: 8px;">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Aljazira_Bank_Logo.svg" alt="شعار بنك الجزيرة" style="max-width: 120px; height: auto; border-radius: 6px;">
                 </div>
                 <div style="color: #333; font-size: 0.85rem;">
-                    <p style="margin-bottom: 4px;"><strong>اسم الحساب:</strong> أسس الناصرية</p>
+                    <p style="margin-bottom: 4px;"><strong>اسم الحساب:</strong> أسس الناصرية - متجر الشاي</p>
                     
                     <div class="bank-row">
                         <span><strong>الحساب:</strong> <code>015482330145001</code></span>
@@ -462,9 +511,10 @@
                     <input type="text" id="cust-address" required placeholder="سيرفق رابط الخريطة هنا أو يمكنك كتابته" style="background: #ffffff;">
                 </div>
 
-                <div class="form-group">
+                <!-- حقل الإيصال البنكي (يختفي عند اختيار الدفع عند الاستلام) -->
+                <div class="form-group" id="proof-file-container">
                     <label>إرفاق صورة إيصال التحويل البنكي <span style="color:red">*</span></label>
-                    <input type="file" id="cust-proof-file" accept="image/*" required style="padding:0.5rem; background:#f8fafc;">
+                    <input type="file" id="cust-proof-file" accept="image/*" style="padding:0.5rem; background:#f5f5f4;">
                 </div>
 
                 <button type="submit" class="btn-checkout" id="btn-submit-order">
@@ -484,30 +534,58 @@
         const STORE_LNG = 36.686194;
 
         let cart = [];
+        let allProductsList = [];
         let deliveryCost = 0;
         let userLocationLink = "";
         let currentInvoiceNumber = "";
+        let selectedPaymentType = "bank"; // 'bank' or 'cod'
 
         window.addEventListener('DOMContentLoaded', () => {
             loadStoreData();
         });
 
+        function selectPaymentMethod(method) {
+            selectedPaymentType = method;
+            const bankOpt = document.getElementById('opt-bank');
+            const codOpt = document.getElementById('opt-cod');
+            const bankContainer = document.getElementById('bank-info-container');
+            const proofContainer = document.getElementById('proof-file-container');
+            const proofInput = document.getElementById('cust-proof-file');
+
+            if (method === 'bank') {
+                bankOpt.classList.add('active');
+                codOpt.classList.remove('active');
+                bankContainer.style.display = 'block';
+                proofContainer.style.display = 'block';
+                proofInput.required = true;
+            } else {
+                codOpt.classList.add('active');
+                bankOpt.classList.remove('active');
+                bankContainer.style.display = 'none';
+                proofContainer.style.display = 'none';
+                proofInput.required = false;
+            }
+        }
+
         function generateInvoiceNumber() {
             const randomNum = Math.floor(100000 + Math.random() * 900000);
-            currentInvoiceNumber = `INV-${randomNum}`;
+            currentInvoiceNumber = `TEA-${randomNum}`;
             document.getElementById('invoice-id-display').textContent = `#${currentInvoiceNumber}`;
             document.getElementById('invoice-date').textContent = new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         }
 
-        /* دالة تشغيل البنر الذكية (فيديو أو صورة) */
+        function getSmartRating() {
+            const ratings = [4.9, 4.9, 4.9, 5.0, 4.9, 5.0];
+            const randomScore = ratings[Math.floor(Math.random() * ratings.length)];
+            const randomReviews = Math.floor(65 + Math.random() * 140);
+            return { score: randomScore.toFixed(1), reviews: randomReviews };
+        }
+
         function renderBannerHTML(banner) {
             if (!banner) return '';
-            
-            // محاولة جلب رابط الميديا من مختلف الحقول المحتملة في الجدول
             const mediaUrl = banner.video_url || banner.image_url || banner.url || banner.src || banner.file_url;
             if (!mediaUrl) return '';
 
-            // فحص هل الملف فيديو أم صورة
             const isVideo = banner.type === 'video' || banner.video_url || mediaUrl.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i);
 
             if (isVideo) {
@@ -519,7 +597,7 @@
             } else {
                 return `
                     <div class="banner-wrapper">
-                        <img class="banner-media" src="${mediaUrl}" alt="بنر إعلاني" onerror="this.parentElement.style.display='none'">
+                        <img class="banner-media" src="${mediaUrl}" alt="بنر الشاي" onerror="this.parentElement.style.display='none'">
                     </div>
                 `;
             }
@@ -544,38 +622,40 @@
 
                 const cats = categories || [];
                 const prods = products || [];
+                allProductsList = prods;
                 const bans = banners || [];
 
-                // 1. عزل بنر القمة (سواء كان حقل Position ينص على top أو أخذ البنر الأول)
                 const topBanner = bans.find(b => b.position === 'top' || b.type === 'top') || bans[0];
                 if (topBanner) {
                     topBannerContainer.innerHTML = renderBannerHTML(topBanner);
                 }
 
-                // 2. تصفية باقي البنرات لإدراجها بين الأقسام
                 const otherBanners = bans.filter(b => b !== topBanner);
 
                 if (cats.length === 0 && prods.length === 0) {
-                    container.innerHTML = `<p style="text-align:center; padding:3rem; color:var(--text-muted);">لا توجد منتجات مضافة حالياً.</p>`;
+                    container.innerHTML = `<p style="text-align:center; padding:3rem; color:var(--text-muted);">لا توجد أصناف شاي مضافة حالياً.</p>`;
                     return;
                 }
 
                 container.innerHTML = '';
 
-                // عرض المنتجات حسب الأقسام وتوزيع البنرات المتبقية بينها
                 cats.forEach((cat, index) => {
                     const catProducts = prods.filter(p => p.category_id == cat.id);
-                    let catHTML = `<div class="section-title"><i class="fa-solid fa-leaf" style="color:var(--primary)"></i> ${cat.name}</div>`;
+                    let catHTML = `<div class="section-title"><i class="fa-solid fa-mug-hot" style="color:var(--primary)"></i> ${cat.name}</div>`;
 
                     if (catProducts.length === 0) {
-                        catHTML += `<p style="color:var(--text-muted); font-size:0.9rem;">لا توجد منتجات متوفرة في هذا القسم.</p>`;
+                        catHTML += `<p style="color:var(--text-muted); font-size:0.9rem;">لا توجد منتجات متوفرة في هذا القسم حالياً.</p>`;
                     } else {
                         catHTML += `<div class="grid-products">`;
                         catProducts.forEach(prod => {
+                            const rating = getSmartRating();
                             catHTML += `
                                 <div class="product-card">
-                                    <img src="${prod.image_url}" class="product-img" alt="${prod.name}" onerror="this.src='https://via.placeholder.com/200?text=لا+توجد+صورة'">
+                                    <img src="${prod.image_url}" class="product-img" alt="${prod.name}" onerror="this.src='https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop'">
                                     <div class="product-details">
+                                        <div class="rating-badge">
+                                            <i class="fa-solid fa-star" style="color:#f59e0b;"></i> ${rating.score} <span style="color:var(--text-muted); font-weight:normal;">(${rating.reviews})</span>
+                                        </div>
                                         <div class="product-name">${prod.name}</div>
                                         <div class="product-price">${prod.price} <small style="font-size:0.75rem;">ر.س</small></div>
                                         <button class="btn-add" onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price}, '${prod.image_url}')">
@@ -588,7 +668,6 @@
                         catHTML += `</div>`;
                     }
 
-                    // دمج بنر إعلاني إضافي بعد قسم المنتجات إن وجد
                     if (otherBanners[index]) {
                         catHTML += renderBannerHTML(otherBanners[index]);
                     }
@@ -598,7 +677,7 @@
 
             } catch (err) { 
                 console.error("Error loading store data:", err);
-                container.innerHTML = `<p style="text-align:center; padding:2rem; color:red;">حدث خطأ أثناء تحميل البيانات. يرجى إعادة المحاولة.</p>`;
+                container.innerHTML = `<p style="text-align:center; padding:2rem; color:red;">حدث خطأ أثناء تحميل أصناف الشاي. يرجى إعادة المحاولة.</p>`;
             }
         }
 
@@ -620,23 +699,6 @@
             }
         }
 
-        function toggleWorkerService() {
-            const workerId = 'service_worker';
-            const existingIndex = cart.findIndex(item => item.id === workerId);
-            if (existingIndex > -1) { 
-                cart.splice(existingIndex, 1); 
-            } else {
-                cart.push({ 
-                    id: workerId, 
-                    name: 'عامل زراعي (يومان/شهر)', 
-                    price: 299, 
-                    imgUrl: 'https://cdn-icons-png.flaticon.com/512/1995/1995515.png', 
-                    qty: 1 
-                });
-            }
-            updateCartUI();
-        }
-
         function removeFromCart(id) {
             cart = cart.filter(item => item.id !== id);
             updateCartUI();
@@ -655,8 +717,6 @@
                     document.getElementById('cust-address').value = userLocationLink;
 
                     const distanceKm = calculateDistance(STORE_LAT, STORE_LNG, lat, lng);
-                    
-                    // حساب سعر التوصيل: 1 ريال لكل 1 كيلومتر
                     deliveryCost = Math.ceil(distanceKm);
 
                     btnText.textContent = `تم التحديد (المسافة: ${Math.ceil(distanceKm)} كم = ${deliveryCost} ر.س)`;
@@ -693,11 +753,19 @@
             const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
             document.getElementById('cart-count').textContent = totalQty;
 
-            const isWorkerAdded = cart.some(item => item.id === 'service_worker');
-            const workerBtn = document.getElementById('btn-worker-action');
-            if (workerBtn) {
-                workerBtn.textContent = isWorkerAdded ? '✓ مضاف (إلغاء)' : '+ إضافة';
-                workerBtn.classList.toggle('added', isWorkerAdded);
+            const aiText = document.getElementById('ai-suggestion-text');
+            if (aiText) {
+                if (cart.length === 0) {
+                    aiText.textContent = "السلة فارغة، استكشف أصناف الشاي الممتازة في المتجر وأضفها لطلبك!";
+                } else {
+                    const unaddedProducts = allProductsList.filter(p => !cart.some(c => c.id == p.id));
+                    if (unaddedProducts.length > 0) {
+                        const randomSuggest = unaddedProducts[Math.floor(Math.random() * unaddedProducts.length)];
+                        aiText.textContent = `ذوقك رائع! ننصحك أيضاً بتجربة "${randomSuggest.name}" لتجربة مذاق فريد!`;
+                    } else {
+                        aiText.textContent = "اختياراتك متكاملة وشاملة لأفضل أنواع الشاي لدينا!";
+                    }
+                }
             }
 
             const listEl = document.getElementById('cart-items-list');
@@ -706,7 +774,7 @@
             } else {
                 listEl.innerHTML = cart.map(item => `
                     <div class="cart-item">
-                        <img src="${item.imgUrl}" class="cart-item-img" alt="${item.name}" onerror="this.src='https://via.placeholder.com/60'">
+                        <img src="${item.imgUrl}" class="cart-item-img" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=100'">
                         <div class="cart-item-info">
                             <div class="cart-item-title">${item.name}</div>
                             <div class="cart-item-price">${item.price} ر.س</div>
@@ -734,65 +802,197 @@
 
         function openCart() {
             generateInvoiceNumber();
+            selectPaymentMethod('bank'); // تعيين الدفع البنكي كافتراضي
             document.getElementById('cart-modal').style.display = 'flex';
         }
 
         function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
 
+        /* دالة معالجة وإرسال الطلب */
         async function handlePlaceOrder(e) {
             e.preventDefault();
-            if (cart.length === 0) return alert("السلة فارغة، يرجى إضافة شتلات أولاً!");
+            if (cart.length === 0) return alert("السلة فارغة، يرجى اختيار أنواع الشاي المفضلة لديك أولاً!");
 
             const addressInput = document.getElementById('cust-address').value.trim();
             if (!addressInput) return alert("يرجى تحديد الموقع أو كتابة العنوان!");
 
             const name = document.getElementById('cust-name').value.trim();
             const phone = document.getElementById('cust-phone').value.trim();
-            const btn = document.getElementById('btn-submit-order');
+            const proofFile = document.getElementById('cust-proof-file').files[0];
+            const submitBtn = document.getElementById('btn-submit-order');
 
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري إرسال الطلب...`;
+            if (selectedPaymentType === 'bank' && !proofFile) {
+                return alert("يرجى إرفاق صورة إيصال التحويل البنكي!");
+            }
 
             try {
-                const proofFileInput = document.getElementById('cust-proof-file');
-                let proofUrl = "لم يتم إرفاق إيصال";
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري معالجة الطلب...`;
 
-                if (proofFileInput.files.length > 0) {
-                    const file = proofFileInput.files[0];
-                    const fileName = `${Date.now()}_${file.name}`;
-                    const { data: uploadData, error: uploadErr } = await _supabase.storage.from('receipts').upload(fileName, file);
-                    if (!uploadErr && uploadData) {
+                let proofUrl = "";
+                
+                // رفع الإيصال فقط في حالة الدفع البنكي
+                if (selectedPaymentType === 'bank' && proofFile) {
+                    const fileExt = proofFile.name.split('.').pop();
+                    const fileName = `${currentInvoiceNumber}_${Date.now()}.${fileExt}`;
+                    const { data: uploadData, error: uploadErr } = await _supabase.storage
+                        .from('receipts')
+                        .upload(fileName, proofFile);
+
+                    if (!uploadErr) {
                         const { data: publicUrlData } = _supabase.storage.from('receipts').getPublicUrl(fileName);
                         proofUrl = publicUrlData.publicUrl;
                     }
                 }
 
+                // حساب التكاليف
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-                const grandTotal = subtotal + deliveryCost;
+                const totalAmount = subtotal + deliveryCost;
+                const paymentText = selectedPaymentType === 'bank' ? 'تحويل بنكي' : 'الدفع عند الاستلام 💵';
 
+                // تجهيز رسالة الواتساب
                 let itemsText = cart.map(item => `• ${item.name} (${item.qty}×) - ${item.price * item.qty} ر.س`).join('\n');
+                
+                let message = `☕ *طلب جديد - متجر شاي الناصرية*\n`;
+                message += `📄 *رقم الفاتورة:* ${currentInvoiceNumber}\n`;
+                message += `💳 *طريقة الدفع:* ${paymentText}\n`;
+                message += `-----------------------------------\n`;
+                message += `👤 *اسم العميل:* ${name}\n`;
+                message += `📱 *رقم الجوال:* ${phone}\n`;
+                message += `📍 *العنوان / الموقع:* ${addressInput}\n`;
+                message += `-----------------------------------\n`;
+                message += `🍃 *أصناف الشاي والمنتجات:*\n${itemsText}\n`;
+                message += `-----------------------------------\n`;
+                message += `💵 *المجموع الفرعي:* ${subtotal} ر.س\n`;
+                message += `🚚 *رسوم التوصيل:* ${deliveryCost} ر.س\n`;
+                message += `💰 *الإجمالي النهائي:* ${totalAmount} ر.س\n`;
+                if (proofUrl) {
+                    message += `-----------------------------------\n`;
+                    message += `🧾 *رابط إيصال التحويل:* ${proofUrl}\n`;
+                }
 
-                const message = `*طلب جديد من مشتل الناصرية* 🌿\n` +
-                    `*رقم الفاتورة:* ${currentInvoiceNumber}\n` +
-                    `*الاسم:* ${name}\n` +
-                    `*رقم الجوال:* ${phone}\n` +
-                    `*الموقع:* ${addressInput}\n\n` +
-                    `*الطلبات:*\n${itemsText}\n\n` +
-                    `*المجموع الفرعي:* ${subtotal} ر.س\n` +
-                    `*سعر التوصيل:* ${deliveryCost} ر.س\n` +
-                    `*الإجمالي النهائي:* ${grandTotal} ر.س\n\n` +
-                    `*رابط الإيصال:* ${proofUrl}`;
+                // حفظ الطلب في Supabase
+                await _supabase.from('orders').insert([{
+                    invoice_number: currentInvoiceNumber,
+                    customer_name: name,
+                    customer_phone: phone,
+                    address: addressInput,
+                    total_amount: totalAmount,
+                    payment_method: selectedPaymentType,
+                    proof_url: proofUrl,
+                    items: cart
+                }]);
 
+                // التوجيه إلى الواتساب
                 const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
                 window.open(whatsappUrl, '_blank');
+
+                closeCart();
+                cart = [];
+                updateCartUI();
+
             } catch (err) {
-                console.error(err);
-                alert("حدث خطأ أثناء معالجة الطلب.");
+                console.error("Order process error:", err);
+                alert("حدث خطأ أثناء معالجة الطلب، حاول مرة أخرى.");
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.4rem;"></i> إرسال الطلب عبر الواتساب`;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="fa-brands fa-whatsapp" style="font-size:1.4rem;"></i> إرسال الطلب عبر الواتساب`;
             }
         }
     </script>
 </body>
+<!-- قسم مسابقة الباركود الربحي مصور -->
+<div class="container" style="margin-top: 2rem;">
+    <div style="background: linear-gradient(135deg, #1c1917 0%, #292524 100%); color: white; padding: 1.5rem; border-radius: var(--radius-lg); text-align: center; box-shadow: var(--shadow-md); border: 1px solid var(--accent);">
+        <i class="fa-solid fa-qrcode" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 0.5rem;"></i>
+        <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem;">مسابقة الشاي الذهبية - أدخل رمز الباركود</h3>
+        <p style="font-size: 0.85rem; color: #d6d3d1; margin-bottom: 1rem;">ابحث عن رمز الباركود داخل عبوة الشاي، وأدخله هنا لمعرفة إذا كنت أحد الفائزين بالهدايا القيمّة!</p>
+        
+        <div style="display: flex; gap: 8px; max-width: 400px; margin: 0 auto;">
+            <input type="text" id="barcode-input" placeholder="أدخل كود العبوة هنا..." style="flex-grow: 1; padding: 0.75rem; border-radius: 10px; border: 1px solid var(--border); outline: none; font-size: 0.9rem; text-align: center; font-weight: bold; color: #1c1917;">
+            <button onclick="checkBarcode()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.2rem; border-radius: 10px; font-weight: 800; cursor: pointer; transition: var(--transition);">
+                فحص الرمز
+            </button>
+        </div>
+
+        <!-- مكان ظهور نتيجة السحب بالصور -->
+        <div id="barcode-result" style="margin-top: 1rem; display: none; padding: 1rem; border-radius: 12px; font-weight: 700; font-size: 0.9rem;"></div>
+    </div>
+</div>
+
+<script>
+    // 1. قائمة الهدايا المرفوعة (اسم الهدية + رابط الصورة المرفوعة)
+    // يمكنك استبدال الروابط أدناه بروابط الصور التي ترفعها على Supabase أو أي استضافة
+    let availablePrizes = [
+        { title: "باكيت شاي فاخر مجاني ☕", image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=400" },
+        { title: "كوب حراري أنيق 🥛", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400" },
+        { title: "قسيمة خصم 50% 🏷️", image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400" },
+        { title: "علبة شاي أحمر ممتازة 🍵", image: "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?w=400" },
+        { title: "شحن مجاني لطلبك القادم 🚚", image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400" },
+        { title: "عينة تجربة شاي جديدة 🍃", image: "https://images.unsplash.com/photo-1563822249510-9828e6789b70?w=400" },
+        { title: "خصم 30% على الفاتورة 💰", image: "https://images.unsplash.com/photo-1607082349566-187342175e2f?w=400" },
+        { title: "باكيت شاي كبوس فاخر ☕", image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=400" },
+        { title: "قسيمة شرائية بقيمة 50 ريال 💵", image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=400" },
+        { title: "إبريق شاي كلاسيكي 🫖", image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400" }
+    ];
+
+    function checkBarcode() {
+        const inputEl = document.getElementById('barcode-input');
+        const resultEl = document.getElementById('barcode-result');
+        const code = inputEl.value.trim();
+
+        if (!code) {
+            alert("يرجى كتابة رمز الباركود أولاً!");
+            return;
+        }
+
+        // استرجاع الباركودات المستعملة مسبقاً
+        let usedCodes = JSON.parse(localStorage.getItem('used_tea_barcodes') || '[]');
+
+        if (usedCodes.includes(code)) {
+            resultEl.style.display = 'block';
+            resultEl.style.background = '#fef2f2';
+            resultEl.style.color = '#991b1b';
+            resultEl.innerHTML = '❌ هذا الرمز تم استخدامه مسبقاً! جرب رمزاّ جديداً.';
+            return;
+        }
+
+        // نسبة الفوز (20% احتمال فوز)
+        const WIN_PROBABILITY = 0.20; 
+        const isWinner = Math.random() < WIN_PROBABILITY;
+
+        // حفظ الكود كُمستعمل
+        usedCodes.push(code);
+        localStorage.setItem('used_tea_barcodes', JSON.stringify(usedCodes));
+
+        if (isWinner && availablePrizes.length > 0) {
+            // اختيار هدية عشوائية بصورتها
+            const prizeIndex = Math.floor(Math.random() * availablePrizes.length);
+            const wonPrize = availablePrizes[prizeIndex];
+
+            // حظر الهدية المربوحة حتى لا تتكرر
+            availablePrizes.splice(prizeIndex, 1);
+
+            resultEl.style.display = 'block';
+            resultEl.style.background = '#ecfdf5';
+            resultEl.style.color = '#047857';
+            resultEl.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 1.1rem; margin-bottom: 8px;">🎉 **مبروك! لقد فزت بهذه الهدية** 🎉</div>
+                    <img src="${wonPrize.image}" alt="${wonPrize.title}" style="width: 140px; height: 140px; object-fit: cover; border-radius: 12px; margin: 8px 0; border: 2px solid #10b981;">
+                    <div style="font-size: 1rem; font-weight: 800; color: #065f46;">${wonPrize.title}</div>
+                    <small style="display: block; margin-top: 6px; color: #047857;">التقط صورة للشاشة وأرسلها عبر الواتساب لاستلام هديتك مع طلبك!</small>
+                </div>
+            `;
+        } else {
+            // حالة عدم حلف الحظ
+            resultEl.style.display = 'block';
+            resultEl.style.background = '#fffbeb';
+            resultEl.style.color = '#b45309';
+            resultEl.innerHTML = 'حظاً أوفراً! حظك لم يحالفك هذه المرة، جرب عبوة أخرى مع شاي الناصرية ☕';
+        }
+
+        inputEl.value = '';
+    }
+</script>
 </html>
