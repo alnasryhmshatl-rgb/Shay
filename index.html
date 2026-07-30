@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Supabase Client -->
+    <!-- مكتبة Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -87,7 +87,7 @@
         }
         .cart-badge { background: #ef4444; color: white; font-size: 0.75rem; border-radius: 50%; padding: 2px 7px; }
 
-        /* تصميم قسم البنر الإعلاني المربوط بالداشبورد */
+        /* تصميم البنر المربوط بالداشبورد */
         .banner-container {
             max-width: 1200px;
             margin: 1.5rem auto 0.5rem auto;
@@ -110,11 +110,12 @@
 
         .container { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
         .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
-        .product-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; box-shadow: var(--shadow); }
+        .product-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: space-between; }
         .product-img { width: 100%; height: 180px; object-fit: cover; border-radius: var(--radius-md); background: #f1f5f9; }
         .product-title { font-weight: 800; margin-top: 10px; font-size: 1.1rem; }
         .product-price { color: var(--primary); font-weight: 900; margin-top: 5px; font-size: 1rem; }
-        .btn-add { width: 100%; background: var(--primary); color: white; border: none; padding: 0.7rem; border-radius: 8px; font-weight: 800; margin-top: 10px; cursor: pointer; }
+        .btn-add { width: 100%; background: var(--primary); color: white; border: none; padding: 0.7rem; border-radius: 8px; font-weight: 800; margin-top: 10px; cursor: pointer; transition: 0.2s ease; }
+        .btn-add:hover { background: var(--primary-dark); }
 
         .modal {
             position: fixed;
@@ -191,7 +192,7 @@
         </div>
     </header>
 
-    <!-- قسم البنر المربوط بالداشبورد -->
+    <!-- البنر الإعلاني العاطفي المربوط بجداول Supabase -->
     <div class="banner-container">
         <div class="hero-banner" id="store-banner">
             <div class="banner-placeholder-text">🍃 أهلاً بكم في متجر شاي العندليب 🍃</div>
@@ -247,7 +248,7 @@
                 <div id="cart-items-list"></div>
 
                 <div class="coupon-box">
-                    <input type="text" id="coupon-code-input" placeholder="كود الخصم (منتج سعودي)">
+                    <input type="text" id="coupon-code-input" placeholder="كود الخصم (مثل: منتج سعودي)">
                     <button type="button" onclick="applyDiscountCoupon()">تطبيق</button>
                 </div>
 
@@ -263,6 +264,7 @@
     </div>
 
     <script>
+        // إعداد الاتصال بـ Supabase
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -277,14 +279,17 @@
         // 1. جلب البنر الإعلاني من الداشبورد / Supabase
         async function fetchBannerFromDatabase() {
             const bannerDiv = document.getElementById('store-banner');
-            const { data, error } = await _supabase.from('banners').select('image_url').limit(1).maybeSingle();
-
-            if (data && data.image_url) {
-                bannerDiv.innerHTML = `<img src="${data.image_url}" alt="البنر الإعلاني">`;
+            try {
+                const { data, error } = await _supabase.from('banners').select('image_url').limit(1).maybeSingle();
+                if (data && data.image_url) {
+                    bannerDiv.innerHTML = `<img src="${data.image_url}" alt="البنر الإعلاني">`;
+                }
+            } catch (err) {
+                console.warn("لم يتم إيجاد بنر مخصص، تم استخدام البنر الافتراضي.");
             }
         }
 
-        // 2. جلب المنتجات من قاعدة البيانات Supabase
+        // 2. جلب المنتجات من قاعدة البيانات
         async function fetchProductsFromDatabase() {
             const container = document.getElementById('main-store-content');
             
@@ -304,7 +309,7 @@
             renderProducts();
         }
 
-        // عرض المنتجات في الصفحة مع التعامل مع الصور المكسورة
+        // عرض المنتجات في الصفحة
         function renderProducts() {
             const container = document.getElementById('main-store-content');
             let html = '<div class="grid-products">';
@@ -315,12 +320,14 @@
 
                 html += `
                     <div class="product-card">
-                        <img src="${imgUrl}" 
-                             onerror="this.onerror=null; this.src='${fallbackImage}';" 
-                             class="product-img" 
-                             alt="${p.name}">
-                        <div class="product-title">${p.name}</div>
-                        <div class="product-price">${p.price} ر.س</div>
+                        <div>
+                            <img src="${imgUrl}" 
+                                 onerror="this.onerror=null; this.src='${fallbackImage}';" 
+                                 class="product-img" 
+                                 alt="${p.name}">
+                            <div class="product-title">${p.name}</div>
+                            <div class="product-price">${p.price} ر.س</div>
+                        </div>
                         <button class="btn-add" onclick="addToCart('${p.id}')">إضافة للسلة</button>
                     </div>
                 `;
@@ -379,6 +386,7 @@
             document.getElementById('auth-switch-link').textContent = isSignUpMode ? 'تسجيل الدخول' : 'إنشاء حساب جديد';
         }
 
+        // 3. تسجيل الدخول وإنشاء حساب مرتبطان بالداشبورد
         async function handleAuthSubmit(e) {
             e.preventDefault();
             clearError();
@@ -394,7 +402,7 @@
                 
                 if (error) {
                     if (error.message.includes('users_profiles')) {
-                        showError("الجدول غير موجود في قاعدة البيانات، يرجى تشغيل كود SQL في Supabase أولاً.");
+                        showError("جدول المستخدمين غير موجود في Supabase.");
                     } else if (error.message.includes('unique constraint')) {
                         showError("رقم الجوال هذا مسجل مسبقاً، حاول تسجيل الدخول.");
                     } else {
@@ -434,7 +442,8 @@
         function openCart() { document.getElementById('cart-modal').classList.add('active'); }
         function closeCart() { document.getElementById('cart-modal').classList.remove('active'); }
 
-        function applyDiscountCoupon() {
+        // 4. تطبيق خصم الأكواد
+        async function applyDiscountCoupon() {
             const code = document.getElementById('coupon-code-input').value.trim();
             const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
 
@@ -471,7 +480,7 @@
             document.getElementById('grandtotal-val').textContent = `${subtotal + delivery} ر.س`;
         }
 
-        // 3. تأكيد الطلب وحفظه في الداشبورد قبل التوجيه للواتساب
+        // 5. حفظ الطلب في جدول `orders` بالداشبورد ثم التوجيه للواتساب
         async function sendOrderToWhatsApp() {
             if (cart.length === 0) {
                 alert("السلة فارغة!");
@@ -482,17 +491,17 @@
             const delivery = discountApplied ? 0 : baseDelivery;
             const grandTotal = subtotal + delivery;
 
-            // تسجيل الطلب في Supabase لكي يظهر في الداشبورد
+            // حفظ الطلب في Supabase ليصل للداشبورد
             try {
                 await _supabase.from('orders').insert([{
                     customer_name: currentUser ? currentUser.name : 'زائر',
                     customer_phone: currentUser ? currentUser.phone : 'غير محدد',
-                    items: cart,
+                    items: JSON.stringify(cart),
                     total_amount: grandTotal,
                     status: 'جديد'
                 }]);
             } catch (err) {
-                console.log("تعذر حفظ الطلب في الداشبورد، جاري تحويل إلى الواتساب مباشرة.");
+                console.log("لم يتم حفظ الطلب بالداشبورد مباشرة ولكن سينتقل للواتساب.", err);
             }
 
             let msg = "طلب جديد من متجر شاي العندليب:\n";
@@ -504,6 +513,7 @@
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
+        // تشغيل الدوال الأساسية عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', () => {
             updateAuthUI();
             fetchBannerFromDatabase();
