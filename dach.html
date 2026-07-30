@@ -1,1 +1,664 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | إدارة متجر شتلة</title>
+    <!-- الخطوط والأيقونات -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-light: #ecfdf5;
+            --primary-dark: #059669;
+            --dark-sidebar: #0f172a;
+            --sidebar-hover: #1e293b;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --danger: #ef4444;
+            --danger-bg: #fef2f2;
+            --radius: 14px;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.04), 0 4px 6px -4px rgba(0,0,0,0.02);
+        }
+
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
+        body { background: var(--bg-light); color: var(--text-dark); min-height: 100vh; }
+
+        .dash-layout { display: flex; flex-direction: column; min-height: 100vh; }
+
+        @media (min-width: 900px) {
+            .dash-layout { flex-direction: row; }
+            sidebar { width: 280px; min-height: 100vh; position: fixed; right: 0; top: 0; bottom: 0; z-index: 100; }
+            main { margin-right: 280px; width: calc(100% - 280px); }
+        }
+
+        /* الشريط الجانبي */
+        sidebar {
+            background: var(--dark-sidebar);
+            color: white;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.05);
+        }
+
+        sidebar .brand {
+            font-size: 1.4rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        sidebar .brand i {
+            background: rgba(16, 185, 129, 0.15);
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        .db-status-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .db-status-badge .dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--primary);
+        }
+
+        .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.85rem 1rem;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .nav-item a:hover, .nav-item.active a {
+            background: var(--sidebar-hover);
+            color: white;
+        }
+        .nav-item.active a i { color: var(--primary); }
+
+        /* المحتوى الرئيسي */
+        main { padding: 2rem; flex-grow: 1; }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .top-bar .page-title h1 { font-size: 1.3rem; font-weight: 800; color: var(--text-dark); }
+        .top-bar .page-title p { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .grid-container { grid-template-columns: repeat(2, 1fr); }
+            .full-width { grid-column: span 2; }
+        }
+
+        /* البطاقات */
+        .dashboard-box {
+            background: white;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .box-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--bg-light);
+            padding-bottom: 0.75rem;
+        }
+
+        .box-title i {
+            background: var(--primary-light);
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        /* النماذج */
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            font-size: 0.9rem;
+            background: #fafafa;
+            transition: all 0.2s;
+        }
+        .form-group input[type="file"] { background: white; padding: 0.5rem; cursor: pointer; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        /* الأزرار */
+        .btn {
+            padding: 0.8rem 1.4rem;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        
+        .btn-danger {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            width: auto;
+            border-radius: 8px;
+        }
+        .btn-danger:hover { background: var(--danger); color: white; }
+
+        /* الجداول */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 1.25rem;
+            max-height: 320px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+        
+        table { width: 100%; border-collapse: collapse; text-align: right; min-width: 450px; }
+        th, td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; vertical-align: middle; }
+        th { background: #f1f5f9; color: var(--text-muted); font-weight: 700; position: sticky; top: 0; z-index: 1; }
+        tr:hover td { background: #f8fafc; }
+        
+        code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+
+        .status-msg {
+            font-size: 0.85rem;
+            margin-top: 8px;
+            text-align: center;
+            display: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body>
+
+    <div class="dash-layout">
+        <sidebar>
+            <div>
+                <div class="brand">
+                    <i class="fa-solid fa-leaf" style="color:var(--primary);"></i>
+                    إدارة متجر شتلة
+                </div>
+                <div class="db-status-badge">
+                    <span class="dot"></span>
+                    <span>متصل بـ Supabase مباشرة</span>
+                </div>
+
+                <ul class="nav-menu">
+                    <li class="nav-item active"><a href="#"><i class="fa-solid fa-chart-pie"></i> لوحة التحكم</a></li>
+                    <li class="nav-item"><a href="#gifts-section"><i class="fa-solid fa-gift"></i> الهدايا</a></li>
+                    <li class="nav-item"><a href="#generator-section"><i class="fa-solid fa-wand-magic-sparkles"></i> توليد وتخزين الأكواد</a></li>
+                </ul>
+            </div>
+            
+            <div style="font-size: 0.75rem; color: #64748b; text-align: center;">
+                &copy; 2026 جميع الحقوق محفوظة لمتجر شتلة
+            </div>
+        </sidebar>
+
+        <main>
+            <div class="top-bar">
+                <div class="page-title">
+                    <h1>مولد الأكواد العشوائية الآمن</h1>
+                    <p>قم بتوليد الأكواد وحفظها في قاعدة البيانات وتنزيلها بملف، وأي كود غير مدرج يعتبر خطأ.</p>
+                </div>
+            </div>
+
+            <div class="grid-container">
+                
+                <!-- 1️⃣ إدارة الهدايا -->
+                <div class="dashboard-box" id="gifts-section">
+                    <div class="box-title">
+                        <i class="fa-solid fa-gift" style="color: #ec4899;"></i> 
+                        1. إضافة الهدية (مثل: وردة)
+                    </div>
+                    <form onsubmit="handleAddGift(event)">
+                        <div class="form-group">
+                            <label>اسم الهدية</label>
+                            <input type="text" id="gift-name" required placeholder="مثال: وردة">
+                        </div>
+                        <div class="form-group">
+                            <label>السعر (ر.س)</label>
+                            <input type="number" id="gift-price" required placeholder="20" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label>صورة الهدية</label>
+                            <input type="file" id="gift-file" accept="image/*" required>
+                        </div>
+                        <div class="form-group">
+                            <label>وصف الهدية</label>
+                            <textarea id="gift-desc" rows="2" placeholder="تفاصيل الهدية..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btn-add-gift" style="background: #ec4899;">
+                            <i class="fa-solid fa-upload"></i> حفظ الهدية
+                        </button>
+                    </form>
+                    <div class="status-msg" id="msg-gift">جاري الحفظ...</div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>ID</th><th>الصورة</th><th>اسم الهدية</th><th>السعر</th><th>إجراء</th></tr></thead>
+                            <tbody id="gifts-table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2️⃣ توليد وتخزين الأكواد العشوائية وتحميلها -->
+                <div class="dashboard-box" id="generator-section">
+                    <div class="box-title">
+                        <i class="fa-solid fa-wand-magic-sparkles" style="color: #8b5cf6;"></i> 
+                        2. مولد الأكواد التلقائي وتنزيل الملف
+                    </div>
+                    
+                    <form onsubmit="handleGenerateAndSaveCodes(event)" style="margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label>اختر الهدية المراد توليد أكواد لها</label>
+                            <select id="gen-gift-id" required>
+                                <option value="" disabled selected>اختر الهدية...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>عدد الأكواد العشوائية المطلوب توليدها (مثال: 50 أو 100)</label>
+                            <input type="number" id="gen-count" required min="1" max="500" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label>بادئة الكود (اختياري - لتسهيل التمييز)</label>
+                            <input type="text" id="gen-prefix" placeholder="مثال: ROSE- أو اتركه فارغاً">
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="btn btn-primary" id="btn-generate" style="background: #8b5cf6; flex: 1;">
+                                <i class="fa-solid fa-bolt"></i> توليد وتخزين في قاعدة البيانات
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="status-msg" id="msg-gen">جاري المعالجة...</div>
+
+                    <!-- زر تحميل آخر مجموعة أكواد تمت جدولتها كملف -->
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 10px; border: 1px solid var(--border); margin-top: 1rem; text-align: center;">
+                        <p style="font-size: 0.85rem; font-weight: 700; margin-bottom: 8px;">هل ترغب في تحميل الأكواد التي تم توليدها مؤخراً كملف نصي؟</p>
+                        <button type="button" class="btn" onclick="downloadLastGeneratedFile()" style="background: #0f172a; color: white; width: auto; padding: 0.6rem 1.2rem; font-size: 0.85rem;">
+                            <i class="fa-solid fa-download"></i> تحميل ملف الأكواد (.txt)
+                        </button>
+                    </div>
+
+                    <!-- أداة اختبار الكود (العميل) -->
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 10px; border: 1px solid var(--border); margin-top: 1rem;">
+                        <label style="font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; display:block;">اختبار التحقق من الكود (إذا لم يكن في القائمة يظهر خطأ):</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="test-input-code" placeholder="جرب إدخال كود..." style="padding: 0.6rem; border: 1px solid var(--border); border-radius: 8px; flex: 1; font-size: 0.9rem;">
+                            <button type="button" class="btn" onclick="verifyCustomerCode()" style="background: var(--primary); color: white; width: auto; padding: 0.6rem 1rem; font-size: 0.85rem;">تحقق</button>
+                        </div>
+                        <div id="verify-result-msg" style="margin-top: 6px; font-size: 0.85rem; font-weight: 700;"></div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>ID</th><th>الهدية التابعة</th><th>الكود</th><th>الحالة</th><th>إجراء</th></tr></thead>
+                            <tbody id="gift-codes-table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- السكريبت البرمجي -->
+    <script>
+        const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
+        
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let _giftsList = [];
+        let _allValidCodes = []; 
+        let _lastGeneratedBatch = []; // لحفظ آخر أكواد تمت توليدها بغرض تحميلها كملف
+
+        function showStatus(id, msg, type = 'load') {
+            const el = document.getElementById(id);
+            if(!el) return;
+            el.textContent = msg;
+            el.style.display = 'block';
+            el.style.color = type === 'error' ? '#ef4444' : (type === 'success' ? '#10b981' : '#64748b');
+            el.style.backgroundColor = type === 'error' ? '#fef2f2' : (type === 'success' ? '#ecfdf5' : '#f1f5f9');
+            if(type === 'success') setTimeout(() => el.style.display = 'none', 4000);
+        }
+
+        function cleanFileName(fileName) {
+            const ext = fileName.split('.').pop();
+            const cleanName = fileName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 10);
+            return `${Date.now()}_${cleanName}.${ext}`;
+        }
+
+        async function uploadFileToSupabase(file, folderName = 'media') {
+            const fileName = cleanFileName(file.name);
+            const filePath = `${folderName}/${fileName}`;
+            const { data, error } = await _supabase.storage.from('media').upload(filePath, file);
+            if (error) throw new Error("فشل رفع الملف: " + error.message);
+            const { data: publicUrlData } = _supabase.storage.from('media').getPublicUrl(filePath);
+            return publicUrlData.publicUrl;
+        }
+
+        // 1️⃣ الهدايا
+        async function loadGifts() {
+            try {
+                const { data, error } = await _supabase.from('gifts').select('*').order('id', { ascending: false });
+                if (error) throw error;
+                _giftsList = data || [];
+                renderGiftsTable(data);
+                populateGiftsDropdown(data);
+            } catch (err) {
+                console.error("خطأ الهدايا:", err.message);
+            }
+        }
+
+        function renderGiftsTable(data) {
+            const tbody = document.getElementById('gifts-table');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">لا توجد هدايا حالياً.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(g => `
+                <tr>
+                    <td><code>${g.id}</code></td>
+                    <td>${g.image_url ? `<img src="${g.image_url}" style="height:40px; width:40px; object-fit:cover; border-radius:6px;">` : '-'}</td>
+                    <td><strong>${g.name}</strong></td>
+                    <td><strong style="color:#ec4899">${g.price} ر.س</strong></td>
+                    <td><button class="btn btn-danger btn-sm" onclick="handleDeleteGift(${g.id})"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        function populateGiftsDropdown(data) {
+            const select = document.getElementById('gen-gift-id');
+            select.innerHTML = '<option value="" disabled selected>اختر الهدية...</option>';
+            data.forEach(g => {
+                select.innerHTML += `<option value="${g.id}">${g.name} (ID: ${g.id})</option>`;
+            });
+        }
+
+        async function handleAddGift(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-add-gift');
+            const name = document.getElementById('gift-name').value.trim();
+            const price = document.getElementById('gift-price').value;
+            const file = document.getElementById('gift-file').files[0];
+            const description = document.getElementById('gift-desc').value.trim();
+
+            if(!name || !price || !file) return;
+
+            btn.disabled = true;
+            showStatus('msg-gift', 'جاري رفع صورة الهدية وحفظها...');
+
+            try {
+                const imgUrl = await uploadFileToSupabase(file, 'gifts');
+                const { error } = await _supabase.from('gifts').insert([{
+                    name: name,
+                    price: parseFloat(price),
+                    image_url: imgUrl,
+                    description: description,
+                    is_available: true
+                }]);
+
+                if (error) throw error;
+
+                e.target.reset();
+                showStatus('msg-gift', 'تمت إضافة الهدية بنجاح!', 'success');
+                loadGifts();
+            } catch (err) {
+                showStatus('msg-gift', 'خطأ: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function handleDeleteGift(id) {
+            if(!confirm("هل أنت متأكد من حذف هذه الهدية؟")) return;
+            try {
+                const { error } = await _supabase.from('gifts').delete().eq('id', id);
+                if (error) throw error;
+                loadGifts();
+                loadGiftCodes();
+            } catch (err) {
+                alert("خطأ أثناء الحذف: " + err.message);
+            }
+        }
+
+        // 2️⃣ توليد الأكواد العشوائية وحفظها وتحميلها
+        async function loadGiftCodes() {
+            try {
+                const { data, error } = await _supabase.from('gift_codes').select('*, gifts(name)').order('id', { ascending: false });
+                if (error) throw error;
+                _allValidCodes = data || [];
+                renderGiftCodesTable(data);
+            } catch (err) {
+                console.error("خطأ أكواد الهدايا:", err.message);
+            }
+        }
+
+        function renderGiftCodesTable(data) {
+            const tbody = document.getElementById('gift-codes-table');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">لا توجد أكواد مضافة حالياً.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(c => `
+                <tr>
+                    <td><code>${c.id}</code></td>
+                    <td>${c.gifts ? c.gifts.name : 'هدية محذوفة'}</td>
+                    <td><code>${c.code}</code></td>
+                    <td>${c.is_used ? '<span class="badge badge-danger">مستخدم</span>' : '<span class="badge badge-success">متاح</span>'}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="handleDeleteGiftCode(${c.id})"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        // دالة توليد رقم عشوائي
+        function generateRandomString(prefix = '') {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // حروف وأرقام واضحة بدون التباس
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return prefix + result;
+        }
+
+        async function handleGenerateAndSaveCodes(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-generate');
+            const giftId = document.getElementById('gen-gift-id').value;
+            const count = parseInt(document.getElementById('gen-count').value) || 10;
+            const prefix = document.getElementById('gen-prefix').value.trim();
+
+            if(!giftId) return;
+
+            btn.disabled = true;
+            showStatus('msg-gen', `جاري توليد وتخزين ${count} كود عشوائي...`);
+
+            try {
+                let newCodesArray = [];
+                let dbInserts = [];
+
+                // توليد أكواد غير مكررة
+                while(newCodesArray.length < count) {
+                    let code = generateRandomString(prefix);
+                    // التأكد من عدم تكراره محلياً
+                    if(!newCodesArray.includes(code)) {
+                        newCodesArray.push(code);
+                        dbInserts.push({
+                            gift_id: parseInt(giftId),
+                            code: code,
+                            is_used: false
+                        });
+                    }
+                }
+
+                // إدخال الأكواد إلى قاعدة بيانات Supabase دفعة واحدة
+                const { error } = await _supabase.from('gift_codes').insert(dbInserts);
+                if (error) throw error;
+
+                _lastGeneratedBatch = newCodesArray; // الاحتفاظ بها لتنزيلها كملف
+                showStatus('msg-gen', `تم توليد وتخزين ${count} كود بنجاح! يمكنك تحميل الملف أدناه.`, 'success');
+                loadGiftCodes();
+            } catch (err) {
+                showStatus('msg-gen', 'خطأ: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // دالة لتحميل الأكواد المولدة حديثاً في ملف نصي txt
+        function downloadLastGeneratedFile() {
+            if (_lastGeneratedBatch.length === 0) {
+                alert("لا توجد أكواد مولدة حديثاً للتحميل. قم بالتوليد أولاً!");
+                return;
+            }
+
+            const fileContent = _lastGeneratedBatch.join('\n');
+            const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gift_codes_${Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        async function handleDeleteGiftCode(id) {
+            if(!confirm("هل أنت متأكد من حذف هذا الكود؟")) return;
+            try {
+                const { error } = await _supabase.from('gift_codes').delete().eq('id', id);
+                if (error) throw error;
+                loadGiftCodes();
+            } catch (err) {
+                alert("خطأ أثناء الحذف: " + err.message);
+            }
+        }
+
+        // التحقق من الكود (إذا لم يكن في القائمة يظهر خطأ)
+        function verifyCustomerCode() {
+            const inputVal = document.getElementById('test-input-code').value.trim();
+            const resEl = document.getElementById('verify-result-msg');
+
+            if (!inputVal) {
+                resEl.style.color = '#ef4444';
+                resEl.textContent = 'الرجاء إدخال كود للاختبار!';
+                return;
+            }
+
+            const found = _allValidCodes.find(item => item.code === inputVal);
+
+            if (found) {
+                if (found.is_used) {
+                    resEl.style.color = '#ef4444';
+                    resEl.textContent = `❌ خطأ: الكود "${inputVal}" مستخدم مسبقاً!`;
+                } else {
+                    resEl.style.color = '#10b981';
+                    resEl.textContent = `✅ صحيح! الكود متاح للهدية: ${found.gifts ? found.gifts.name : 'هدية'}`;
+                }
+            } else {
+                resEl.style.color = '#ef4444';
+                resEl.textContent = `❌ خطأ: الكود "${inputVal}" غير موجود بالنظام!`;
+            }
+        }
+
+        // تحميل البيانات عند فتح الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            loadGifts();
+            loadGiftCodes();
+        });
+    </script>
+</body>
+</html>
