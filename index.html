@@ -28,7 +28,7 @@
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
         body { background: var(--salla-bg); color: var(--salla-text); padding-bottom: 80px; }
 
-        /* شريط التنبيه العالي (Urgency / Announcement Bar) */
+        /* شريط التنبيه العالي */
         .announcement-bar {
             background: linear-gradient(90deg, #10b981, #059669);
             color: #ffffff;
@@ -38,7 +38,7 @@
             font-weight: 700;
         }
 
-        /* الهيدر على طريقة سلة */
+        /* الهيدر */
         header {
             background: #ffffff;
             border-bottom: 1px solid var(--salla-border);
@@ -111,23 +111,36 @@
             font-weight: 800;
         }
 
-        /* البنر الإعلاني الرئيسية */
-        .banner-container { max-width: 1200px; margin: 1.5rem auto; padding: 0 1.5rem; }
-        .hero-banner {
+        /* تنسيق البنرات بين الأقسام وفي الهيدر */
+        .banners-row {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .banner-card {
             width: 100%;
-            height: 260px;
             border-radius: var(--salla-radius-lg);
             overflow: hidden;
             background: linear-gradient(135deg, #00b894, #006266);
+            box-shadow: var(--salla-shadow);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 1.8rem;
-            font-weight: 900;
-            box-shadow: var(--salla-shadow);
         }
-        .hero-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .banner-card img, 
+        .banner-card video {
+            width: 100%;
+            height: auto;
+            max-height: 380px;
+            object-fit: cover;
+            display: block;
+            border: none;
+        }
 
         /* شبكة المنتجات */
         .container { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
@@ -306,12 +319,14 @@
         </a>
     </header>
 
-    <div class="banner-container">
-        <div class="hero-banner" id="store-banner">
-            <span>🍃 أهلاً بكم في متجر شاي العندليب 🍃</span>
+    <!-- البنر الرئيسي الأول (يُجلب آلياً من الداتابيز) -->
+    <div class="banners-row">
+        <div class="banner-card" id="main-db-banner">
+            <span style="color:white; font-weight:900; padding:3rem;">🍃 أهلاً بكم في متجر شاي العندليب 🍃</span>
         </div>
     </div>
 
+    <!-- القسم الأول: المنتجات المتميزة -->
     <div class="container">
         <div class="section-title">
             <i class="fa-solid fa-boxes-stacked"></i>
@@ -322,7 +337,24 @@
         </div>
     </div>
 
-    <!-- نافذة الدخول وإنشاء حساب -->
+    <!-- ================= منطقة البنرات بين الأقسام (يمكن وضع أكثر من بنر هنا) ================= -->
+    <div class="banners-row">
+        <!-- بنر فيديو 1 -->
+        <div class="banner-card">
+            <video autoplay loop muted playsinline>
+                <source src="https://qiqznwfutkwulmnddmec.supabase.co/storage/v1/object/public/media/banners/1785444598866_7mdr2.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <!-- بنر آخر (مثال صورة أو فيديو ثانٍ) -->
+        <!-- 
+        <div class="banner-card">
+            <img src="رابط_صورة_أخرى.jpg" alt="بنر إعلاني إضافي">
+        </div> 
+        -->
+    </div>
+
+    <!-- نافذة تسجيل الدخول وإنشاء حساب -->
     <div class="modal-overlay" id="auth-modal">
         <div class="modal-box">
             <button class="modal-close" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -362,7 +394,6 @@
     </div>
 
     <script>
-        // إعدادات الربط المباشر مع Supabase
         const SUPABASE_URL = "https://qiqznwfutkwulmnddmec.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpcXpud2Z1dGt3dWxtbmRkbWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODEyNTAsImV4cCI6MjEwMDU1NzI1MH0.IBCFVfkZgqOkaeMmh6RO20Q85vQkJZcuPSNYqZkQP18";
         
@@ -468,8 +499,8 @@
 
         async function handleAuth(e) {
             e.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value.trim();
 
             try {
                 let res;
@@ -480,7 +511,15 @@
                 }
 
                 if (res.error) {
-                    alert("خطأ: " + res.error.message);
+                    if (res.error.message.includes("rate limit")) {
+                        alert("تم تجاوز حد المحاولات. يرجى الانتظار بضع دقائق أو تعطيل خيار Confirm Email من لوحة Supabase.");
+                    } else if (res.error.message.includes("Invalid login credentials")) {
+                        alert("البريد الإلكتروني أو كلمة المرور غير صحيحة، أو أن الحساب غير موجود. اضغط على 'حساب جديد' لإنشائه أولاً.");
+                    } else if (res.error.message.includes("invalid")) {
+                        alert("يرجى إدخال بريد إلكتروني صحيح.");
+                    } else {
+                        alert("خطأ: " + res.error.message);
+                    }
                 } else {
                     alert(isSignUp ? "تم إنشاء الحساب بنجاح!" : "تم تسجيل الدخول بنجاح!");
                     currentUser = res.data.user;
@@ -492,30 +531,33 @@
             }
         }
 
-        // --- جلب بيانات المتجر الذكي ---
-        async function loadBanner() {
-            const bannerDiv = document.getElementById('store-banner');
+        // --- جلب بيانات البنر الرئيسي الذكي (فيديو أو صورة) ---
+        async function loadMainBanner() {
+            const bannerDiv = document.getElementById('main-db-banner');
             try {
                 const { data, error } = await _supabase.from('banners').select('*');
                 if (error || !data || data.length === 0) return;
                 
                 const latest = data[data.length - 1];
-                let bannerUrl = null;
+                const mediaUrl = latest.media_url || latest.video_url || latest.image_url || latest.url;
+                const mediaType = latest.media_type || (mediaUrl && mediaUrl.endsWith('.mp4') ? 'video' : 'image');
 
-                // البحث التلقائي عن أي عمود يحوي رابط صورة
-                for (let key in latest) {
-                    if (latest[key] && typeof latest[key] === 'string' && (latest[key].includes('http://') || latest[key].includes('https://'))) {
-                        bannerUrl = latest[key].trim();
-                        break;
+                if (mediaUrl) {
+                    if (mediaType === 'video' || mediaUrl.endsWith('.mp4')) {
+                        bannerDiv.innerHTML = `
+                            <video autoplay loop muted playsinline>
+                                <source src="${mediaUrl}" type="video/mp4">
+                                متصفحك لا يدعم تشغيل الفيديو.
+                            </video>
+                        `;
+                    } else {
+                        bannerDiv.innerHTML = `<img src="${mediaUrl}" alt="البنر الإعلاني">`;
                     }
-                }
-
-                if (bannerUrl) {
-                    bannerDiv.innerHTML = `<img src="${bannerUrl}" alt="البنر الإعلاني">`;
                 }
             } catch (e) { console.error(e); }
         }
 
+        // --- جلب المنتجات تلقائياً ---
         async function loadProducts() {
             const container = document.getElementById('main-content');
             try {
@@ -566,7 +608,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadBanner();
+            loadMainBanner();
             loadProducts();
         });
     </script>
