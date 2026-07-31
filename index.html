@@ -102,6 +102,35 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* إشعار Toast اللحظي */
+        #toast-notification {
+            position: fixed;
+            bottom: 25px;
+            right: 50%;
+            transform: translateX(50%) translateY(100px);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border: 1px solid var(--accent);
+            padding: 0.8rem 1.4rem;
+            border-radius: 50px;
+            box-shadow: var(--shadow-md);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+        #toast-notification.show {
+            transform: translateX(50%) translateY(0);
+        }
+        #toast-notification i {
+            color: #22c55e;
+            font-size: 1.2rem;
+        }
+
         /* الهيدر */
         header {
             background: var(--card-bg);
@@ -505,6 +534,12 @@
         <div class="welcome-subtitle">نصنع لك أجود أنواع شاي العندليه الفاخر</div>
     </div>
 
+    <!-- إشعار Toast اللحظي -->
+    <div id="toast-notification">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-msg">تمت الإضافة إلى السلة بنجاح!</span>
+    </div>
+
     <header>
         <div class="brand">
             <div class="brand-icon"><i class="fa-solid fa-mug-hot"></i></div>
@@ -563,7 +598,7 @@
 
                 <div style="margin-top: 1rem;">
                     <div class="summary-row"><span>المجموع الفرعي:</span><span id="subtotal-val">0 ر.س</span></div>
-                    <div class="summary-row"><span>التوصيل:</span><span id="shipping-val">0 ر.س</span></div>
+                    <div class="summary-row"><span>التوصيل (0.5 ر.س / كم):</span><span id="shipping-val">0 ر.س</span></div>
                     <div class="summary-row summary-total"><span>الإجمالي النهائي:</span><span id="grandtotal-val" style="color:var(--primary)">0 ر.س</span></div>
                 </div>
             </div>
@@ -645,17 +680,24 @@
         let cart = [];
         let allProductsList = [];
         let deliveryCost = 0;
+        let calculatedDistanceKm = 0;
         let userLocationLink = "";
         let currentInvoiceNumber = "";
         let selectedPaymentType = "bank"; 
+        let toastTimeout = null;
 
         window.addEventListener('DOMContentLoaded', () => {
-            // تفعيل الثيم المحفوظ مسبقاً
             const savedTheme = localStorage.getItem('store_theme') || 'light';
             if (savedTheme === 'dark') {
                 document.documentElement.setAttribute('data-theme', 'dark');
                 document.getElementById('theme-icon').className = "fa-solid fa-sun";
             }
+
+            // استرجاع بيانات العميل المحفوظة مسبقاً (Local Storage)
+            const savedName = localStorage.getItem('cust_name');
+            const savedPhone = localStorage.getItem('cust_phone');
+            if (savedName) document.getElementById('cust-name').value = savedName;
+            if (savedPhone) document.getElementById('cust-phone').value = savedPhone;
 
             setTimeout(() => {
                 const splash = document.getElementById('welcome-splash');
@@ -665,7 +707,18 @@
             loadStoreData();
         });
 
-        // وظيفة الثيم الليلي والنهاري
+        function showToast(message) {
+            const toast = document.getElementById('toast-notification');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.textContent = message;
+            toast.classList.add('show');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const themeIcon = document.getElementById('theme-icon');
@@ -680,7 +733,6 @@
             }
         }
 
-        // وظيفة مشاركة المتجر
         function shareStore() {
             const shareData = {
                 title: 'شاي العندليه',
@@ -837,6 +889,7 @@
             const existing = cart.find(item => item.id === id);
             if (existing) { existing.qty += 1; } else { cart.push({ id, name, price: Number(price), imgUrl, qty: 1 }); }
             updateCartUI();
+            showToast(`تمت إضافة "${name}" إلى السلة بنجاح`);
         }
 
         function updateQuantity(id, delta) {
@@ -858,7 +911,7 @@
 
         function getExactLocation() {
             const btnText = document.getElementById('loc-btn-text');
-            btnText.textContent = "جاري حساب المسافة والتوصيل...";
+            btnText.textContent = "جاري حساب المسافة ورسوم التوصيل...";
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(position => {
@@ -866,10 +919,10 @@
                     const lng = position.coords.longitude;
                     userLocationLink = `https://www.google.com/maps?q=${lat},${lng}`;
 
-                    const distance = calculateDistance(STORE_LAT, STORE_LNG, lat, lng);
-                    deliveryCost = Math.max(15, Math.round(distance * 2));
+                    calculatedDistanceKm = calculateDistance(STORE_LAT, STORE_LNG, lat, lng);
+                    deliveryCost = parseFloat((calculatedDistanceKm * 0.5).toFixed(2));
                     
-                    btnText.textContent = `تم تحديد الموقع بنجاح (${distance.toFixed(1)} كم)`;
+                    btnText.textContent = `تم تحديد الموقع بنجاح (${calculatedDistanceKm.toFixed(1)} كم)`;
                     updateCartUI();
                 }, error => {
                     alert("تعذر تحديد الموقع. يرجى التأكد من تفعيل خدمة تحديد الموقع (GPS).");
@@ -949,7 +1002,7 @@
 
             const grandTotal = subtotal + deliveryCost;
             document.getElementById('subtotal-val').textContent = `${subtotal} ر.س`;
-            document.getElementById('shipping-val').textContent = deliveryCost > 0 ? `${deliveryCost} ر.س` : `حدد الموقع`;
+            document.getElementById('shipping-val').textContent = deliveryCost > 0 ? `${deliveryCost} ر.س (${calculatedDistanceKm.toFixed(1)} كم)` : `حدد الموقع`;
             document.getElementById('grandtotal-val').textContent = `${grandTotal} ر.س`;
 
             updateAISuggestions();
@@ -980,6 +1033,10 @@
             const name = document.getElementById('cust-name').value.trim();
             const phone = document.getElementById('cust-phone').value.trim();
 
+            // حفظ بيانات العميل تلقائياً في المتصفح للاستخدام المستقبلي
+            localStorage.setItem('cust_name', name);
+            localStorage.setItem('cust_phone', phone);
+
             if (!userLocationLink) {
                 alert("يرجى تحديد موقع التوصيل عبر زر (GPS) أولاً.");
                 return;
@@ -994,7 +1051,7 @@
             message += `👤 *العميل:* ${name}\n`;
             message += `📞 *الجوال:* ${phone}\n`;
             message += `💳 *طريقة الدفع:* ${selectedPaymentType === 'bank' ? 'تحويل بنكي' : 'الدفع عند الاستلام'}\n`;
-            message += `📍 *موقع العميل:* ${userLocationLink}\n`;
+            message += `📍 *موقع العميل:* ${userLocationLink} (${calculatedDistanceKm.toFixed(1)} كم)\n`;
             message += `--------------------------------\n`;
             message += `🛍️ *المنتجات المطلوبة:*\n`;
 
@@ -1004,7 +1061,7 @@
 
             message += `--------------------------------\n`;
             message += `💵 *المجموع الفرعي:* ${subtotal} ر.س\n`;
-            message += `🚗 *التوصيل:* ${deliveryCost} ر.س\n`;
+            message += `🚗 *التوصيل (0.5 ر.س/كم):* ${deliveryCost} ر.س\n`;
             message += `💰 *الإجمالي النهائي:* ${grandTotal} ر.س\n`;
             message += `--------------------------------\n`;
             message += `شكراً لتسوقك معنا في متجر شاي العندليه!`;
