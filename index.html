@@ -495,7 +495,7 @@
             <div class="ai-recommendation-box" id="ai-suggestion-box">
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
                 <div>
-                    <strong>نقترح لك:</strong> <span id="ai-suggestion-text">جاري إعداد اقتراحات مخصصة...</span>
+                    <strong>:</strong> <span id="ai-suggestion-text">جاري إعداد اقتراحات مخصصة...</span>
                 </div>
             </div>
 
@@ -540,15 +540,15 @@
                     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Aljazira_Bank_Logo.svg" alt="شعار بنك الجزيرة" style="max-width: 120px; height: auto; border-radius: 6px;">
                 </div>
                 <div style="color: #333; font-size: 0.85rem;">
-                    <p style="margin-bottom: 4px;"><strong>اسم الحساب:</strong> أسس الناصرية - متجر الشاي</p>
+                    <p style="margin-bottom: 4px;"><strong>:</strong>  متجر الشاي</p>
                     
                     <div class="bank-row">
-                        <span><strong>الحساب:</strong> <code>015482330145001</code></span>
-                        <button type="button" class="btn-copy" onclick="copyToClipboard('015482330145001')">نسخ</button>
+                        <span><strong>الحساب:</strong> <code>000000000000000000000000</code></span>
+                        <button type="button" class="btn-copy" onclick="copyToClipboard('00000000000000000000')">نسخ</button>
                     </div>
                     <div class="bank-row">
-                        <span><strong>الآيبان:</strong> <code style="font-size: 0.75rem;">SA5460100015482330145001</code></span>
-                        <button type="button" class="btn-copy" onclick="copyToClipboard('SA5460100015482330145001')">نسخ</button>
+                        <span><strong>الآيبان:</strong> <code style="font-size: 0.75rem;">0000000000000000000000000</code></span>
+                        <button type="button" class="btn-copy" onclick="copyToClipboard('00000000000000000000000000')">نسخ</button>
                     </div>
                 </div>
             </div>
@@ -557,7 +557,7 @@
             <form onsubmit="handlePlaceOrder(event)">
                 <div class="form-group">
                     <label>الاسم الكامل <span style="color:red">*</span></label>
-                    <input type="text" id="cust-name" required placeholder="أدخل اسمك الكريم">
+                    <input type="text" id="cust-name" required placeholder="">
                 </div>
                 <div class="form-group">
                     <label>رقم الجوال <span style="color:red">*</span></label>
@@ -569,7 +569,7 @@
                     <button type="button" class="btn-location" onclick="getExactLocation()">
                         <i class="fa-solid fa-location-dot"></i> <span id="loc-btn-text">تحديد الموقع تلقائياً (GPS)</span>
                     </button>
-                    <input type="text" id="cust-address" required placeholder="سيرفق رابط الخريطة هنا أو يمكنك كتابته" style="background: #ffffff;">
+                    
                 </div>
 
                 <!-- حقل الإيصال البنكي (يختفي عند اختيار الدفع عند الاستلام) -->
@@ -943,7 +943,7 @@
                 let itemsSummary = cart.map(i => `• ${i.name} (×${i.qty}) - ${i.price * i.qty} ر.س`).join('\n');
                 let paymentText = selectedPaymentType === 'bank' ? 'تحويل بنكي (بنك الجزيرة)' : 'الدفع عند الاستلام';
 
-                let whatsappMessage = `*طلب جديد - شاي الناصرية الفاخر*%0A` +
+                let whatsappMessage = `*طلب جديد - شاي العندلية *%0A` +
                     `--------------------------------%0A` +
                     `📄 رقم الفاتورة: #${currentInvoiceNumber}%0A` +
                     `👤 الاسم: ${name}%0A` +
@@ -958,7 +958,7 @@
                     `💰 *الإجمالي النهائي: ${grandTotal} ر.س*%0A` +
                     (proofUrl ? `📎 إيصال التحويل: ${proofUrl}%0A` : '') +
                     `--------------------------------%0A` +
-                    `شكراً لاختياركم شاي الناصرية الفاخر!`;
+                    `شكراً لاختياركم شاي العندلية الفاخر!`;
 
                 const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${whatsappMessage}`;
                 window.open(whatsappUrl, '_blank');
@@ -971,7 +971,7 @@
             } catch (err) {
                 console.error("Error placing order:", err);
                 let itemsSummary = cart.map(i => `• ${i.name} (×${i.qty}) - ${i.price * i.qty} ر.س`).join('\n');
-                let whatsappMessage = `*طلب جديد - شاي الناصرية الفاخر*%0A` +
+                let whatsappMessage = `*طلب جديد - شاي العندلية الفاخر*%0A` +
                     `📄 الفاتورة: #${currentInvoiceNumber}%0A` +
                     `👤 الاسم: ${name}%0A📞 الجوال: ${phone}%0A` +
                     `📍 العنوان: ${address}%0A` +
