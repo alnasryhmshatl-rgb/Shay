@@ -280,10 +280,10 @@
             box-shadow: var(--shadow-md);
             border-color: var(--accent);
         }
-        .product-img { width: 100%; height: 160px; object-fit: cover; background: var(--border); }
+        .product-img { width: 100%; height: 160px; object-fit: cover; background: var(--border); cursor: pointer; }
         .product-details { padding: 0.9rem; display: flex; flex-direction: column; flex-grow: 1; }
         
-        /* التقييمات الذكية */
+        /* التقييمات التفاعلية */
         .rating-badge {
             display: inline-flex;
             align-items: center;
@@ -296,9 +296,12 @@
             border-radius: 20px;
             margin-bottom: 6px;
             width: fit-content;
+            cursor: pointer;
+            transition: var(--transition);
         }
+        .rating-badge:hover { background: rgba(245, 158, 11, 0.3); }
 
-        .product-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; line-height: 1.4; color: var(--text-dark); }
+        .product-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; line-height: 1.4; color: var(--text-dark); cursor: pointer; }
         .product-price { color: var(--primary); font-weight: 800; font-size: 1.1rem; margin-top: auto; }
         
         .btn-add {
@@ -334,7 +337,7 @@
         }
         .ai-recommendation-box i { font-size: 1.3rem; color: var(--accent); }
 
-        /* المودال وسلة الشراء */
+        /* المودال */
         .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -364,6 +367,43 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
         .close-btn { background: var(--border); border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 1rem; cursor: pointer; color: var(--text-muted); transition: var(--transition); }
         .close-btn:hover { background: var(--primary); color: white; }
+
+        /* نافذة تفاصيل المنتج والتقييمات */
+        .product-modal-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .product-modal-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            background: var(--border);
+        }
+        .reviews-list {
+            max-height: 160px;
+            overflow-y: auto;
+            margin-top: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 4px;
+        }
+        .review-item {
+            background: var(--bg);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+        .review-author {
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
 
         .invoice-card {
             background: var(--card-bg);
@@ -422,6 +462,36 @@
 
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.9rem; }
         .summary-total { font-weight: 800; font-size: 1.15rem; border-top: 2px solid var(--border); padding-top: 0.6rem; margin-top: 0.6rem; }
+
+        /* خانة كوبون الخصم */
+        .coupon-box {
+            display: flex;
+            gap: 8px;
+            margin: 1rem 0;
+        }
+        .coupon-box input {
+            flex-grow: 1;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border-radius: 10px;
+            outline: none;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        .btn-apply-coupon {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0 1rem;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .btn-apply-coupon:hover { opacity: 0.9; }
 
         /* خيارات طرق الدفع */
         .payment-methods-grid {
@@ -484,7 +554,7 @@
 
         .form-group { margin-bottom: 0.9rem; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-dark); }
-        .form-group input {
+        .form-group input, .form-group textarea, .form-group select {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid var(--border);
@@ -495,7 +565,7 @@
             transition: var(--transition);
             font-size: 0.9rem;
         }
-        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(153, 27, 27, 0.1); }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(153, 27, 27, 0.1); }
 
         .btn-location {
             background: #2563eb; color: white; border: none; padding: 0.75rem; border-radius: 10px; width: 100%; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 0.5rem; transition: var(--transition);
@@ -550,7 +620,7 @@
             <button class="icon-action-btn" onclick="shareStore()" title="مشاركة المتجر">
                 <i class="fa-solid fa-share-nodes"></i>
             </button>
-            <!-- زر تبديل الوضع الليلي والنهاري -->
+            <!-- زر تبديل الوضع الليلي -->
             <button class="icon-action-btn" onclick="toggleTheme()" id="theme-toggle-btn" title="تبديل الثيم">
                 <i class="fa-solid fa-moon" id="theme-icon"></i>
             </button>
@@ -564,7 +634,49 @@
 
     <div class="container" id="banner-top-container"></div>
     <div class="container" id="main-store-content">
-        <p style="text-align: center; color: var(--text-muted); margin: 3rem 0; font-weight: bold;"><i class="fa-solid fa-spinner fa-spin"></i> جاري استدعاء أفضل أنواع شاي العندليه وتوليد التقييمات...</p>
+        <p style="text-align: center; color: var(--text-muted); margin: 3rem 0; font-weight: bold;"><i class="fa-solid fa-spinner fa-spin"></i> جاري استدعاء أفضل أنواع شاي العندليه مع آراء العملاء...</p>
+    </div>
+
+    <!-- نافذة تفاصيل المنتج والتقييمات -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-product-title" style="font-weight: 800; font-size: 1.1rem;">تفاصيل المنتج والتقييمات</h3>
+                <button class="close-btn" onclick="closeProductModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="product-modal-layout">
+                <img id="modal-product-img" src="" class="product-modal-img" alt="صورة المنتج">
+                <div>
+                    <div id="modal-product-price" style="font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-bottom: 4px;"></div>
+                    <div id="modal-product-rating" style="font-size: 0.9rem; font-weight: 700; color: #b45309;"></div>
+                </div>
+
+                <div style="border-top: 1px solid var(--border); padding-top: 1rem;">
+                    <h4 style="font-size: 0.95rem; font-weight: 800; margin-bottom: 8px;">آراء وتجارب العملاء</h4>
+                    <div class="reviews-list" id="modal-reviews-list">
+                        <!-- آراء العملاء تظهر هنا -->
+                    </div>
+                </div>
+
+                <!-- إضافة تقييم جديد -->
+                <div style="background: var(--bg); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); margin-top: 0.5rem;">
+                    <h4 style="font-size: 0.85rem; font-weight: 800; margin-bottom: 8px;">أضف تقييمك للمنتج</h4>
+                    <form onsubmit="handleReviewSubmit(event)">
+                        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                            <input type="text" id="review-name" placeholder="اسمك الكريم" required style="font-size: 0.8rem; padding: 6px;">
+                            <select id="review-stars" style="font-size: 0.8rem; padding: 6px; width: 110px;">
+                                <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                                <option value="4">⭐⭐⭐⭐ (4)</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <textarea id="review-comment" placeholder="اكتب تجربتك مع الشاي..." rows="2" required style="font-size: 0.8rem; padding: 6px; resize: none;"></textarea>
+                        </div>
+                        <button type="submit" style="background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer;">إرسال التقييم</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- نافذة السلة والشراء -->
@@ -596,8 +708,16 @@
 
                 <div id="cart-items-list"></div>
 
+                <!-- خانة كوبون الخصم -->
+                <div class="coupon-box">
+                    <input type="text" id="coupon-input" placeholder="أدخل كوبون الخصم (مثل: AND2026)">
+                    <button type="button" class="btn-apply-coupon" onclick="applyCoupon()">تطبيق</button>
+                </div>
+                <div id="coupon-feedback" style="font-size: 0.75rem; margin-bottom: 0.5rem; font-weight: 700;"></div>
+
                 <div style="margin-top: 1rem;">
                     <div class="summary-row"><span>المجموع الفرعي:</span><span id="subtotal-val">0 ر.س</span></div>
+                    <div class="summary-row" id="discount-row" style="display: none; color: #16a34a;"><span>قيمة الخصم:</span><span id="discount-val">0 ر.س</span></div>
                     <div class="summary-row"><span>التوصيل (0.5 ر.س / كم):</span><span id="shipping-val">0 ر.س</span></div>
                     <div class="summary-row summary-total"><span>الإجمالي النهائي:</span><span id="grandtotal-val" style="color:var(--primary)">0 ر.س</span></div>
                 </div>
@@ -684,6 +804,10 @@
         let userLocationLink = "";
         let currentInvoiceNumber = "";
         let selectedPaymentType = "bank"; 
+        let appliedDiscount = 0; 
+        let appliedCouponCode = "";
+        let currentActiveProduct = null;
+        let productReviewsMap = JSON.parse(localStorage.getItem('store_reviews_map') || '{}');
         let toastTimeout = null;
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -693,7 +817,6 @@
                 document.getElementById('theme-icon').className = "fa-solid fa-sun";
             }
 
-            // استرجاع بيانات العميل المحفوظة مسبقاً (Local Storage)
             const savedName = localStorage.getItem('cust_name');
             const savedPhone = localStorage.getItem('cust_phone');
             if (savedName) document.getElementById('cust-name').value = savedName;
@@ -778,11 +901,74 @@
             document.getElementById('invoice-date').textContent = new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         }
 
-        function getSmartRating() {
-            const ratings = [4.9, 4.9, 4.9, 5.0, 4.9, 5.0];
-            const randomScore = ratings[Math.floor(Math.random() * ratings.length)];
-            const randomReviews = Math.floor(65 + Math.random() * 140);
-            return { score: randomScore.toFixed(1), reviews: randomReviews };
+        function getProductReviews(productId) {
+            if (!productReviewsMap[productId]) {
+                productReviewsMap[productId] = [
+                    { name: "صالح الشمري", rating: 5, comment: "شاي فاخر جداً وطعمه يطرد الراس، أنصح به بشدة." },
+                    { name: "فهد العنزي", rating: 5, comment: "التوصيل سريع والمنتج أصلي وممتاز تبارك الله." }
+                ];
+            }
+            return productReviewsMap[productId];
+        }
+
+        function openProductModal(id, name, price, imgUrl) {
+            currentActiveProduct = { id, name, price, imgUrl };
+            document.getElementById('modal-product-title').textContent = name;
+            document.getElementById('modal-product-img').src = imgUrl;
+            document.getElementById('modal-product-price').textContent = `${price} ر.س`;
+            
+            renderModalReviews(id);
+            document.getElementById('product-modal').style.display = 'flex';
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').style.display = 'none';
+        }
+
+        function renderModalReviews(productId) {
+            const reviews = getProductReviews(productId);
+            const listContainer = document.getElementById('modal-reviews-list');
+            const avgRating = (reviews.reduce((acc, r) => acc + Number(r.rating), 0) / reviews.length).toFixed(1);
+            
+            document.getElementById('modal-product-rating').innerHTML = `<i class="fa-solid fa-star" style="color:#f59e0b;"></i> ${avgRating} <span style="color:var(--text-muted); font-weight:normal;">(${reviews.length} تقييمات)</span>`;
+
+            let html = '';
+            reviews.forEach(rev => {
+                let starsHTML = '⭐'.repeat(rev.rating);
+                html += `
+                    <div class="review-item">
+                        <div class="review-author">
+                            <span>${rev.name}</span>
+                            <span style="font-size: 0.75rem;">${starsHTML}</span>
+                        </div>
+                        <div style="color: var(--text-dark);">${rev.comment}</div>
+                    </div>
+                `;
+            });
+            listContainer.innerHTML = html;
+        }
+
+        function handleReviewSubmit(event) {
+            event.preventDefault();
+            if (!currentActiveProduct) return;
+
+            const name = document.getElementById('review-name').value.trim();
+            const stars = parseInt(document.getElementById('review-stars').value);
+            const comment = document.getElementById('review-comment').value.trim();
+
+            if (!productReviewsMap[currentActiveProduct.id]) {
+                productReviewsMap[currentActiveProduct.id] = [];
+            }
+
+            productReviewsMap[currentActiveProduct.id].unshift({ name, rating: stars, comment });
+            localStorage.setItem('store_reviews_map', JSON.stringify(productReviewsMap));
+
+            document.getElementById('review-name').value = '';
+            document.getElementById('review-comment').value = '';
+
+            renderModalReviews(currentActiveProduct.id);
+            loadStoreData(); // إعادة تحديث النجوم في الصفحة الرئيسية
+            showToast("تم إضافة تقييمك بنجاح، شكراً لك!");
         }
 
         function renderBannerHTML(banner) {
@@ -852,15 +1038,17 @@
                     } else {
                         catHTML += `<div class="grid-products">`;
                         catProducts.forEach(prod => {
-                            const rating = getSmartRating();
+                            const reviews = getProductReviews(prod.id);
+                            const avgRating = (reviews.reduce((acc, r) => acc + Number(r.rating), 0) / reviews.length).toFixed(1);
+
                             catHTML += `
                                 <div class="product-card">
-                                    <img src="${prod.image_url}" class="product-img" alt="${prod.name}" onerror="this.src='https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop'">
+                                    <img src="${prod.image_url}" class="product-img" alt="${prod.name}" onclick="openProductModal('${prod.id}', '${prod.name}', ${prod.price}, '${prod.image_url}')" onerror="this.src='https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop'">
                                     <div class="product-details">
-                                        <div class="rating-badge">
-                                            <i class="fa-solid fa-star" style="color:#f59e0b;"></i> ${rating.score} <span style="color:var(--text-muted); font-weight:normal;">(${rating.reviews})</span>
+                                        <div class="rating-badge" onclick="openProductModal('${prod.id}', '${prod.name}', ${prod.price}, '${prod.image_url}')">
+                                            <i class="fa-solid fa-star" style="color:#f59e0b;"></i> ${avgRating} <span style="color:var(--text-muted); font-weight:normal;">(${reviews.length})</span>
                                         </div>
-                                        <div class="product-name">${prod.name}</div>
+                                        <div class="product-name" onclick="openProductModal('${prod.id}', '${prod.name}', ${prod.price}, '${prod.image_url}')">${prod.name}</div>
                                         <div class="product-price">${prod.price} <small style="font-size:0.75rem;">ر.س</small></div>
                                         <button class="btn-add" onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price}, '${prod.image_url}')">
                                             <i class="fa-solid fa-cart-plus"></i> إضافة للسلة
@@ -906,6 +1094,31 @@
 
         function removeFromCart(id) {
             cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById('coupon-input').value.trim().toUpperCase();
+            const feedback = document.getElementById('coupon-feedback');
+            
+            let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            if (code === "AND2026") {
+                appliedDiscount = parseFloat((subtotal * 0.10).toFixed(2));
+                appliedCouponCode = code;
+                feedback.style.color = "#16a34a";
+                feedback.textContent = "تم تطبيق كوبون الخصم بنجاح (10% خصم)";
+            } else if (code === "TEA5") {
+                appliedDiscount = 5.00;
+                appliedCouponCode = code;
+                feedback.style.color = "#16a34a";
+                feedback.textContent = "تم تطبيق كوبون الخصم بنجاح (5 ر.س خصم)";
+            } else {
+                appliedDiscount = 0;
+                appliedCouponCode = "";
+                feedback.style.color = "red";
+                feedback.textContent = "كوبون الخصم غير صحيح أو منتهي الصلاحية";
+            }
             updateCartUI();
         }
 
@@ -972,6 +1185,7 @@
                 listContainer.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:1rem; font-size:0.85rem;">السلة فارغة حالياً</p>`;
                 document.getElementById('subtotal-val').textContent = `0 ر.س`;
                 document.getElementById('shipping-val').textContent = `0 ر.س`;
+                document.getElementById('discount-row').style.display = 'none';
                 document.getElementById('grandtotal-val').textContent = `0 ر.س`;
                 updateAISuggestions();
                 return;
@@ -1000,7 +1214,19 @@
 
             listContainer.innerHTML = html;
 
-            const grandTotal = subtotal + deliveryCost;
+            if (appliedCouponCode === "AND2026") {
+                appliedDiscount = parseFloat((subtotal * 0.10).toFixed(2));
+            }
+
+            const discountRow = document.getElementById('discount-row');
+            if (appliedDiscount > 0) {
+                discountRow.style.display = 'flex';
+                document.getElementById('discount-val').textContent = `-${appliedDiscount} ر.س`;
+            } else {
+                discountRow.style.display = 'none';
+            }
+
+            const grandTotal = Math.max(0, subtotal - appliedDiscount + deliveryCost);
             document.getElementById('subtotal-val').textContent = `${subtotal} ر.س`;
             document.getElementById('shipping-val').textContent = deliveryCost > 0 ? `${deliveryCost} ر.س (${calculatedDistanceKm.toFixed(1)} كم)` : `حدد الموقع`;
             document.getElementById('grandtotal-val').textContent = `${grandTotal} ر.س`;
@@ -1033,7 +1259,6 @@
             const name = document.getElementById('cust-name').value.trim();
             const phone = document.getElementById('cust-phone').value.trim();
 
-            // حفظ بيانات العميل تلقائياً في المتصفح للاستخدام المستقبلي
             localStorage.setItem('cust_name', name);
             localStorage.setItem('cust_phone', phone);
 
@@ -1043,7 +1268,7 @@
             }
 
             let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            let grandTotal = subtotal + deliveryCost;
+            let grandTotal = Math.max(0, subtotal - appliedDiscount + deliveryCost);
 
             let message = `*طلب جديد - متجر شاي العندليه*\n`;
             message += `--------------------------------\n`;
@@ -1061,6 +1286,9 @@
 
             message += `--------------------------------\n`;
             message += `💵 *المجموع الفرعي:* ${subtotal} ر.س\n`;
+            if (appliedDiscount > 0) {
+                message += `🏷️ *الخصم (${appliedCouponCode}):* -${appliedDiscount} ر.س\n`;
+            }
             message += `🚗 *التوصيل (0.5 ر.س/كم):* ${deliveryCost} ر.س\n`;
             message += `💰 *الإجمالي النهائي:* ${grandTotal} ر.س\n`;
             message += `--------------------------------\n`;
