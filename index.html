@@ -15,10 +15,10 @@
 
     <style>
         :root {
-            --primary: #991b1b; /* أحمر عقيقي/عنابي يرمز للشاي */
+            --primary: #991b1b; 
             --primary-hover: #7f1d1d;
             --primary-light: #fef2f2;
-            --accent: #d97706; /* ذهبي الشاي */
+            --accent: #d97706; 
             --bg: #fafaf9;
             --card-bg: #ffffff;
             --text-dark: #1c1917;
@@ -31,8 +31,23 @@
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* الثيم الليلي (Dark Mode) */
+        [data-theme="dark"] {
+            --primary: #ef4444;
+            --primary-hover: #dc2626;
+            --primary-light: #451a03;
+            --accent: #fbbf24;
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-dark: #f5f5f4;
+            --text-muted: #a8a29e;
+            --border: #292524;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text-dark); padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text-dark); padding-bottom: 90px; -webkit-tap-highlight-color: transparent; transition: background 0.3s ease, color 0.3s ease; }
 
         /* شاشة الترحيب المتحركة */
         #welcome-splash {
@@ -89,7 +104,7 @@
 
         /* الهيدر */
         header {
-            background: rgba(255, 255, 255, 0.92);
+            background: var(--card-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
@@ -101,6 +116,13 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: var(--shadow-sm);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .brand {
@@ -122,6 +144,22 @@
             justify-content: center;
             font-size: 1.25rem;
         }
+
+        .icon-action-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid rgba(153, 27, 27, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .icon-action-btn:hover { background: var(--primary); color: white; }
 
         .cart-icon-btn {
             background: var(--primary-light);
@@ -213,7 +251,7 @@
             box-shadow: var(--shadow-md);
             border-color: var(--accent);
         }
-        .product-img { width: 100%; height: 160px; object-fit: cover; background: #f5f5f4; }
+        .product-img { width: 100%; height: 160px; object-fit: cover; background: var(--border); }
         .product-details { padding: 0.9rem; display: flex; flex-direction: column; flex-grow: 1; }
         
         /* التقييمات الذكية */
@@ -224,7 +262,7 @@
             font-size: 0.75rem;
             font-weight: 700;
             color: #b45309;
-            background: #fffbeb;
+            background: rgba(245, 158, 11, 0.15);
             padding: 3px 8px;
             border-radius: 20px;
             margin-bottom: 6px;
@@ -254,8 +292,8 @@
 
         /* اقتراحات الذكاء الاصطناعي في السلة */
         .ai-recommendation-box {
-            background: linear-gradient(135deg, #fffbe6 0%, #fef3c7 100%);
-            border: 1px solid #fde68a;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid var(--accent);
             border-radius: var(--radius-md);
             padding: 0.9rem;
             margin: 1rem 0;
@@ -263,15 +301,15 @@
             align-items: center;
             gap: 10px;
             font-size: 0.85rem;
-            color: #92400e;
+            color: var(--text-dark);
         }
-        .ai-recommendation-box i { font-size: 1.3rem; color: #d97706; }
+        .ai-recommendation-box i { font-size: 1.3rem; color: var(--accent); }
 
         /* المودال وسلة الشراء */
         .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(28, 25, 23, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(4px);
             display: none;
             justify-content: center;
@@ -282,23 +320,24 @@
         @media(min-width: 600px) { .modal { align-items: center; padding: 1rem; } }
 
         .modal-content {
-            background: white;
+            background: var(--card-bg);
+            color: var(--text-dark);
             width: 100%;
             max-width: 580px;
             border-radius: 24px 24px 0 0;
             padding: 1.5rem;
             max-height: 88vh;
             overflow-y: auto;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
         }
         @media(min-width: 600px) { .modal-content { border-radius: 24px; max-height: 90vh; } }
 
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
-        .close-btn { background: #f5f5f4; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 1rem; cursor: pointer; color: var(--text-muted); transition: var(--transition); }
-        .close-btn:hover { background: #e7e5e4; color: var(--text-dark); }
+        .close-btn { background: var(--border); border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 1rem; cursor: pointer; color: var(--text-muted); transition: var(--transition); }
+        .close-btn:hover { background: var(--primary); color: white; }
 
         .invoice-card {
-            background: #ffffff;
+            background: var(--card-bg);
             border: 2px dashed var(--accent);
             border-radius: var(--radius-md);
             padding: 1.2rem;
@@ -324,7 +363,7 @@
         }
 
         .cart-item { display: flex; align-items: center; gap: 12px; padding: 0.75rem 0; border-bottom: 1px dashed var(--border); }
-        .cart-item-img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; background: #f5f5f4; flex-shrink: 0; }
+        .cart-item-img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; background: var(--border); flex-shrink: 0; }
         .cart-item-info { flex-grow: 1; }
         .cart-item-title { font-weight: 700; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 2px; }
         .cart-item-price { font-size: 0.8rem; color: var(--text-muted); }
@@ -333,12 +372,12 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            background: #f5f5f4;
+            background: var(--border);
             padding: 3px 8px;
             border-radius: 8px;
         }
         .btn-qty {
-            background: white;
+            background: var(--card-bg);
             border: 1px solid var(--border);
             width: 24px;
             height: 24px;
@@ -375,7 +414,8 @@
             flex-direction: column;
             align-items: center;
             gap: 6px;
-            background: #fafaf9;
+            background: var(--card-bg);
+            color: var(--text-dark);
         }
         .payment-option input { display: none; }
         .payment-option.active {
@@ -385,7 +425,7 @@
         }
 
         .bank-card {
-            background: #fafaf9;
+            background: var(--card-bg);
             border: 1px solid var(--border);
             padding: 1rem;
             border-radius: var(--radius-md);
@@ -397,7 +437,7 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 6px;
-            background: white;
+            background: var(--card-bg);
             padding: 6px 10px;
             border-radius: 8px;
             border: 1px solid var(--border);
@@ -419,6 +459,8 @@
             width: 100%;
             padding: 0.75rem;
             border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-dark);
             border-radius: 10px;
             outline: none;
             transition: var(--transition);
@@ -468,11 +510,21 @@
             <div class="brand-icon"><i class="fa-solid fa-mug-hot"></i></div>
             <span>شاي العندليه</span>
         </div>
-        <button class="cart-icon-btn" onclick="openCart()">
-            <i class="fa-solid fa-bag-shopping"></i>
-            <span>السلة</span>
-            <span class="cart-badge" id="cart-count">0</span>
-        </button>
+        <div class="header-actions">
+            <!-- زر مشاركة المتجر -->
+            <button class="icon-action-btn" onclick="shareStore()" title="مشاركة المتجر">
+                <i class="fa-solid fa-share-nodes"></i>
+            </button>
+            <!-- زر تبديل الوضع الليلي والنهاري -->
+            <button class="icon-action-btn" onclick="toggleTheme()" id="theme-toggle-btn" title="تبديل الثيم">
+                <i class="fa-solid fa-moon" id="theme-icon"></i>
+            </button>
+            <button class="cart-icon-btn" onclick="openCart()">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span>السلة</span>
+                <span class="cart-badge" id="cart-count">0</span>
+            </button>
+        </div>
     </header>
 
     <div class="container" id="banner-top-container"></div>
@@ -484,13 +536,13 @@
     <div class="modal" id="cart-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 style="font-weight: 800; display:flex; align-items:center; gap:8px;">
+                <h3 style="font-weight: 800; display:flex; align-items:center; gap:8px; font-size:1.1rem;">
                     <i class="fa-solid fa-receipt" style="color:var(--primary)"></i> تفاصيل فاتورة شاي العندليه والطلب
                 </h3>
                 <button class="close-btn" onclick="closeCart()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <!-- اقتراح الذكاء الاصطناعي الذكي من المنتجات المتاحة فقط -->
+            <!-- اقتراح الذكاء الاصطناعي -->
             <div class="ai-recommendation-box" id="ai-suggestion-box">
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
                 <div>
@@ -533,14 +585,13 @@
                 </div>
             </div>
 
-            <!-- التفاصيل البنكية (تظهر فقط في حالة اختيار التحويل البنكي) -->
+            <!-- التفاصيل البنكية -->
             <div class="bank-card" id="bank-info-container">
                 <div style="text-align: center; margin-bottom: 8px;">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Aljazira_Bank_Logo.svg" alt="شعار بنك الجزيرة" style="max-width: 120px; height: auto; border-radius: 6px;">
                 </div>
-                <div style="color: #333; font-size: 0.85rem;">
+                <div style="font-size: 0.85rem;">
                     <p style="margin-bottom: 4px;"><strong>المستفيد:</strong> متجر شاي العندليه</p>
-                    
                     <div class="bank-row">
                         <span><strong>الحساب:</strong> <code>000000000000000000000000</code></span>
                         <button type="button" class="btn-copy" onclick="copyToClipboard('00000000000000000000')">نسخ</button>
@@ -570,10 +621,9 @@
                     </button>
                 </div>
 
-                <!-- حقل الإيصال البنكي (يختفي عند اختيار الدفع عند الاستلام) -->
                 <div class="form-group" id="proof-file-container">
                     <label>إرفاق صورة إيصال التحويل البنكي <span style="color:red">*</span></label>
-                    <input type="file" id="cust-proof-file" accept="image/*" style="padding:0.5rem; background:#f5f5f4;">
+                    <input type="file" id="cust-proof-file" accept="image/*" style="padding:0.5rem; background:var(--card-bg);">
                 </div>
 
                 <button type="submit" class="btn-checkout" id="btn-submit-order">
@@ -597,18 +647,54 @@
         let deliveryCost = 0;
         let userLocationLink = "";
         let currentInvoiceNumber = "";
-        let selectedPaymentType = "bank"; // 'bank' or 'cod'
+        let selectedPaymentType = "bank"; 
 
         window.addEventListener('DOMContentLoaded', () => {
+            // تفعيل الثيم المحفوظ مسبقاً
+            const savedTheme = localStorage.getItem('store_theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.getElementById('theme-icon').className = "fa-solid fa-sun";
+            }
+
             setTimeout(() => {
                 const splash = document.getElementById('welcome-splash');
-                if (splash) {
-                    splash.classList.add('fade-out');
-                }
+                if (splash) splash.classList.add('fade-out');
             }, 2200);
 
             loadStoreData();
         });
+
+        // وظيفة الثيم الليلي والنهاري
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const themeIcon = document.getElementById('theme-icon');
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('store_theme', 'light');
+                themeIcon.className = "fa-solid fa-moon";
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('store_theme', 'dark');
+                themeIcon.className = "fa-solid fa-sun";
+            }
+        }
+
+        // وظيفة مشاركة المتجر
+        function shareStore() {
+            const shareData = {
+                title: 'شاي العندليه',
+                text: 'تصفح أجود وأفخر أصناف شاي العندليه واطلب الآن بسهولة!',
+                url: window.location.href
+            };
+            if (navigator.share) {
+                navigator.share(shareData).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert("تم نسخ رابط المتجر بنجاح! يمكنك مشاركته مع أصدقائك.");
+                });
+            }
+        }
 
         function selectPaymentMethod(method) {
             selectedPaymentType = method;
@@ -781,7 +867,6 @@
                     userLocationLink = `https://www.google.com/maps?q=${lat},${lng}`;
 
                     const distance = calculateDistance(STORE_LAT, STORE_LNG, lat, lng);
-                    
                     deliveryCost = Math.max(15, Math.round(distance * 2));
                     
                     btnText.textContent = `تم تحديد الموقع بنجاح (${distance.toFixed(1)} كم)`;
